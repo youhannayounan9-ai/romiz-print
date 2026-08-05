@@ -6,7 +6,7 @@ import { Search, User, ClipboardList, MessageCircle, Menu, X } from "lucide-reac
 import { siteConfig } from "../config/site";
 
 export default function Header() {
-  const [logoError, setLogoError] = useState(false);
+  const [logoError, setLogoError] = useState(true); // default to text logo until image is added to /public
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const quoteCount = 0;
