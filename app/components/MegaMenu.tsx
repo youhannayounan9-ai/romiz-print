@@ -35,7 +35,7 @@ export default function MegaMenu({ isOpen, onClose }: MegaMenuProps) {
               return (
                 <Link
                   key={cat.slug}
-                  href={`/products/${cat.slug}`}
+                  href={`/categories/${cat.slug}`}
                   onClick={onClose}
                   className="group relative flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-[#F5F7FA] transition-all duration-200"
                 >
@@ -83,7 +83,7 @@ export default function MegaMenu({ isOpen, onClose }: MegaMenuProps) {
             {quickLinks.map((cat) => (
               <Link
                 key={cat.slug}
-                href={`/products/${cat.slug}`}
+                href={`/categories/${cat.slug}`}
                 onClick={onClose}
                 className="text-xs font-medium px-3 py-1.5 rounded-full border transition-all duration-200 hover:border-[#FF7A1A] hover:text-[#FF7A1A] hover:bg-orange-50"
                 style={{

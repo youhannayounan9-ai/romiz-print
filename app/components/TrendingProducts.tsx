@@ -50,12 +50,12 @@ const products: Product[] = [
   },
   {
     id: 4,
-    name: "Custom Face Mask",
-    description: "Comfort fit, washable fabric. Branded for teams & events.",
+    name: "Custom Tote Bag",
+    description: "Eco-friendly canvas bags with full-colour print. Perfect for events & gifting.",
     isNew: true,
-    emoji: "😷",
-    category: "Apparel",
-    categorySlug: "face-masks",
+    emoji: "👜",
+    category: "Bags",
+    categorySlug: "tote-bags",
     bgColor: "#EBE3F0",
   },
 ];

@@ -42,7 +42,7 @@ export default function NavRow() {
             {["Banners", "Roll Labels", "Stickers", "Business Cards", "Mugs", "T-Shirts", "Brochures"].map((item) => (
               <a
                 key={item}
-                href={`/products/${item.toLowerCase().replace(/\s+/g, "-")}`}
+                href={`/categories/${item.toLowerCase().replace(/\s+/g, "-")}`}
                 className="px-3 py-1.5 text-sm font-medium rounded-lg transition-all duration-200 hover:text-[#FF7A1A] hover:bg-[#F5F7FA] whitespace-nowrap"
                 style={{ color: siteConfig.colors.dark }}
               >

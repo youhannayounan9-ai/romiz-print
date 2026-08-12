@@ -77,7 +77,7 @@ export default function Footer() {
               {topCategories.map((cat) => (
                 <li key={cat.slug}>
                   <Link
-                    href={`/products/${cat.slug}`}
+                   href={`/categories/${cat.slug}`}
                     className="text-sm text-gray-400 hover:text-white transition-colors duration-200 flex items-center gap-2 group"
                   >
                     <span className="w-1 h-1 rounded-full bg-gray-600 group-hover:bg-[#FF7A1A] transition-colors duration-200" />
