@@ -52,7 +52,7 @@ function StatCard({
         className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
         style={{ backgroundColor: `${color}18` }}
       >
-        <Icon size={20} style={{ color }} />
+        <Icon size={20} className={`[color:${color}]`} />
       </div>
       <div className="min-w-0">
         <p className="text-xs font-medium text-gray-400 mb-0.5">{label}</p>

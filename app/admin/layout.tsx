@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, Suspense } from "react";
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import {
@@ -29,7 +29,7 @@ const navItems = [
 ];
 
 /* ─── Auth Gate ─────────────────────────────────────── */
-function AuthGate({ children }: { children: React.ReactNode }) {
+function AuthGateInner({ children }: { children: React.ReactNode }) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [authed, setAuthed] = useState<boolean | null>(null);
@@ -89,6 +89,20 @@ function AuthGate({ children }: { children: React.ReactNode }) {
   }
 
   return <>{children}</>;
+}
+
+function AuthGate({ children }: { children: React.ReactNode }) {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: siteConfig.colors.background }}>
+          <div className="w-8 h-8 rounded-full border-4 border-gray-200 border-t-[#0B4DA2] animate-spin" />
+        </div>
+      }
+    >
+      <AuthGateInner>{children}</AuthGateInner>
+    </Suspense>
+  );
 }
 
 /* ─── Sidebar ───────────────────────────────────────── */
