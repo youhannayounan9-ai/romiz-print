@@ -29,7 +29,9 @@ export default function Header() {
                   height={40}
                   className="h-10 w-auto object-contain"
                   onError={() => setLogoError(true)}
-                  priority
+                  loading="lazy"
+                  placeholder="blur"
+                  blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
                 />
               ) : (
                 /* Fallback text logo */

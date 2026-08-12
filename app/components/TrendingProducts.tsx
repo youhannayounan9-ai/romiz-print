@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { ArrowRight, ShoppingBag } from "lucide-react";
-import QuoteModal from "./QuoteModal";
+import dynamic from "next/dynamic";
+const QuoteModal = dynamic(() => import("./QuoteModal"), { ssr: false });
 import { siteConfig } from "../config/site";
 
 interface Product {

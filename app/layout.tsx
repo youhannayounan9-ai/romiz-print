@@ -22,21 +22,29 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: {
-    default: `${siteConfig.name} — ${siteConfig.tagline}`,
-    template: `%s | ${siteConfig.name}`,
-  },
-  description:
-    "Cairo's premier custom printing company. Business cards, banners, stickers, t-shirts, mugs and more — premium quality with express dispatch across Egypt.",
-  keywords: ["custom printing", "Cairo", "Egypt", "business cards", "banners", "t-shirts"],
+  metadataBase: new URL("https://romizprint.com"),
+  title: "ROMIZ PRINT | Premium Custom Printing in Cairo",
+  description: "YOUR BRAND. PRINTED. PERFECTED. Custom stickers, apparel, mugs & more. No minimums. Express dispatch across Egypt. Request your free quote today.",
+  keywords: ["custom printing", "Cairo", "stickers", "t-shirts", "mugs", "business cards", "ROMIZ PRINT"],
   openGraph: {
+    title: "ROMIZ PRINT | Premium Custom Printing",
+    description: "Custom printing made easy in Cairo. Upload your design, get a quote, we print & deliver.",
+    url: "https://romizprint.com",
+    siteName: "ROMIZ PRINT",
+    images: [{ url: "/og-image.svg", width: 1200, height: 630 }],
+    locale: "en_EG",
     type: "website",
-    locale: "en_US",
-    siteName: siteConfig.name,
-    title: `${siteConfig.name} — ${siteConfig.tagline}`,
-    description:
-      "Cairo's premier custom printing company. Premium quality, express dispatch.",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "ROMIZ PRINT",
+    description: "Premium custom printing in Cairo",
+    images: ["/og-image.svg"]
+  },
+};
+
+export const viewport = {
+  themeColor: "#0B4DA2",
 };
 
 export default function RootLayout({
@@ -49,6 +57,9 @@ export default function RootLayout({
       lang="en"
       className={`${spaceGrotesk.variable} ${inter.variable} h-full antialiased`}
     >
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+      </head>
       <body className="min-h-full flex flex-col" style={{ backgroundColor: "#F5F7FA" }}>
         <AnnouncementBar />
         <Header />
