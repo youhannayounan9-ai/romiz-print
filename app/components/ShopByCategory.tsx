@@ -53,7 +53,7 @@ function CategoryTile({
 
   return (
     <Link
-      href={`/products/${slug}`}
+      href={`/categories/${slug}`}
       className="flex flex-col items-center gap-3 group"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
