@@ -7,6 +7,70 @@ const QuoteModal = dynamic(() => import("../../components/QuoteModal"), { ssr: f
 import { siteConfig } from "../../config/site";
 import { getProductsForCategory, type CategoryProduct } from "../../data/products";
 
+const categoryIntros: Record<string, { headline: string; body: string }> = {
+  stickers: {
+    headline: "Custom Stickers for Every Need",
+    body: "Die-cut, round, vinyl, holographic, and clear stickers in any shape or size. Upload your design or use our free design service. No minimum order — from 1 to 10,000 pieces, dispatched same week.",
+  },
+  "business-cards": {
+    headline: "Business Cards That Make an Impression",
+    body: "Matte, glossy, spot UV, foil, and thick 600gsm finishes. Professional cards that speak for your brand before you say a word. No minimum order, free design help available.",
+  },
+  "t-shirts": {
+    headline: "Custom Apparel Printing in Cairo",
+    body: "Premium cotton t-shirts, hoodies, polos, and team uniforms with vibrant DTF or sublimation print. Perfect for teams, events, merchandise, or personal use. S–4XL sizing, any quantity.",
+  },
+  mugs: {
+    headline: "Personalised Mugs & Drinkware",
+    body: "Custom photo mugs, magic colour-changing mugs, travel mugs, and gift sets — all printed with full-colour sublimation. Dishwasher-safe, perfect for gifting or corporate branding.",
+  },
+  banners: {
+    headline: "High-Impact Banner Printing",
+    body: "From pull-up retractable banners to large outdoor PVC vinyl banners, fabric tension displays, and step-and-repeat backdrops. Custom sizes, express turnaround, eyelets included.",
+  },
+  "vinyl-banners": {
+    headline: "Premium Vinyl Banner Printing",
+    body: "Durable 510–650gsm PVC vinyl banners for indoor and outdoor use. Welded hems, eyelets, and reinforced edges. Custom sizes from 1m to 10m wide. Weather-resistant and UV-printed.",
+  },
+  flyers: {
+    headline: "Professional Flyer Printing",
+    body: "Full-colour A6, A5, A4, and DL flyers in gloss, matte, or uncoated finishes. Fast turnaround, from 50 to 100,000 copies. Perfect for events, menus, promotions, and campaigns.",
+  },
+  folders: {
+    headline: "Custom Presentation Folders",
+    body: "Branded A4 document folders with pockets, business card slits, and premium laminate finishes. Matte soft-touch, glossy, or spot UV — make every client meeting memorable.",
+  },
+  magazines: {
+    headline: "Magazine & Booklet Printing",
+    body: "Perfect bound, saddle-stitched, and digest-format magazines, catalogues, lookbooks, and annual reports. Premium paper stocks, vivid colour, 8–100 pages. Custom quantities.",
+  },
+  pens: {
+    headline: "Branded Pens & Writing Sets",
+    body: "Custom ballpoint pens, executive metal pens, stylus pens, gel inks, and eco-friendly options — all printed or engraved with your logo. Ideal for corporate gifting and events.",
+  },
+  "wall-stickers": {
+    headline: "Custom Wall Stickers & Decals",
+    body: "Removable vinyl wall decals for homes, offices, retail, and events. Logo walls, quote decals, window frosting, floor graphics, and full-wall murals. Easy apply, no residue.",
+  },
+  "tote-bags": {
+    headline: "Custom Printed Tote Bags",
+    body: "Eco-friendly cotton, canvas, jute, and non-woven tote bags with full-colour printing. Perfect for retail, events, gifting, and branded merchandise. From 1 to 10,000 bags.",
+  },
+  brochures: {
+    headline: "Professional Brochure Printing",
+    body: "Tri-fold, bi-fold, Z-fold, and gate-fold brochures in gloss, matte, or soft-touch finishes. Company profiles, product catalogues, luxury presentations. Same-week dispatch from Cairo.",
+  },
+  "roll-labels": {
+    headline: "Custom Roll Label Printing",
+    body: "White, clear, kraft, holographic, and waterproof roll labels for product packaging, bottles, jars, and retail. Barcode and QR options available. Food-safe adhesives. Any core size.",
+  },
+  "poster-printing": {
+    headline: "Large Format Poster Printing",
+    body: "A0 to A2 full-colour posters in gloss, matte, satin, or backlit film. Canvas prints, foam boards, and photo prints also available. Ideal for retail, exhibitions, and offices.",
+  },
+};
+
+
 /* ── Skeleton card ── */
 function SkeletonCard() {
   return (
@@ -120,6 +184,28 @@ export default function CategoryPageClient({
 
   return (
     <>
+      {/* Category intro banner */}
+      {(() => {
+        const intro = categoryIntros[slug];
+        return intro ? (
+          <div
+            className="rounded-2xl p-6 mb-2 border-l-4"
+            style={{
+              backgroundColor: siteConfig.colors.lightBar,
+              borderLeftColor: siteConfig.colors.accent,
+            }}
+          >
+            <h2
+              className="text-lg font-bold mb-2"
+              style={{ color: siteConfig.colors.dark, fontFamily: "var(--font-space-grotesk)" }}
+            >
+              {intro.headline}
+            </h2>
+            <p className="text-sm text-gray-600 leading-relaxed">{intro.body}</p>
+          </div>
+        ) : null;
+      })()}
+
       {/* Product Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-10">
         {!loaded
