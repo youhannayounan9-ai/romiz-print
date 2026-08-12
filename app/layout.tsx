@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, Inter } from "next/font/google";
 import "./globals.css";
-import AnnouncementBar from "./components/AnnouncementBar";
 import Header from "./components/Header";
 import NavRow from "./components/NavRow";
 import Footer from "./components/Footer";
@@ -61,7 +60,6 @@ export default function RootLayout({
         <link rel="manifest" href="/manifest.json" />
       </head>
       <body className="min-h-full flex flex-col" style={{ backgroundColor: "#F5F7FA" }}>
-        <AnnouncementBar />
         <Header />
         <NavRow />
         <main className="flex-1">{children}</main>
