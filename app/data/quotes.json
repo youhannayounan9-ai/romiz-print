@@ -1,1 +1,100 @@
-[]
+[
+  {
+    "id": "1722700000001",
+    "product": "Custom Sticker Sheet",
+    "customer": { "name": "Ahmed Hassan", "email": "ahmed@brandco.eg", "phone": "+20 10 1234 5678", "quantity": 500, "notes": "Die-cut, holographic finish" },
+    "file": "brand-logo.ai (2.1 MB)",
+    "timestamp": "2026-08-01T09:15:00.000Z"
+  },
+  {
+    "id": "1722700000002",
+    "product": "Business Card Pack (100)",
+    "customer": { "name": "Sara Khalil", "email": "sara@startup.io", "phone": "", "quantity": 200, "notes": "Matte finish, rounded corners" },
+    "file": "cards-design.pdf (1.4 MB)",
+    "timestamp": "2026-08-01T14:22:00.000Z"
+  },
+  {
+    "id": "1722700000003",
+    "product": "Custom T-Shirt Classic",
+    "customer": { "name": "Omar Farouk", "email": "omar@events.eg", "phone": "+20 11 9876 5432", "quantity": 50, "notes": "White shirts, back and front print" },
+    "file": null,
+    "timestamp": "2026-08-02T10:05:00.000Z"
+  },
+  {
+    "id": "1722700000004",
+    "product": "Vinyl Banner 3x1m",
+    "customer": { "name": "Nour Enterprises", "email": "nour@enterprise.com", "phone": "+20 2 3456 7890", "quantity": 10, "notes": "Outdoor use, grommets on all 4 corners" },
+    "file": "banner-artwork.psd (8.3 MB)",
+    "timestamp": "2026-08-03T08:30:00.000Z"
+  },
+  {
+    "id": "1722700000005",
+    "product": "Personalized Coffee Mug",
+    "customer": { "name": "Layla Samir", "email": "layla@gifting.eg", "phone": "", "quantity": 30, "notes": "Corporate gift set" },
+    "file": "logo-vector.pdf (0.8 MB)",
+    "timestamp": "2026-08-04T11:45:00.000Z"
+  },
+  {
+    "id": "1722700000006",
+    "product": "Custom Sticker Roll Labels",
+    "customer": { "name": "Fresh Juice Co.", "email": "orders@freshjuice.eg", "phone": "+20 10 5555 0000", "quantity": 2000, "notes": "Food-safe adhesive, waterproof" },
+    "file": "juice-label.ai (3.2 MB)",
+    "timestamp": "2026-08-05T09:00:00.000Z"
+  },
+  {
+    "id": "1722700000007",
+    "product": "Custom Face Mask",
+    "customer": { "name": "HealthFirst Clinic", "email": "admin@healthfirst.eg", "phone": "+20 2 9999 1234", "quantity": 100, "notes": "Logo on left side, comfort elastic bands" },
+    "file": "clinic-logo.png (0.5 MB)",
+    "timestamp": "2026-08-05T13:20:00.000Z"
+  },
+  {
+    "id": "1722700000008",
+    "product": "Bamboo Socks Pair",
+    "customer": { "name": "Eco Boutique", "email": "hello@ecoboutique.eg", "phone": "", "quantity": 150, "notes": "Gift packaging required" },
+    "file": null,
+    "timestamp": "2026-08-06T10:10:00.000Z"
+  },
+  {
+    "id": "1722700000009",
+    "product": "Custom Tote Bag",
+    "customer": { "name": "Cairo Book Fair", "email": "merch@bookfair.eg", "phone": "+20 10 2222 3333", "quantity": 300, "notes": "Natural cotton, single colour print" },
+    "file": "bookfair-artwork.pdf (2.7 MB)",
+    "timestamp": "2026-08-07T15:00:00.000Z"
+  },
+  {
+    "id": "1722700000010",
+    "product": "Business Card Pack (100)",
+    "customer": { "name": "Dr. Yasmin Nasser", "email": "dr.yasmin@clinic.eg", "phone": "+20 12 7654 3210", "quantity": 100, "notes": "Spot UV on logo" },
+    "file": "business-card.pdf (1.1 MB)",
+    "timestamp": "2026-08-08T09:30:00.000Z"
+  },
+  {
+    "id": "1722700000011",
+    "product": "Custom Banner 2x1m",
+    "customer": { "name": "Gym Nation", "email": "ops@gymnation.eg", "phone": "+20 11 1111 2222", "quantity": 5, "notes": "Matte lamination" },
+    "file": "gym-banner.ai (5.1 MB)",
+    "timestamp": "2026-08-09T11:00:00.000Z"
+  },
+  {
+    "id": "1722700000012",
+    "product": "Custom Sticker Sheet",
+    "customer": { "name": "KidsBox Co.", "email": "hello@kidsbox.eg", "phone": "", "quantity": 1000, "notes": "Fun shapes, full colour CMYK" },
+    "file": "kids-stickers.pdf (4.5 MB)",
+    "timestamp": "2026-08-10T14:00:00.000Z"
+  },
+  {
+    "id": "1722700000013",
+    "product": "Custom Mouse Pad",
+    "customer": { "name": "TechHub Cairo", "email": "brand@techhub.eg", "phone": "+20 10 8888 7777", "quantity": 20, "notes": "Extended size 90x40cm" },
+    "file": null,
+    "timestamp": "2026-08-11T10:45:00.000Z"
+  },
+  {
+    "id": "1722700000014",
+    "product": "Custom T-Shirt Premium",
+    "customer": { "name": "Remix Agency", "email": "studio@remix.eg", "phone": "+20 11 4444 5555", "quantity": 25, "notes": "Black shirts, DTG print" },
+    "file": "remix-artwork.psd (12.3 MB)",
+    "timestamp": "2026-08-12T08:20:00.000Z"
+  }
+]
