@@ -1,17 +1,33 @@
 import { Suspense } from "react";
-import { promises as fs } from "fs";
-import path from "path";
+import { supabase } from "../../../lib/supabaseClient";
 import QuotesTableClient from "./QuotesTableClient";
 import type { Quote } from "../../../lib/analytics";
 
 async function getQuotes(): Promise<Quote[]> {
-  try {
-    const filePath = path.join(process.cwd(), "app", "data", "quotes.json");
-    const raw = await fs.readFile(filePath, "utf-8");
-    return JSON.parse(raw) as Quote[];
-  } catch {
+  const { data, error } = await supabase
+    .from("quotes")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Failed to fetch quotes from Supabase:", error);
     return [];
   }
+
+  return (data || []).map((row: any) => ({
+    id: row.id,
+    product: row.product || "Unknown",
+    customer: {
+      name: row.name,
+      email: row.email,
+      phone: row.phone || "",
+      quantity: row.quantity || 1,
+      notes: row.notes || "",
+    },
+    file: row.file_name || null,
+    timestamp: row.created_at,
+    contacted: row.contacted || false,
+  }));
 }
 
 export const dynamic = "force-dynamic";
