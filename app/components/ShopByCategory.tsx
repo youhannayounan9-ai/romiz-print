@@ -13,9 +13,9 @@ const featuredSlugs = [
   "t-shirts",
   "mugs",
   "banners",
-  "socks",
-  "stubby-holders",
-  "mouse-pads",
+  "brochures",
+  "wall-stickers",
+  "flyers",
 ];
 
 /* ── Decorative section title ── */

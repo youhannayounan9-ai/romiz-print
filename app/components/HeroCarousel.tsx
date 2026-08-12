@@ -35,7 +35,7 @@ const slides = [
     headline: "Custom Apparel,",
     subHeadline: "Made in Cairo.",
     subtext:
-      "T-shirts, hoodies, socks & more — premium fabrics, full-colour prints, no minimums.",
+      "T-shirts, hoodies, apparel & more — premium fabrics, full-colour prints, no minimums.",
     cta: "Design Your Apparel",
     badge: null,
     imageLabel: "T-Shirt & Mug",
