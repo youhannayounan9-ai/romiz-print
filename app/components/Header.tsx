@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Search, User, ClipboardList, MessageCircle, Menu, X } from "lucide-react";
+import { Search, User, ClipboardList, Menu, X } from "lucide-react";
 import { siteConfig } from "../config/site";
 
 export default function Header() {
@@ -12,12 +12,10 @@ export default function Header() {
   const quoteCount = 0;
 
   return (
-    <header
-      className="sticky top-0 z-40 bg-white border-b border-gray-100 shadow-sm"
-    >
+    <header className="sticky top-0 z-50 bg-white border-b border-gray-100 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center gap-4 h-16 lg:h-20">
-
+        <div className="flex flex-wrap md:flex-nowrap items-center justify-between gap-y-3 md:gap-4 py-3 md:py-0 min-h-[64px] lg:min-h-[80px]">
+          
           {/* ── LEFT: Logo ── */}
           <div className="flex-shrink-0">
             <a href="/" className="block">
@@ -46,8 +44,8 @@ export default function Header() {
             </a>
           </div>
 
-          {/* ── CENTER: Search (hidden on mobile) ── */}
-          <div className="flex-1 hidden md:flex items-center max-w-2xl mx-auto">
+          {/* ── CENTER: Search (Row 2 on mobile) ── */}
+          <div className="order-last md:order-none w-full md:w-auto md:flex-1 flex items-center max-w-2xl mx-auto">
             <div className="flex w-full rounded-xl overflow-hidden border-2 border-gray-200 focus-within:border-[#0B4DA2] transition-colors duration-200 shadow-sm">
               <input
                 type="text"
@@ -58,7 +56,7 @@ export default function Header() {
               />
               <button
                 aria-label="Search"
-                className="flex items-center gap-2 px-5 py-2.5 text-white text-sm font-semibold transition-colors duration-200 hover:opacity-90"
+                className="flex items-center gap-2 px-4 md:px-5 py-2.5 text-white text-sm font-semibold transition-colors duration-200 hover:opacity-90"
                 style={{ backgroundColor: siteConfig.colors.dark }}
               >
                 <Search size={16} />
@@ -69,19 +67,6 @@ export default function Header() {
 
           {/* ── RIGHT: Actions ── */}
           <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
-            {/* Live Chat */}
-            <button
-              className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-[#F5F7FA]"
-              style={{ color: siteConfig.colors.dark }}
-            >
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ backgroundColor: siteConfig.colors.accent }} />
-                <span className="relative inline-flex rounded-full h-2 w-2" style={{ backgroundColor: siteConfig.colors.accent }} />
-              </span>
-              <MessageCircle size={16} />
-              <span className="hidden lg:inline">Live Chat</span>
-            </button>
-
             {/* Account Icon */}
             <button
               aria-label="Account"
@@ -117,37 +102,15 @@ export default function Header() {
             </button>
           </div>
         </div>
-
-        {/* Mobile search bar */}
-        <div className="md:hidden pb-3">
-          <div className="flex w-full rounded-xl overflow-hidden border-2 border-gray-200 focus-within:border-[#0B4DA2] transition-colors duration-200">
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="I am looking for..."
-              className="flex-1 px-4 py-2.5 text-sm outline-none bg-white text-gray-800 placeholder-gray-400"
-            />
-            <button
-              aria-label="Search"
-              className="px-4 py-2.5 text-white transition-colors hover:opacity-90"
-              style={{ backgroundColor: siteConfig.colors.dark }}
-            >
-              <Search size={16} />
-            </button>
-          </div>
-        </div>
       </div>
 
       {/* Mobile menu */}
       {mobileMenuOpen && (
-        <div
-          className="md:hidden border-t border-gray-100 bg-white px-4 py-4 flex flex-col gap-2"
-        >
+        <div className="md:hidden border-t border-gray-100 bg-white px-4 py-4 flex flex-col gap-2 absolute w-full shadow-md z-40">
           {["Banners", "Roll Labels", "Stickers", "Business Cards", "Mugs", "T-Shirts", "Socks"].map((item) => (
             <a
               key={item}
-              href={`/products/${item.toLowerCase().replace(/\s+/g, "-")}`}
+              href={`/categories/${item.toLowerCase().replace(/\s+/g, "-")}`}
               className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors hover:bg-[#F5F7FA] hover:text-[#FF7A1A]"
               style={{ color: siteConfig.colors.dark }}
               onClick={() => setMobileMenuOpen(false)}
@@ -155,21 +118,6 @@ export default function Header() {
               {item}
             </a>
           ))}
-
-          {/* Mobile Live Chat */}
-          <div className="border-t border-gray-100 mt-2 pt-3">
-            <button
-              className="flex items-center gap-2 px-3 py-2 text-sm font-medium"
-              style={{ color: siteConfig.colors.dark }}
-            >
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ backgroundColor: siteConfig.colors.accent }} />
-                <span className="relative inline-flex rounded-full h-2 w-2" style={{ backgroundColor: siteConfig.colors.accent }} />
-              </span>
-              <MessageCircle size={16} />
-              Live Chat
-            </button>
-          </div>
         </div>
       )}
     </header>
