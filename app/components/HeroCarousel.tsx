@@ -1,104 +1,67 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { ChevronLeft, ChevronRight, Star, ArrowRight } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { ChevronLeft, ChevronRight, ArrowRight, Star } from "lucide-react";
 import { siteConfig } from "../config/site";
 
-/* ─── Slide data ─────────────────────────────────────────────── */
+/* ─── Slide data ──────────────────────────────────────────────── */
 const slides = [
   {
     id: 1,
-    headline: "YOUR BRAND.",
-    subHeadline: "PRINTED. PERFECTED.",
+    eyebrow: "Cairo's Custom Printing Co.",
+    headline: "Custom Stickers",
+    subHeadline: "That Stand Out",
     subtext:
-      "Premium custom printing in Cairo — from 1 piece to 10,000. Free design help, express dispatch.",
-    cta: "Request Your Free Quote",
+      "Premium quality stickers in any shape, size, or quantity. Weather-resistant, vibrant colors, perfect for branding or personal use.",
+    cta: "Get a Quote on Stickers",
+    ctaHref: "/categories/stickers",
     badge: { label: "4.8★ Reviews", sub: "200+ happy clients" },
-    imageLabel: "Product Collage",
-    imageSlots: 3,
-    accentLine: true,
+    accentSubHeadline: true,
+    image: {
+      src: "https://images.unsplash.com/photo-1632501641765-e5629e6e5568?w=800&h=600&fit=crop",
+      alt: "Custom stickers printing Cairo",
+      loading: "eager" as const,
+    },
   },
   {
     id: 2,
-    headline: "Stickers That",
-    subHeadline: "Stick. Literally.",
+    eyebrow: "Professional Display Solutions",
+    headline: "Custom Frames",
+    subHeadline: "& Banners",
     subtext:
-      "Die-cut, roll labels, holographic & vinyl — any shape, any size, any quantity. Dispatched same week.",
-    cta: "Get a Quote on Stickers",
+      "Pull-up banners, vinyl banners, mesh banners, and custom frames. Perfect for events, exhibitions, and business promotions.",
+    cta: "Explore Banners & Frames",
+    ctaHref: "/categories/banners",
     badge: null,
-    imageLabel: "Sticker Sheets",
-    imageSlots: 2,
-    accentLine: false,
+    accentSubHeadline: false,
+    image: {
+      src: "https://images.unsplash.com/photo-1563291074-2bf8677ac0e5?w=800&h=600&fit=crop",
+      alt: "Custom banners Egypt",
+      loading: "lazy" as const,
+    },
   },
   {
     id: 3,
-    headline: "Custom Apparel,",
-    subHeadline: "Made in Cairo.",
+    eyebrow: "Premium Personalised Products",
+    headline: "Custom Apparel",
+    subHeadline: "& Drinkware",
     subtext:
-      "T-shirts, hoodies, apparel & more — premium fabrics, full-colour prints, no minimums.",
-    cta: "Design Your Apparel",
+      "Personalised mugs, custom t-shirts, hoodies & more. Premium fabrics, dishwasher-safe mugs, full-colour prints. No minimums.",
+    cta: "Design Your Product",
+    ctaHref: "/categories/t-shirts",
     badge: null,
-    imageLabel: "T-Shirt & Mug",
-    imageSlots: 2,
-    accentLine: false,
+    accentSubHeadline: false,
+    image: {
+      src: "https://images.unsplash.com/photo-1521577878760-09e87e39773d?w=800&h=600&fit=crop",
+      alt: "Custom mugs and t-shirts Cairo",
+      loading: "lazy" as const,
+    },
   },
 ];
 
-/* ─── Placeholder image block ───────────────────────────────── */
-function PlaceholderCollage({ slots, label }: { slots: number; label: string }) {
-  if (slots === 3) {
-    return (
-      <div className="relative w-full h-full flex items-center justify-center">
-        {/* Back left */}
-        <div
-          className="absolute left-0 top-6 w-40 h-48 md:w-48 md:h-56 rounded-2xl shadow-lg"
-          style={{ backgroundColor: "#D1DCF0", transform: "rotate(-6deg)" }}
-        />
-        {/* Back right */}
-        <div
-          className="absolute right-0 top-10 w-36 h-44 md:w-44 md:h-52 rounded-2xl shadow-lg"
-          style={{ backgroundColor: "#C4D4ED", transform: "rotate(5deg)" }}
-        />
-        {/* Front center */}
-        <div
-          className="relative z-10 w-44 h-52 md:w-52 md:h-64 rounded-2xl shadow-2xl flex flex-col items-center justify-center gap-2"
-          style={{ backgroundColor: "#B8CCEB" }}
-        >
-          <span className="text-4xl">🖨️</span>
-          <span
-            className="text-xs font-semibold px-3 text-center"
-            style={{ color: siteConfig.colors.primary }}
-          >
-            {label}
-          </span>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="relative w-full h-full flex items-center justify-center gap-4">
-      <div
-        className="w-40 h-52 md:w-48 md:h-60 rounded-2xl shadow-xl flex flex-col items-center justify-center gap-2"
-        style={{ backgroundColor: "#D1DCF0", transform: "rotate(-4deg)" }}
-      >
-        <span className="text-3xl">✨</span>
-        <span
-          className="text-xs font-semibold px-3 text-center"
-          style={{ color: siteConfig.colors.primary }}
-        >
-          {label}
-        </span>
-      </div>
-      <div
-        className="w-36 h-44 md:w-44 md:h-52 rounded-2xl shadow-lg"
-        style={{ backgroundColor: "#C4D4ED", transform: "rotate(3deg)" }}
-      />
-    </div>
-  );
-}
-
-/* ─── Main Component ─────────────────────────────────────────── */
+/* ─── Main Component ──────────────────────────────────────────── */
 export default function HeroCarousel() {
   const [current, setCurrent] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
@@ -119,7 +82,7 @@ export default function HeroCarousel() {
   const next = useCallback(() => goTo(current + 1), [current, goTo]);
   const prev = useCallback(() => goTo(current - 1), [current, goTo]);
 
-  /* Auto-rotate */
+  /* Auto-rotate every 5 s, pause on hover */
   useEffect(() => {
     if (isHovered) {
       if (intervalRef.current) clearInterval(intervalRef.current);
@@ -138,9 +101,7 @@ export default function HeroCarousel() {
   return (
     <section
       className="w-full overflow-hidden"
-      style={{
-        background: "linear-gradient(135deg, #F5F7FA 0%, #E8EEF7 100%)",
-      }}
+      style={{ background: "linear-gradient(135deg, #F5F7FA 0%, #E8EEF7 100%)" }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -155,6 +116,7 @@ export default function HeroCarousel() {
         >
           {/* ── TEXT SIDE ── */}
           <div className="flex-1 flex flex-col gap-5 text-center md:text-left">
+
             {/* Eyebrow */}
             <div className="flex items-center gap-2 justify-center md:justify-start">
               <span
@@ -165,7 +127,7 @@ export default function HeroCarousel() {
                 className="text-xs font-bold uppercase tracking-widest"
                 style={{ color: siteConfig.colors.accent }}
               >
-                Cairo&apos;s Custom Printing Co.
+                {slide.eyebrow}
               </span>
             </div>
 
@@ -183,7 +145,7 @@ export default function HeroCarousel() {
               <h2
                 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight"
                 style={{
-                  color: slide.accentLine
+                  color: slide.accentSubHeadline
                     ? siteConfig.colors.accent
                     : siteConfig.colors.primary,
                   fontFamily: "var(--font-space-grotesk), system-ui, sans-serif",
@@ -203,14 +165,14 @@ export default function HeroCarousel() {
 
             {/* CTA row */}
             <div className="flex flex-col sm:flex-row items-center gap-3 justify-center md:justify-start">
-              <a
-                href="/contact"
+              <Link
+                href={slide.ctaHref}
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-white font-semibold text-sm transition-all duration-200 hover:opacity-90 hover:-translate-y-0.5 shadow-lg shadow-orange-200"
                 style={{ backgroundColor: siteConfig.colors.accent }}
               >
                 {slide.cta}
                 <ArrowRight size={16} />
-              </a>
+              </Link>
 
               {/* Google Badge */}
               {slide.badge && (
@@ -240,7 +202,7 @@ export default function HeroCarousel() {
               )}
             </div>
 
-            {/* Slide counter & dots */}
+            {/* Dot navigation */}
             <div className="flex items-center gap-3 justify-center md:justify-start mt-2">
               <div className="flex items-center gap-1.5">
                 {slides.map((_, i) => (
@@ -253,9 +215,7 @@ export default function HeroCarousel() {
                       width: i === current ? "24px" : "8px",
                       height: "8px",
                       backgroundColor:
-                        i === current
-                          ? siteConfig.colors.accent
-                          : "#CBD5E0",
+                        i === current ? siteConfig.colors.accent : "#CBD5E0",
                     }}
                   />
                 ))}
@@ -267,15 +227,45 @@ export default function HeroCarousel() {
           </div>
 
           {/* ── IMAGE SIDE ── */}
-          <div className="flex-shrink-0 w-full md:w-80 lg:w-96 h-64 md:h-80 lg:h-96 relative">
-            <PlaceholderCollage slots={slide.imageSlots} label={slide.imageLabel} />
+          <div className="flex-shrink-0 w-full md:w-80 lg:w-[420px] h-64 md:h-80 lg:h-[380px] relative">
+            <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-2xl">
+              <Image
+                key={slide.id}
+                src={slide.image.src}
+                alt={slide.image.alt}
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 320px, 420px"
+                className="object-cover"
+                loading={slide.image.loading}
+                style={{
+                  transition: "opacity 0.35s ease",
+                }}
+              />
+              {/* Subtle overlay gradient for depth */}
+              <div
+                className="absolute inset-0 rounded-2xl"
+                style={{
+                  background:
+                    "linear-gradient(135deg, rgba(11,77,162,0.08) 0%, rgba(0,0,0,0.04) 100%)",
+                }}
+              />
+            </div>
+
+            {/* Decorative accent ring */}
+            <div
+              className="absolute -bottom-3 -right-3 w-full h-full rounded-2xl -z-10"
+              style={{
+                border: `2px solid ${siteConfig.colors.accent}`,
+                opacity: 0.25,
+              }}
+            />
           </div>
 
           {/* ── ARROW CONTROLS ── */}
           <button
             onClick={prev}
             aria-label="Previous slide"
-            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1 md:-translate-x-4 w-10 h-10 rounded-full flex items-center justify-center bg-white shadow-md border border-gray-200 transition-all duration-200 hover:bg-[#0B4DA2] hover:text-white hover:border-[#0B4DA2] hover:-translate-y-1/2 z-10"
+            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1 md:-translate-x-4 w-10 h-10 rounded-full flex items-center justify-center bg-white shadow-md border border-gray-200 transition-all duration-200 hover:bg-[#0B4DA2] hover:text-white hover:border-[#0B4DA2] z-10"
             style={{ color: siteConfig.colors.dark }}
           >
             <ChevronLeft size={18} />
