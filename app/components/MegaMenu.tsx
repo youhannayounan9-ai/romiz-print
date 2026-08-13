@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { categories, quickLinkSlugs } from "../data/categories";
+import { categories } from "../data/categories";
 import { siteConfig } from "../config/site";
 
 interface MegaMenuProps {
@@ -10,7 +10,7 @@ interface MegaMenuProps {
 }
 
 export default function MegaMenu({ isOpen, onClose }: MegaMenuProps) {
-  const quickLinks = categories.filter((c) => quickLinkSlugs.includes(c.slug));
+
 
   if (!isOpen) return null;
 
@@ -69,32 +69,7 @@ export default function MegaMenu({ isOpen, onClose }: MegaMenuProps) {
             })}
           </div>
 
-          {/* Divider */}
-          <div className="my-5 border-t border-[#E8EEF7]" />
 
-          {/* Quick links row */}
-          <div className="flex items-center gap-2 flex-wrap">
-            <span
-              className="text-xs font-semibold uppercase tracking-wider mr-2"
-              style={{ color: siteConfig.colors.primary }}
-            >
-              Quick links:
-            </span>
-            {quickLinks.map((cat) => (
-              <Link
-                key={cat.slug}
-                href={`/categories/${cat.slug}`}
-                onClick={onClose}
-                className="text-xs font-medium px-3 py-1.5 rounded-full border transition-all duration-200 hover:border-[#FF7A1A] hover:text-[#FF7A1A] hover:bg-orange-50"
-                style={{
-                  borderColor: "#E8EEF7",
-                  color: siteConfig.colors.dark,
-                }}
-              >
-                {cat.name}
-              </Link>
-            ))}
-          </div>
         </div>
       </div>
     </div>
