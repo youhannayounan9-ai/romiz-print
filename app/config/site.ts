@@ -12,13 +12,13 @@ export const siteConfig = {
   logoHorizontal: "/logo-horizontal.png",
   logoStacked: "/logo-stacked.png",
   contact: {
-    address: "15 Tahrir Square, Downtown Cairo, Egypt",
-    phone: "+20 2 1234 5678",
-    email: "hello@romizprint.com",
+    address: "24 Makram Ebeid, Madinet Nasr City, Egypt",
+    phone: "01200956004",
+    email: "Romiz.Print@gmail.com",
   },
   social: {
-    facebook: "https://facebook.com/romizprint",
-    instagram: "https://instagram.com/romizprint",
+    facebook: "https://www.facebook.com/share/1DAEMsUffL/?mibextid=wwXIfr",
+    instagram: "https://www.instagram.com/romiz.print/?utm_source=ig_web_button_share_sheet",
   },
 } as const;
 

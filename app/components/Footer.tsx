@@ -1,29 +1,51 @@
-import Link from "next/link";
-import { MapPin, Phone, Mail, Share2, Globe } from "lucide-react";
-import { siteConfig } from "../config/site";
-import { categories } from "../data/categories";
+"use client";
 
-const helpLinks = [
-  { label: "FAQ", href: "/faq" },
-  { label: "Shipping & Delivery", href: "/shipping" },
-  { label: "Returns & Refunds", href: "/returns" },
-  { label: "Contact Us", href: "/contact" },
-  { label: "Design Templates", href: "/templates" },
-  { label: "File Preparation", href: "/file-prep" },
-];
+import Link from "next/link";
+import { MapPin, Phone, Mail } from "lucide-react";
+import { siteConfig } from "../config/site";
+
+function FacebookIcon({ size = 20 }: { size?: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+    </svg>
+  );
+}
+
+function InstagramIcon({ size = 20 }: { size?: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+    </svg>
+  );
+}
 
 export default function Footer() {
-  const topCategories = categories.slice(0, 8);
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer
-      className="mt-auto"
-      style={{ backgroundColor: siteConfig.colors.dark }}
-    >
+    <footer className="mt-auto" style={{ backgroundColor: siteConfig.colors.dark }}>
       {/* Main footer grid */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
 
           {/* Column 1 — About */}
           <div className="lg:col-span-1">
@@ -44,80 +66,30 @@ export default function Footer() {
               {siteConfig.tagline}
             </p>
             <p className="text-sm text-gray-400 leading-relaxed">
-              Cairo&apos;s premier custom printing partner. From business cards to large-format banners — we bring your brand to life with premium quality and fast turnaround.
+              Cairo&apos;s premier custom printing partner. From business cards to
+              large-format banners — we bring your brand to life with premium
+              quality and fast turnaround.
             </p>
-            {/* Social icons */}
-            <div className="flex items-center gap-3 mt-5">
+
+            {/* Get a Free Quote CTA */}
+            <div className="mt-6">
               <a
-                href={siteConfig.social.facebook}
-                aria-label="Facebook"
-                className="w-9 h-9 rounded-lg flex items-center justify-center bg-white/5 text-gray-400 hover:text-[#FF7A1A] hover:bg-white/10 transition-all duration-200"
+                href="/"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-all duration-200 hover:opacity-90 hover:-translate-y-0.5"
+                style={{ backgroundColor: siteConfig.colors.accent }}
               >
-                <Share2 size={16} />
-              </a>
-              <a
-                href={siteConfig.social.instagram}
-                aria-label="Instagram"
-                className="w-9 h-9 rounded-lg flex items-center justify-center bg-white/5 text-gray-400 hover:text-[#FF7A1A] hover:bg-white/10 transition-all duration-200"
-              >
-                <Globe size={16} />
+                Get a Free Quote
               </a>
             </div>
           </div>
 
-          {/* Column 2 — Categories */}
+          {/* Column 2 — Contact */}
           <div>
             <h3
               className="text-sm font-bold uppercase tracking-widest mb-5"
               style={{ color: siteConfig.colors.accent }}
             >
-              Categories
-            </h3>
-            <ul className="space-y-2.5">
-              {topCategories.map((cat) => (
-                <li key={cat.slug}>
-                  <Link
-                   href={`/categories/${cat.slug}`}
-                    className="text-sm text-gray-400 hover:text-white transition-colors duration-200 flex items-center gap-2 group"
-                  >
-                    <span className="w-1 h-1 rounded-full bg-gray-600 group-hover:bg-[#FF7A1A] transition-colors duration-200" />
-                    {cat.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Column 3 — Help */}
-          <div>
-            <h3
-              className="text-sm font-bold uppercase tracking-widest mb-5"
-              style={{ color: siteConfig.colors.accent }}
-            >
-              Help
-            </h3>
-            <ul className="space-y-2.5">
-              {helpLinks.map(({ label, href }) => (
-                <li key={label}>
-                  <Link
-                    href={href}
-                    className="text-sm text-gray-400 hover:text-white transition-colors duration-200 flex items-center gap-2 group"
-                  >
-                    <span className="w-1 h-1 rounded-full bg-gray-600 group-hover:bg-[#FF7A1A] transition-colors duration-200" />
-                    {label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Column 4 — Contact */}
-          <div>
-            <h3
-              className="text-sm font-bold uppercase tracking-widest mb-5"
-              style={{ color: siteConfig.colors.accent }}
-            >
-              Contact
+              Contact Us
             </h3>
             <ul className="space-y-4">
               <li className="flex items-start gap-3">
@@ -133,7 +105,7 @@ export default function Footer() {
               <li>
                 <a
                   href={`tel:${siteConfig.contact.phone}`}
-                  className="flex items-center gap-3 text-sm text-gray-400 hover:text-white transition-colors duration-200 group"
+                  className="flex items-center gap-3 text-sm text-gray-400 hover:text-white transition-colors duration-200"
                 >
                   <Phone
                     size={16}
@@ -146,7 +118,7 @@ export default function Footer() {
               <li>
                 <a
                   href={`mailto:${siteConfig.contact.email}`}
-                  className="flex items-center gap-3 text-sm text-gray-400 hover:text-white transition-colors duration-200 group"
+                  className="flex items-center gap-3 text-sm text-gray-400 hover:text-white transition-colors duration-200"
                 >
                   <Mail
                     size={16}
@@ -157,18 +129,51 @@ export default function Footer() {
                 </a>
               </li>
             </ul>
+          </div>
 
-            {/* CTA */}
-            <div className="mt-6">
+          {/* Column 3 — Follow Us */}
+          <div>
+            <h3
+              className="text-sm font-bold uppercase tracking-widest mb-5"
+              style={{ color: siteConfig.colors.accent }}
+            >
+              Follow Us
+            </h3>
+            <p className="text-sm text-gray-400 mb-5 leading-relaxed">
+              Stay connected and see the latest work from our print shop.
+            </p>
+            <div className="flex flex-col gap-4">
               <a
-                href="/contact"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-all duration-200 hover:opacity-90 hover:-translate-y-0.5"
-                style={{ backgroundColor: siteConfig.colors.accent }}
+                href={siteConfig.social.facebook}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Facebook"
+                className="flex items-center gap-3 text-sm text-gray-400 hover:text-[#FF7A1A] transition-all duration-200 group"
               >
-                Get a Free Quote
+                <span className="w-10 h-10 rounded-xl flex items-center justify-center bg-white/5 group-hover:bg-white/10 transition-colors duration-200">
+                  <FacebookIcon size={20} />
+                </span>
+                <span className="group-hover:text-[#FF7A1A] transition-colors duration-200 font-medium">
+                  Facebook
+                </span>
+              </a>
+              <a
+                href={siteConfig.social.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+                className="flex items-center gap-3 text-sm text-gray-400 hover:text-[#FF7A1A] transition-all duration-200 group"
+              >
+                <span className="w-10 h-10 rounded-xl flex items-center justify-center bg-white/5 group-hover:bg-white/10 transition-colors duration-200">
+                  <InstagramIcon size={20} />
+                </span>
+                <span className="group-hover:text-[#FF7A1A] transition-colors duration-200 font-medium">
+                  Instagram
+                </span>
               </a>
             </div>
           </div>
+
         </div>
       </div>
 
@@ -179,10 +184,16 @@ export default function Footer() {
             © {currentYear} {siteConfig.name}. All rights reserved.
           </p>
           <div className="flex items-center gap-4">
-            <Link href="/privacy" className="text-xs text-gray-500 hover:text-gray-300 transition-colors">
+            <Link
+              href="/privacy-policy"
+              className="text-xs text-gray-500 hover:text-gray-300 transition-colors"
+            >
               Privacy Policy
             </Link>
-            <Link href="/terms" className="text-xs text-gray-500 hover:text-gray-300 transition-colors">
+            <Link
+              href="/terms-of-service"
+              className="text-xs text-gray-500 hover:text-gray-300 transition-colors"
+            >
               Terms of Service
             </Link>
           </div>
