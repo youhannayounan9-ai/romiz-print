@@ -71,16 +71,7 @@ export default function Footer() {
               quality and fast turnaround.
             </p>
 
-            {/* Get a Free Quote CTA */}
-            <div className="mt-6">
-              <a
-                href="/"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-all duration-200 hover:opacity-90 hover:-translate-y-0.5"
-                style={{ backgroundColor: siteConfig.colors.accent }}
-              >
-                Get a Free Quote
-              </a>
-            </div>
+
           </div>
 
           {/* Column 2 — Contact */}
