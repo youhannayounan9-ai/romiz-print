@@ -165,14 +165,7 @@ export default function HeroCarousel() {
 
             {/* CTA row */}
             <div className="flex flex-col sm:flex-row items-center gap-3 justify-center md:justify-start">
-              <Link
-                href={slide.ctaHref}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-white font-semibold text-sm transition-all duration-200 hover:opacity-90 hover:-translate-y-0.5 shadow-lg shadow-orange-200"
-                style={{ backgroundColor: siteConfig.colors.accent }}
-              >
-                {slide.cta}
-                <ArrowRight size={16} />
-              </Link>
+
 
               {/* Google Badge */}
               {slide.badge && (

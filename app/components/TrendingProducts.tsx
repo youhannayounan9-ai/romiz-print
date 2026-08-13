@@ -152,18 +152,7 @@ function ProductCard({
           <p className="text-sm text-gray-500 leading-relaxed">{product.description}</p>
         </div>
 
-        {/* CTA button */}
-        <button
-          onClick={() => onQuoteClick(product.name)}
-          className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold text-white transition-all duration-200"
-          style={{
-            backgroundColor: hovered ? "#E06600" : siteConfig.colors.accent,
-          }}
-        >
-          <ShoppingBag size={14} />
-          Request Quote
-          <ArrowRight size={14} />
-        </button>
+
       </div>
     </div>
   );

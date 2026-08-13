@@ -108,13 +108,7 @@ export default async function CategoryPage({ params }: PageProps) {
               Egypt — with free design help for every order.
             </p>
 
-            <Link
-              href="/contact"
-              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-semibold text-white transition-all duration-200 hover:opacity-90 hover:-translate-y-0.5 shadow-md"
-              style={{ backgroundColor: siteConfig.colors.accent }}
-            >
-              Get a Free Quote →
-            </Link>
+
           </div>
         </div>
       </section>
