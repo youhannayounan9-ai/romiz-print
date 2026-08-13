@@ -8,14 +8,14 @@ import { siteConfig } from "../config/site";
 
 /* 8 featured categories for the grid */
 const featuredSlugs = [
-  "stickers",
-  "business-cards",
-  "t-shirts",
-  "mugs",
+  "roll-up",
+  "frame",
   "banners",
-  "brochures",
-  "wall-stickers",
+  "business-cards",
+  "tote-bags",
   "flyers",
+  "mugs",
+  "pens",
 ];
 
 /* ── Decorative section title ── */

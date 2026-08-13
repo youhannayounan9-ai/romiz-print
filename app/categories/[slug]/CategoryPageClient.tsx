@@ -1,147 +1,147 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ShoppingBag, ArrowRight } from "lucide-react";
+import Image from "next/image";
+import { Settings2 } from "lucide-react";
 import dynamic from "next/dynamic";
-const QuoteModal = dynamic(() => import("../../components/QuoteModal"), { ssr: false });
 import { siteConfig } from "../../config/site";
 import { getProductsForCategory, type CategoryProduct } from "../../data/products";
+import type { FieldConfig } from "../../components/CustomizationModal";
+
+const CustomizationModal = dynamic(() => import("../../components/CustomizationModal"), { ssr: false });
 
 const categoryIntros: Record<string, { headline: string; body: string }> = {
-  stickers: {
-    headline: "Custom Stickers for Every Need",
-    body: "Die-cut, round, vinyl, holographic, and clear stickers in any shape or size. Upload your design or use our free design service. No minimum order — from 1 to 10,000 pieces, dispatched same week.",
+  "roll-up": {
+    headline: "Premium Roll Up Banners",
+    body: "High-impact, ultra-clear roll up banners. Perfect for exhibitions, retail, and events.",
   },
-  "business-cards": {
-    headline: "Business Cards That Make an Impression",
-    body: "Matte, glossy, spot UV, foil, and thick 600gsm finishes. Professional cards that speak for your brand before you say a word. No minimum order, free design help available.",
-  },
-  "t-shirts": {
-    headline: "Custom Apparel Printing in Cairo",
-    body: "Premium cotton t-shirts, hoodies, polos, and team uniforms with vibrant DTF or sublimation print. Perfect for teams, events, merchandise, or personal use. S–4XL sizing, any quantity.",
-  },
-  mugs: {
-    headline: "Personalised Mugs & Drinkware",
-    body: "Custom photo mugs, magic colour-changing mugs, travel mugs, and gift sets — all printed with full-colour sublimation. Dishwasher-safe, perfect for gifting or corporate branding.",
+  frame: {
+    headline: "Custom Framed Posters",
+    body: "Beautifully framed posters in multiple sizes and finishes to elevate your space or brand.",
   },
   banners: {
     headline: "High-Impact Banner Printing",
-    body: "From pull-up retractable banners to large outdoor PVC vinyl banners, fabric tension displays, and step-and-repeat backdrops. Custom sizes, express turnaround, eyelets included.",
+    body: "Custom vinyl banners. Express turnaround, custom sizes, eyelets included.",
   },
-  "vinyl-banners": {
-    headline: "Premium Vinyl Banner Printing",
-    body: "Durable 510–650gsm PVC vinyl banners for indoor and outdoor use. Welded hems, eyelets, and reinforced edges. Custom sizes from 1m to 10m wide. Weather-resistant and UV-printed.",
-  },
-  flyers: {
-    headline: "Professional Flyer Printing",
-    body: "Full-colour A6, A5, A4, and DL flyers in gloss, matte, or uncoated finishes. Fast turnaround, from 50 to 100,000 copies. Perfect for events, menus, promotions, and campaigns.",
-  },
-  folders: {
-    headline: "Custom Presentation Folders",
-    body: "Branded A4 document folders with pockets, business card slits, and premium laminate finishes. Matte soft-touch, glossy, or spot UV — make every client meeting memorable.",
-  },
-  magazines: {
-    headline: "Magazine & Booklet Printing",
-    body: "Perfect bound, saddle-stitched, and digest-format magazines, catalogues, lookbooks, and annual reports. Premium paper stocks, vivid colour, 8–100 pages. Custom quantities.",
-  },
-  pens: {
-    headline: "Branded Pens & Writing Sets",
-    body: "Custom ballpoint pens, executive metal pens, stylus pens, gel inks, and eco-friendly options — all printed or engraved with your logo. Ideal for corporate gifting and events.",
-  },
-  "wall-stickers": {
-    headline: "Custom Wall Stickers & Decals",
-    body: "Removable vinyl wall decals for homes, offices, retail, and events. Logo walls, quote decals, window frosting, floor graphics, and full-wall murals. Easy apply, no residue.",
+  "business-cards": {
+    headline: "Business Cards That Make an Impression",
+    body: "Professional cards that speak for your brand before you say a word. Multiple paper types available.",
   },
   "tote-bags": {
     headline: "Custom Printed Tote Bags",
-    body: "Eco-friendly cotton, canvas, jute, and non-woven tote bags with full-colour printing. Perfect for retail, events, gifting, and branded merchandise. From 1 to 10,000 bags.",
+    body: "Eco-friendly cotton tote bags with full-colour printing. Perfect for retail, events, and gifting.",
   },
-  brochures: {
-    headline: "Professional Brochure Printing",
-    body: "Tri-fold, bi-fold, Z-fold, and gate-fold brochures in gloss, matte, or soft-touch finishes. Company profiles, product catalogues, luxury presentations. Same-week dispatch from Cairo.",
+  flyers: {
+    headline: "Professional Flyer Printing",
+    body: "Full-colour flyers in various sizes and weights. Perfect for events, promotions, and campaigns.",
   },
-  "roll-labels": {
-    headline: "Custom Roll Label Printing",
-    body: "White, clear, kraft, holographic, and waterproof roll labels for product packaging, bottles, jars, and retail. Barcode and QR options available. Food-safe adhesives. Any core size.",
+  mugs: {
+    headline: "Personalised Mugs & Drinkware",
+    body: "Custom photo mugs, magic colour-changing mugs — printed with full-colour sublimation.",
   },
-  "poster-printing": {
-    headline: "Large Format Poster Printing",
-    body: "A0 to A2 full-colour posters in gloss, matte, satin, or backlit film. Canvas prints, foam boards, and photo prints also available. Ideal for retail, exhibitions, and offices.",
+  pens: {
+    headline: "Branded Pens & Writing Sets",
+    body: "Custom pens printed with your logo. Ideal for corporate gifting and events.",
+  },
+  stickers: {
+    headline: "Custom Stickers for Every Need",
+    body: "Die-cut, circle, square, or rectangle stickers in vinyl, paper, or holographic finish.",
+  },
+  "t-shirts": {
+    headline: "Custom Apparel Printing in Cairo",
+    body: "Premium cotton t-shirts and hoodies with vibrant print. Perfect for teams, events, or personal use.",
   },
 };
 
+/* --- Configuration Maps --- */
+const getModalFields = (slug: string): FieldConfig[] => {
+  switch (slug) {
+    case "frame":
+      return [
+        { id: "size", label: "Size", type: "select", required: true, options: ["20x30 cm", "30x40 cm", "40x50 cm"] },
+        { id: "color", label: "Frame Color", type: "color", required: true, options: ["Black", "Silver", "#D2B48C"] }, // #D2B48C for Oak Wood
+      ];
+    case "banners":
+      return [
+        { id: "width", label: "Width (cm)", type: "select", required: true, options: ["90", "110", "120", "130", "140", "150", "160", "170", "180", "190", "200"] },
+        { id: "height", label: "Height (cm)", type: "select", required: true, options: ["50", "100", "150", "200"] },
+      ];
+    case "business-cards":
+      return [
+        { id: "paper", label: "Paper Type", type: "select", required: true, options: ["300 gm (normal)", "300 gm (protection)", "Fabriano", "Cristal (White/Gray/Gold)", "700 gm", "IDs"] },
+      ];
+    case "tote-bags":
+    case "mugs":
+    case "pens":
+      return [
+        { id: "design", label: "Describe your design", type: "textarea", required: true, placeholder: "Tell us what you want printed..." },
+      ];
+    case "flyers":
+      return [
+        { id: "size_qty", label: "Size & Quantity", type: "select", required: true, options: ["A5 20*15: 2000 pcs (15-25% discount)", "A5 20*15: 1000 pcs", "A4 30*20: 2000 pcs (15-25% discount)", "A4 30*20: 1000 pcs", "A3 30*40: 1000 pcs (15-25% discount)"] },
+        { id: "weight", label: "Paper Weight", type: "select", required: true, options: ["80g", "130g", "150g", "200g", "250g", "300g"] },
+        { id: "options", label: "Print Options", type: "select", required: true, options: ["4-color double-sided", "Glossy", "Matte"] },
+      ];
+    case "stickers":
+      return [
+        { id: "size", label: "Size", type: "select", required: true, options: ["Small (5x5 cm)", "Medium (10x10 cm)", "Large (15x15 cm)", "Custom"] },
+        { id: "material", label: "Material", type: "select", required: true, options: ["Vinyl", "Paper", "Holographic", "Transparent"] },
+        { id: "finish", label: "Finish", type: "select", required: true, options: ["Matte", "Glossy", "Unlaminated"] },
+        { id: "shape", label: "Shape", type: "select", required: true, options: ["Die-cut", "Circle", "Square", "Rectangle"] },
+        { id: "quantity", label: "Quantity", type: "select", required: true, options: ["10", "25", "50", "100", "250", "500", "1000"] },
+      ];
+    case "t-shirts":
+      return [
+        { id: "type", label: "Product Type", type: "select", required: true, options: ["T-Shirt", "Hoodie"] },
+        { id: "size", label: "Size", type: "select", required: true, options: ["Small", "Medium", "Large", "XLarge"] },
+        { id: "color", label: "Color", type: "color", required: true, options: ["Black", "White", "Gray", "Navy", "Red"] },
+        { id: "design", label: "Describe your design", type: "textarea", required: true },
+      ];
+    default:
+      return [];
+  }
+};
+
+const getModalExamples = (slug: string): string[] => {
+  switch (slug) {
+    case "frame": return ["/frame1.png", "/frame2.png", "/frame3.png"];
+    case "banners": return ["/Banner1.png"];
+    case "business-cards": return ["/Business Cards.png"];
+    case "tote-bags": return ["/Tote Bag.png"];
+    case "flyers": return ["/Flyers.png"];
+    case "mugs": return ["/Tote Mug1.png", "/black magic mug.png"];
+    case "pens": return ["/Pen1.png"];
+    case "stickers": return ["/stickers-placeholder.png"];
+    case "t-shirts": return ["/T-Shirts.png", "/Hoodies.png"];
+    default: return [];
+  }
+};
+
+const getPricingNode = (slug: string): React.ReactNode | undefined => {
+  if (slug === "pens") return "Minimum 50 pieces - 35 EGP per piece";
+  if (slug === "flyers") {
+    return (
+      <div className="flex flex-col gap-2">
+        <p className="font-semibold text-gray-900">Pricing Information:</p>
+        <div className="relative w-full h-40 rounded-lg overflow-hidden border border-gray-200">
+          <Image src="/FlyersInfo.png" alt="Flyers Pricing Table" fill className="object-contain" />
+        </div>
+      </div>
+    );
+  }
+  return undefined;
+};
 
 /* ── Skeleton card ── */
 function SkeletonCard() {
   return (
-    <div className="rounded-2xl overflow-hidden animate-pulse bg-white shadow-sm">
-      <div className="h-48 bg-gray-200" />
-      <div className="p-5 flex flex-col gap-3">
-        <div className="h-4 bg-gray-200 rounded-full w-3/4" />
-        <div className="h-3 bg-gray-200 rounded-full w-full" />
-        <div className="h-3 bg-gray-200 rounded-full w-2/3" />
-        <div className="h-10 bg-gray-200 rounded-xl mt-1" />
-      </div>
-    </div>
-  );
-}
-
-/* ── Product card ── */
-function ProductCard({
-  product,
-  onQuoteClick,
-}: {
-  product: CategoryProduct;
-  onQuoteClick: (name: string) => void;
-}) {
-  const [hovered, setHovered] = useState(false);
-
-  return (
-    <div
-      className="relative flex flex-col rounded-2xl overflow-hidden transition-all duration-300 bg-white"
-      style={{
-        boxShadow: hovered
-          ? "0 20px 40px rgba(11,77,162,0.15)"
-          : "0 2px 12px rgba(0,0,0,0.07)",
-        transform: hovered ? "translateY(-6px)" : "translateY(0)",
-      }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
-      {/* NEW badge */}
-      {product.isNew && (
-        <span
-          className="absolute top-3 right-3 z-10 text-[10px] font-bold px-2.5 py-1 rounded-full text-white"
-          style={{ backgroundColor: siteConfig.colors.accent }}
-        >
-          NEW
-        </span>
-      )}
-
-      {/* Placeholder image */}
-      <div
-        className="w-full flex items-center justify-center transition-transform duration-300"
-        style={{
-          height: "192px",
-          backgroundColor: product.bgColor,
-          transform: hovered ? "scale(1.03)" : "scale(1)",
-        }}
-      >
-        <span className="text-5xl select-none">{product.emoji}</span>
-      </div>
-
-      {/* Content */}
-      <div className="flex flex-col flex-1 p-5 gap-3">
-        <div className="flex-1">
-          <h3
-            className="font-semibold text-base leading-snug mb-1.5"
-            style={{ color: siteConfig.colors.dark }}
-          >
-            {product.name}
-          </h3>
-          <p className="text-sm text-gray-500 leading-relaxed">{product.description}</p>
-        </div>
-
+    <div className="rounded-2xl overflow-hidden animate-pulse bg-white shadow-sm max-w-sm w-full mx-auto">
+      <div className="h-64 bg-gray-200" />
+      <div className="p-6 flex flex-col gap-4">
+        <div className="h-5 bg-gray-200 rounded-full w-3/4" />
+        <div className="h-4 bg-gray-200 rounded-full w-full" />
+        <div className="h-4 bg-gray-200 rounded-full w-2/3" />
+        <div className="h-12 bg-gray-200 rounded-xl mt-2" />
       </div>
     </div>
   );
@@ -157,7 +157,6 @@ export default function CategoryPageClient({
 }) {
   const [loaded, setLoaded] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState("");
 
   /* 300ms skeleton delay */
   useEffect(() => {
@@ -166,11 +165,13 @@ export default function CategoryPageClient({
   }, []);
 
   const products = getProductsForCategory(slug, categoryName);
+  const product = products.length > 0 ? products[0] : null;
 
-  function openQuote(productName: string) {
-    setSelectedProduct(productName);
-    setModalOpen(true);
+  if (!product && loaded) {
+    return <div className="text-center py-20">Product not found.</div>;
   }
+
+  const isRollUp = slug === "roll-up";
 
   return (
     <>
@@ -179,7 +180,7 @@ export default function CategoryPageClient({
         const intro = categoryIntros[slug];
         return intro ? (
           <div
-            className="rounded-2xl p-6 mb-2 border-l-4"
+            className="rounded-2xl p-6 mb-10 border-l-4 max-w-3xl mx-auto"
             style={{
               backgroundColor: siteConfig.colors.lightBar,
               borderLeftColor: siteConfig.colors.accent,
@@ -196,65 +197,78 @@ export default function CategoryPageClient({
         ) : null;
       })()}
 
-      {/* Product Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-10">
-        {!loaded
-          ? Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)
-          : products.map((p) => (
-              <ProductCard key={p.id} product={p} onQuoteClick={openQuote} />
-            ))}
-      </div>
-
-      {/* SEO text blocks */}
-      <div className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="rounded-2xl p-6" style={{ backgroundColor: "#F5F7FA" }}>
-          <h2
-            className="text-lg font-bold mb-3"
-            style={{ color: siteConfig.colors.dark, fontFamily: "var(--font-space-grotesk)" }}
+      {/* Product Display */}
+      <div className="flex justify-center mt-6">
+        {!loaded || !product ? (
+          <SkeletonCard />
+        ) : (
+          <div
+            className="flex flex-col rounded-3xl overflow-hidden bg-white shadow-xl max-w-sm w-full border border-gray-100"
           >
-            Why Choose ROMIZ PRINT for {categoryName}?
-          </h2>
-          <p className="text-sm text-gray-500 leading-relaxed">
-            At ROMIZ PRINT, we combine cutting-edge printing technology with premium materials to
-            deliver {categoryName.toLowerCase()} that truly represent your brand. Our Cairo-based
-            team provides free design consultation, fast turnaround times, and competitive pricing
-            for every order — from a single piece to bulk runs of 10,000+.
-          </p>
-        </div>
-        <div className="rounded-2xl p-6" style={{ backgroundColor: "#F5F7FA" }}>
-          <h2
-            className="text-lg font-bold mb-3"
-            style={{ color: siteConfig.colors.dark, fontFamily: "var(--font-space-grotesk)" }}
-          >
-            How It Works
-          </h2>
-          <ol className="text-sm text-gray-500 leading-relaxed space-y-2">
-            {[
-              "Choose your product and click \"Request Quote\"",
-              "Fill in your details and upload your design file",
-              "Our team reviews and sends you a custom quote within 24 hours",
-              "Approve the quote and we handle the rest — printing, quality check, dispatch",
-            ].map((step, i) => (
-              <li key={i} className="flex items-start gap-2">
+            {/* Image */}
+            <div
+              className="w-full relative bg-gray-50"
+              style={{ height: "300px" }}
+            >
+              <Image 
+                src={product.image} 
+                alt={product.name} 
+                fill 
+                className="object-contain p-4" 
+              />
+              {product.isNew && (
                 <span
-                  className="flex-shrink-0 w-5 h-5 rounded-full text-xs font-bold flex items-center justify-center text-white mt-0.5"
-                  style={{ backgroundColor: siteConfig.colors.primary }}
+                  className="absolute top-4 right-4 z-10 text-[10px] font-bold px-3 py-1.5 rounded-full text-white shadow-sm"
+                  style={{ backgroundColor: siteConfig.colors.accent }}
                 >
-                  {i + 1}
+                  NEW
                 </span>
-                {step}
-              </li>
-            ))}
-          </ol>
-        </div>
+              )}
+            </div>
+
+            {/* Content */}
+            <div className="flex flex-col p-6 sm:p-8 gap-4 text-center">
+              <div>
+                <h3
+                  className="font-bold text-xl mb-2"
+                  style={{ color: siteConfig.colors.dark }}
+                >
+                  {product.name}
+                </h3>
+                <p className="text-sm text-gray-500 leading-relaxed">
+                  {product.description}
+                </p>
+              </div>
+
+              {!isRollUp && (
+                <button
+                  onClick={() => setModalOpen(true)}
+                  className="mt-4 w-full flex items-center justify-center gap-2 py-3.5 rounded-xl text-sm font-bold text-white transition-all duration-200 hover:-translate-y-0.5 shadow-md hover:shadow-lg"
+                  style={{
+                    backgroundColor: siteConfig.colors.accent,
+                  }}
+                >
+                  <Settings2 size={16} />
+                  Customize {product.name.replace('Custom ', '')}
+                </button>
+              )}
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* Quote Modal */}
-      <QuoteModal
-        isOpen={modalOpen}
-        productName={selectedProduct}
-        onClose={() => setModalOpen(false)}
-      />
+      {/* Modal */}
+      {!isRollUp && product && (
+        <CustomizationModal
+          isOpen={modalOpen}
+          onClose={() => setModalOpen(false)}
+          productName={product.name}
+          fields={getModalFields(slug)}
+          examples={getModalExamples(slug)}
+          pricing={getPricingNode(slug)}
+          fileRequired={["banners", "business-cards", "flyers", "stickers"].includes(slug)}
+        />
+      )}
     </>
   );
 }

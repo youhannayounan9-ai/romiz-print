@@ -39,7 +39,7 @@ export default function NavRow() {
 
           {/* Quick nav links for desktop */}
           <nav className="hidden lg:flex items-center gap-0 overflow-x-auto">
-            {["Banners", "Roll Labels", "Stickers", "Business Cards", "Mugs", "T-Shirts", "Brochures"].map((item) => (
+            {["Roll Up", "Frame", "Banners", "Business Cards", "Tote Bags", "Flyers", "Mugs", "Pens"].map((item) => (
               <a
                 key={item}
                 href={`/categories/${item.toLowerCase().replace(/\s+/g, "-")}`}
