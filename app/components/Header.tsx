@@ -3,13 +3,21 @@
 import { useState } from "react";
 import Image from "next/image";
 import { Search, User, ClipboardList, Menu, X } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { siteConfig } from "../config/site";
 
 export default function Header() {
   const [logoError, setLogoError] = useState(true); // default to text logo until image is added to /public
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const quoteCount = 0;
+  const router = useRouter();
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
 
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-gray-100 shadow-sm">
@@ -46,7 +54,7 @@ export default function Header() {
 
           {/* ── CENTER: Search (Row 2 on mobile) ── */}
           <div className="order-last md:order-none w-full md:w-auto md:flex-1 flex items-center max-w-2xl mx-auto">
-            <div className="flex w-full rounded-xl overflow-hidden border-2 border-gray-200 focus-within:border-[#0B4DA2] transition-colors duration-200 shadow-sm">
+            <form onSubmit={handleSearch} className="flex w-full rounded-xl overflow-hidden border-2 border-gray-200 focus-within:border-[#0B4DA2] transition-colors duration-200 shadow-sm">
               <input
                 type="text"
                 value={searchQuery}
@@ -55,6 +63,7 @@ export default function Header() {
                 className="flex-1 px-4 py-2.5 text-sm outline-none bg-white text-gray-800 placeholder-gray-400"
               />
               <button
+                type="submit"
                 aria-label="Search"
                 className="flex items-center gap-2 px-4 md:px-5 py-2.5 text-white text-sm font-semibold transition-colors duration-200 hover:opacity-90"
                 style={{ backgroundColor: siteConfig.colors.dark }}
@@ -62,34 +71,20 @@ export default function Header() {
                 <Search size={16} />
                 <span className="hidden lg:inline">Search</span>
               </button>
-            </div>
+            </form>
           </div>
 
           {/* ── RIGHT: Actions ── */}
           <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
             {/* Account Icon */}
-            <button
-              aria-label="Account"
+            <a
+              href="/admin?access=ROMIZ_ADMIN_2026"
+              aria-label="Admin Dashboard"
               className="p-2 rounded-lg transition-colors hover:bg-[#F5F7FA]"
               style={{ color: siteConfig.colors.dark }}
             >
               <User size={20} />
-            </button>
-
-            {/* Quote list with badge */}
-            <button
-              aria-label="Quote list"
-              className="relative p-2 rounded-lg transition-colors hover:bg-[#F5F7FA]"
-              style={{ color: siteConfig.colors.dark }}
-            >
-              <ClipboardList size={20} />
-              <span
-                className="absolute -top-0.5 -right-0.5 w-4 h-4 text-[10px] font-bold text-white rounded-full flex items-center justify-center"
-                style={{ backgroundColor: siteConfig.colors.accent }}
-              >
-                {quoteCount}
-              </span>
-            </button>
+            </a>
 
             {/* Mobile hamburger */}
             <button
@@ -107,7 +102,7 @@ export default function Header() {
       {/* Mobile menu */}
       {mobileMenuOpen && (
         <div className="md:hidden border-t border-gray-100 bg-white px-4 py-4 flex flex-col gap-2 absolute w-full shadow-md z-40">
-          {["Banners", "Roll Labels", "Stickers", "Business Cards", "Mugs", "T-Shirts", "Brochures"].map((item) => (
+          {["Roll Up", "Frame", "Banners", "Business Cards", "Tote Bags", "Flyers", "Mugs", "Pens"].map((item) => (
             <a
               key={item}
               href={`/categories/${item.toLowerCase().replace(/\s+/g, "-")}`}

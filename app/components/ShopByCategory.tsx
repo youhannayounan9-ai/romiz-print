@@ -159,7 +159,7 @@ export default function ShopByCategory() {
         {/* View all button */}
         <div className="flex justify-center mt-10">
           <Link
-            href="/all-categories"
+            href="/categories"
             className="inline-flex items-center gap-2 px-8 py-3 rounded-xl text-sm font-semibold border-2 transition-all duration-200 hover:-translate-y-0.5"
             style={{
               borderColor: siteConfig.colors.primary,
