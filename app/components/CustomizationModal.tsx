@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { X, Upload, CheckCircle2, ChevronRight, ChevronLeft } from "lucide-react";
+import { X, Upload, CheckCircle2, ChevronRight, ChevronLeft, ZoomIn, ZoomOut, Maximize2 } from "lucide-react";
 import Image from "next/image";
 import { siteConfig } from "../config/site";
 
@@ -36,6 +36,8 @@ export default function CustomizationModal({
   const [formData, setFormData] = useState<Record<string, string>>({});
   const [file, setFile] = useState<File | null>(null);
   const [currentImageIdx, setCurrentImageIdx] = useState(0);
+  const [imageScale, setImageScale] = useState(1);
+  const [isFullScreen, setIsFullScreen] = useState(false);
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
 
@@ -113,22 +115,64 @@ export default function CustomizationModal({
         {/* Left Side - Image Gallery & Pricing */}
         <div className="w-full md:w-5/12 bg-gray-50 flex flex-col relative overflow-y-auto">
           {examples.length > 0 && (
-            <div className="relative w-full aspect-square bg-gray-200">
-              <Image
-                src={examples[currentImageIdx]}
-                alt={`${productName} example ${currentImageIdx + 1}`}
-                fill
-                className="object-cover"
-              />
+            <div className="relative w-full bg-gray-200 overflow-hidden" style={{ aspectRatio: isFullScreen ? "unset" : "1", height: isFullScreen ? "100vh" : undefined }}>
+              {/* Zoom controls toolbar */}
+              <div className="absolute top-2 right-2 z-20 flex gap-1">
+                <button
+                  onClick={() => setImageScale((s) => Math.max(0.5, s - 0.25))}
+                  className="w-7 h-7 rounded-lg bg-white/90 shadow flex items-center justify-center hover:bg-white transition-colors"
+                  title="Zoom out"
+                >
+                  <ZoomOut size={14} />
+                </button>
+                <button
+                  onClick={() => setImageScale((s) => Math.min(3, s + 0.25))}
+                  className="w-7 h-7 rounded-lg bg-white/90 shadow flex items-center justify-center hover:bg-white transition-colors"
+                  title="Zoom in"
+                >
+                  <ZoomIn size={14} />
+                </button>
+                <button
+                  onClick={() => setIsFullScreen((f) => !f)}
+                  className="w-7 h-7 rounded-lg bg-white/90 shadow flex items-center justify-center hover:bg-white transition-colors"
+                  title="Full screen"
+                >
+                  <Maximize2 size={14} />
+                </button>
+              </div>
+
+              <div
+                className="w-full h-full flex items-center justify-center overflow-hidden"
+                style={{ minHeight: "200px" }}
+              >
+                <div
+                  style={{
+                    transform: `scale(${imageScale})`,
+                    transition: "transform 0.2s ease",
+                    transformOrigin: "center center",
+                    width: "100%",
+                    height: "100%",
+                    position: "relative",
+                  }}
+                >
+                  <Image
+                    src={examples[currentImageIdx]}
+                    alt={`${productName} example ${currentImageIdx + 1}`}
+                    fill
+                    className="object-contain"
+                  />
+                </div>
+              </div>
+
               {examples.length > 1 && (
                 <>
-                  <button onClick={prevImage} className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 p-1.5 rounded-full shadow hover:bg-white transition-colors">
+                  <button onClick={prevImage} className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 p-1.5 rounded-full shadow hover:bg-white transition-colors z-10">
                     <ChevronLeft size={20} />
                   </button>
-                  <button onClick={nextImage} className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 p-1.5 rounded-full shadow hover:bg-white transition-colors">
+                  <button onClick={nextImage} className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 p-1.5 rounded-full shadow hover:bg-white transition-colors z-10">
                     <ChevronRight size={20} />
                   </button>
-                  <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5">
+                  <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5 z-10">
                     {examples.map((_, idx) => (
                       <div key={idx} className={`w-2 h-2 rounded-full ${idx === currentImageIdx ? "bg-white" : "bg-white/50"}`} />
                     ))}

@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "./components/Header";
 import NavRow from "./components/NavRow";
 import Footer from "./components/Footer";
+import FloatingWhatsApp from "./components/FloatingWhatsApp";
 import { siteConfig } from "./config/site";
 
 const spaceGrotesk = Space_Grotesk({
@@ -64,6 +65,7 @@ export default function RootLayout({
         <NavRow />
         <main className="flex-1">{children}</main>
         <Footer />
+        <FloatingWhatsApp />
       </body>
     </html>
   );

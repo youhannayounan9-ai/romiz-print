@@ -2,13 +2,25 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { Settings2 } from "lucide-react";
 import dynamic from "next/dynamic";
 import { siteConfig } from "../../config/site";
-import { getProductsForCategory, type CategoryProduct } from "../../data/products";
+import { getProductsForCategory } from "../../data/products";
 import type { FieldConfig } from "../../components/CustomizationModal";
 
 const CustomizationModal = dynamic(() => import("../../components/CustomizationModal"), { ssr: false });
+
+/* ─── Frame collection filenames ─── */
+const frameNumbers = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41];
+const frameGalleryImages = frameNumbers.map((n) => {
+  const jpegNums = [1,2,5,6,7,8,10,11,12,28,29,34,38];
+  const ext = jpegNums.includes(n) ? "jpeg" : "jpg";
+  return `/Frame collection/frame (${n}).${ext}`;
+});
+
+/* ─── T-shirt collection (1..23, all .jpg) ─── */
+const tshirtGalleryImages = Array.from({ length: 23 }, (_, i) => `/T-shirt collection/${i + 1}.jpg`);
 
 const categoryIntros: Record<string, { headline: string; body: string }> = {
   "roll-up": {
@@ -53,13 +65,16 @@ const categoryIntros: Record<string, { headline: string; body: string }> = {
   },
 };
 
-/* --- Configuration Maps --- */
 const getModalFields = (slug: string): FieldConfig[] => {
   switch (slug) {
+    case "roll-up":
+      return [
+        { id: "design", label: "Describe your design / upload file", type: "textarea", required: false, placeholder: "E.g. brand colours, text, logo placement..." },
+      ];
     case "frame":
       return [
         { id: "size", label: "Size", type: "select", required: true, options: ["20x30 cm", "30x40 cm", "40x50 cm"] },
-        { id: "color", label: "Frame Color", type: "color", required: true, options: ["Black", "Silver", "#D2B48C"] }, // #D2B48C for Oak Wood
+        { id: "color", label: "Frame Color", type: "color", required: true, options: ["Black", "Silver", "#D2B48C"] },
       ];
     case "banners":
       return [
@@ -104,14 +119,15 @@ const getModalFields = (slug: string): FieldConfig[] => {
 
 const getModalExamples = (slug: string): string[] => {
   switch (slug) {
-    case "frame": return ["/frame1.png", "/frame2.png", "/frame3.png"];
+    case "roll-up": return ["/roll-up-banner.png"];
+    case "frame": return ["/Frame customize.png"];
     case "banners": return ["/Banner1.png"];
-    case "business-cards": return ["/Business Cards.png"];
+    case "business-cards": return ["/New card.png"];
     case "tote-bags": return ["/Tote Bag.png"];
     case "flyers": return ["/Flyers.png"];
     case "mugs": return ["/Tote Mug1.png", "/black magic mug.png"];
     case "pens": return ["/Pen1.png"];
-    case "stickers": return ["/stickers-placeholder.png"];
+    case "stickers": return ["/Custom Stickers.png"];
     case "t-shirts": return ["/T-Shirts.png", "/Hoodies.png"];
     default: return [];
   }
@@ -147,22 +163,99 @@ function SkeletonCard() {
   );
 }
 
-/* ── Main client component ── */
-export default function CategoryPageClient({
-  categoryName,
-  slug,
+/* ── Gallery section ── */
+function GallerySection({ title, images }: { title: string; images: string[] }) {
+  return (
+    <section className="mt-16 w-full">
+      <div className="flex items-center justify-center gap-4 mb-8">
+        <span className="flex-1 max-w-24 h-px" style={{ backgroundColor: "#D6E2F0" }} />
+        <h2
+          className="text-2xl sm:text-3xl font-bold text-center whitespace-nowrap"
+          style={{ color: siteConfig.colors.dark, fontFamily: "var(--font-space-grotesk), system-ui, sans-serif" }}
+        >
+          {title}
+        </h2>
+        <span className="flex-1 max-w-24 h-px" style={{ backgroundColor: "#D6E2F0" }} />
+      </div>
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+        {images.map((src, idx) => (
+          <div key={idx} className="relative aspect-square rounded-xl overflow-hidden bg-gray-100 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.02]">
+            <Image
+              src={src}
+              alt={`Gallery image ${idx + 1}`}
+              fill
+              className="object-cover"
+              sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 20vw"
+            />
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/* ── Product card ── */
+function ProductCard({
+  name,
+  description,
+  image,
+  isNew,
+  onCustomize,
+  customizeLabel,
 }: {
-  categoryName: string;
-  slug: string;
+  name: string;
+  description: string;
+  image: string;
+  isNew?: boolean;
+  onCustomize: () => void;
+  customizeLabel: string;
 }) {
+  return (
+    <div className="flex flex-col rounded-3xl overflow-hidden bg-white shadow-xl border border-gray-100 max-w-sm w-full">
+      <div className="w-full relative bg-gray-50" style={{ height: "280px" }}>
+        <Image src={image} alt={name} fill className="object-contain p-4" />
+        {isNew && (
+          <span
+            className="absolute top-4 right-4 z-10 text-[10px] font-bold px-3 py-1.5 rounded-full text-white shadow-sm"
+            style={{ backgroundColor: siteConfig.colors.accent }}
+          >
+            NEW
+          </span>
+        )}
+      </div>
+      <div className="flex flex-col p-6 gap-4 text-center flex-1">
+        <div>
+          <h3 className="font-bold text-xl mb-2" style={{ color: siteConfig.colors.dark }}>{name}</h3>
+          <p className="text-sm text-gray-500 leading-relaxed">{description}</p>
+        </div>
+        <button
+          onClick={onCustomize}
+          className="mt-auto w-full flex items-center justify-center gap-2 py-3.5 rounded-xl text-sm font-bold text-white transition-all duration-200 hover:-translate-y-0.5 shadow-md hover:shadow-lg"
+          style={{ backgroundColor: siteConfig.colors.accent }}
+        >
+          <Settings2 size={16} />
+          {customizeLabel}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/* ── Main client component ── */
+export default function CategoryPageClient({ categoryName, slug }: { categoryName: string; slug: string }) {
   const [loaded, setLoaded] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+  const [modalProductName, setModalProductName] = useState("");
 
-  /* 300ms skeleton delay */
   useEffect(() => {
     const t = setTimeout(() => setLoaded(true), 300);
     return () => clearTimeout(t);
   }, []);
+
+  const openModal = (productName: string) => {
+    setModalProductName(productName);
+    setModalOpen(true);
+  };
 
   const products = getProductsForCategory(slug, categoryName);
   const product = products.length > 0 ? products[0] : null;
@@ -171,7 +264,8 @@ export default function CategoryPageClient({
     return <div className="text-center py-20">Product not found.</div>;
   }
 
-  const isRollUp = slug === "roll-up";
+  const isTshirts = slug === "t-shirts";
+  const isFrame = slug === "frame";
 
   return (
     <>
@@ -181,15 +275,9 @@ export default function CategoryPageClient({
         return intro ? (
           <div
             className="rounded-2xl p-6 mb-10 border-l-4 max-w-3xl mx-auto"
-            style={{
-              backgroundColor: siteConfig.colors.lightBar,
-              borderLeftColor: siteConfig.colors.accent,
-            }}
+            style={{ backgroundColor: siteConfig.colors.lightBar, borderLeftColor: siteConfig.colors.accent }}
           >
-            <h2
-              className="text-lg font-bold mb-2"
-              style={{ color: siteConfig.colors.dark, fontFamily: "var(--font-space-grotesk)" }}
-            >
+            <h2 className="text-lg font-bold mb-2" style={{ color: siteConfig.colors.dark, fontFamily: "var(--font-space-grotesk)" }}>
               {intro.headline}
             </h2>
             <p className="text-sm text-gray-600 leading-relaxed">{intro.body}</p>
@@ -197,76 +285,91 @@ export default function CategoryPageClient({
         ) : null;
       })()}
 
-      {/* Product Display */}
-      <div className="flex justify-center mt-6">
-        {!loaded || !product ? (
-          <SkeletonCard />
-        ) : (
-          <div
-            className="flex flex-col rounded-3xl overflow-hidden bg-white shadow-xl max-w-sm w-full border border-gray-100"
-          >
-            {/* Image */}
-            <div
-              className="w-full relative bg-gray-50"
-              style={{ height: "300px" }}
-            >
-              <Image 
-                src={product.image} 
-                alt={product.name} 
-                fill 
-                className="object-contain p-4" 
+      {/* ── T-SHIRTS: Two cards side by side ── */}
+      {isTshirts ? (
+        <div className="flex flex-col sm:flex-row gap-6 justify-center items-stretch mt-6">
+          {!loaded ? (
+            <>
+              <SkeletonCard />
+              <SkeletonCard />
+            </>
+          ) : (
+            <>
+              <ProductCard
+                name="Custom T-Shirts"
+                description="Premium cotton tees with vibrant full-colour print. Perfect for teams, events, or retail."
+                image="/T-Shirts.png"
+                isNew
+                onCustomize={() => openModal("Custom T-Shirts")}
+                customizeLabel="Customize T-Shirts"
               />
-              {product.isNew && (
-                <span
-                  className="absolute top-4 right-4 z-10 text-[10px] font-bold px-3 py-1.5 rounded-full text-white shadow-sm"
+              <ProductCard
+                name="Custom Hoodies"
+                description="Warm fleece hoodies with your custom design. Available in multiple sizes and colours."
+                image="/Hoodies.png"
+                onCustomize={() => openModal("Custom Hoodies")}
+                customizeLabel="Customize Hoodies"
+              />
+            </>
+          )}
+        </div>
+      ) : (
+        /* ── ALL OTHER CATEGORIES: Single card ── */
+        <div className="flex justify-center mt-6">
+          {!loaded || !product ? (
+            <SkeletonCard />
+          ) : (
+            <div className="flex flex-col rounded-3xl overflow-hidden bg-white shadow-xl max-w-sm w-full border border-gray-100">
+              <div className="w-full relative bg-gray-50" style={{ height: "300px" }}>
+                <Image src={product.image} alt={product.name} fill className="object-contain p-4" />
+                {product.isNew && (
+                  <span
+                    className="absolute top-4 right-4 z-10 text-[10px] font-bold px-3 py-1.5 rounded-full text-white shadow-sm"
+                    style={{ backgroundColor: siteConfig.colors.accent }}
+                  >
+                    NEW
+                  </span>
+                )}
+              </div>
+              <div className="flex flex-col p-6 sm:p-8 gap-4 text-center">
+                <div>
+                  <h3 className="font-bold text-xl mb-2" style={{ color: siteConfig.colors.dark }}>{product.name}</h3>
+                  <p className="text-sm text-gray-500 leading-relaxed">{product.description}</p>
+                </div>
+                <button
+                  onClick={() => openModal(product.name)}
+                  className="mt-4 w-full flex items-center justify-center gap-2 py-3.5 rounded-xl text-sm font-bold text-white transition-all duration-200 hover:-translate-y-0.5 shadow-md hover:shadow-lg"
                   style={{ backgroundColor: siteConfig.colors.accent }}
                 >
-                  NEW
-                </span>
-              )}
-            </div>
-
-            {/* Content */}
-            <div className="flex flex-col p-6 sm:p-8 gap-4 text-center">
-              <div>
-                <h3
-                  className="font-bold text-xl mb-2"
-                  style={{ color: siteConfig.colors.dark }}
-                >
-                  {product.name}
-                </h3>
-                <p className="text-sm text-gray-500 leading-relaxed">
-                  {product.description}
-                </p>
-              </div>
-
-              {!isRollUp && (
-                <button
-                  onClick={() => setModalOpen(true)}
-                  className="mt-4 w-full flex items-center justify-center gap-2 py-3.5 rounded-xl text-sm font-bold text-white transition-all duration-200 hover:-translate-y-0.5 shadow-md hover:shadow-lg"
-                  style={{
-                    backgroundColor: siteConfig.colors.accent,
-                  }}
-                >
                   <Settings2 size={16} />
-                  Customize {product.name.replace('Custom ', '')}
+                  Customize {product.name.replace("Custom ", "")}
                 </button>
-              )}
+              </div>
             </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      )}
+
+      {/* ── FRAME GALLERY ── */}
+      {isFrame && loaded && (
+        <GallerySection title="Ready-made Frames" images={frameGalleryImages} />
+      )}
+
+      {/* ── T-SHIRT GALLERY ── */}
+      {isTshirts && loaded && (
+        <GallerySection title="Ready-Made T-Shirts" images={tshirtGalleryImages} />
+      )}
 
       {/* Modal */}
-      {!isRollUp && product && (
+      {product && (
         <CustomizationModal
           isOpen={modalOpen}
           onClose={() => setModalOpen(false)}
-          productName={product.name}
+          productName={modalProductName || product.name}
           fields={getModalFields(slug)}
           examples={getModalExamples(slug)}
           pricing={getPricingNode(slug)}
-          fileRequired={["banners", "business-cards", "flyers", "stickers"].includes(slug)}
+          fileRequired={["banners", "business-cards", "flyers", "stickers", "roll-up"].includes(slug)}
         />
       )}
     </>

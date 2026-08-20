@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, ArrowRight, Star } from "lucide-react";
+import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 import { siteConfig } from "../config/site";
 
 /* ─── Slide data ──────────────────────────────────────────────── */
@@ -17,10 +17,10 @@ const slides = [
       "Premium quality stickers in any shape, size, or quantity. Weather-resistant, vibrant colors, perfect for branding or personal use.",
     cta: "Get a Quote on Stickers",
     ctaHref: "/categories/stickers",
-    badge: { label: "4.8★ Reviews", sub: "200+ happy clients" },
+    badge: null,
     accentSubHeadline: true,
     image: {
-      src: "https://images.unsplash.com/photo-1632501641765-e5629e6e5568?w=800&h=600&fit=crop",
+      src: "/Custom Stickers.png",
       alt: "Custom stickers printing Cairo",
       loading: "eager" as const,
     },
@@ -37,8 +37,8 @@ const slides = [
     badge: null,
     accentSubHeadline: false,
     image: {
-      src: "https://images.unsplash.com/photo-1563291074-2bf8677ac0e5?w=800&h=600&fit=crop",
-      alt: "Custom banners Egypt",
+      src: "/Custom Frames & Banners.png",
+      alt: "Custom banners and frames Egypt",
       loading: "lazy" as const,
     },
   },
@@ -54,8 +54,8 @@ const slides = [
     badge: null,
     accentSubHeadline: false,
     image: {
-      src: "https://images.unsplash.com/photo-1521577878760-09e87e39773d?w=800&h=600&fit=crop",
-      alt: "Custom mugs and t-shirts Cairo",
+      src: "/Custom Apparel & Drinkware.png",
+      alt: "Custom apparel and drinkware Cairo",
       loading: "lazy" as const,
     },
   },
@@ -162,38 +162,6 @@ export default function HeroCarousel() {
             >
               {slide.subtext}
             </p>
-
-            {/* CTA row */}
-            <div className="flex flex-col sm:flex-row items-center gap-3 justify-center md:justify-start">
-
-
-              {/* Google Badge */}
-              {slide.badge && (
-                <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-gray-200 bg-white shadow-sm">
-                  <div className="flex items-center gap-0.5">
-                    {[...Array(5)].map((_, i) => (
-                      <Star
-                        key={i}
-                        size={12}
-                        fill={i < 4 ? "#FBBC04" : "none"}
-                        stroke={i < 4 ? "#FBBC04" : "#CBD5E0"}
-                      />
-                    ))}
-                  </div>
-                  <div>
-                    <p
-                      className="text-xs font-bold leading-none"
-                      style={{ color: siteConfig.colors.dark }}
-                    >
-                      {slide.badge.label}
-                    </p>
-                    <p className="text-[10px] text-gray-400 leading-none mt-0.5">
-                      {slide.badge.sub}
-                    </p>
-                  </div>
-                </div>
-              )}
-            </div>
 
             {/* Dot navigation */}
             <div className="flex items-center gap-3 justify-center md:justify-start mt-2">

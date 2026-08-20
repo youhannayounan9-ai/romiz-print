@@ -1,9 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowRight, ShoppingBag } from "lucide-react";
-import dynamic from "next/dynamic";
-const QuoteModal = dynamic(() => import("./QuoteModal"), { ssr: false });
+import Link from "next/link";
+import Image from "next/image";
 import { siteConfig } from "../config/site";
 
 interface Product {
@@ -11,7 +10,7 @@ interface Product {
   name: string;
   description: string;
   isNew?: boolean;
-  emoji: string;
+  image: string;
   category: string;
   categorySlug: string;
   bgColor: string;
@@ -20,43 +19,43 @@ interface Product {
 const products: Product[] = [
   {
     id: 1,
-    name: "Custom Granddad Hoodie",
-    description: "Premium cotton, Cairo-made. Full-colour print, warm fleece lining.",
+    name: "Roll Up Banner",
+    description: "Ultra-clear 85×200 cm banner. Vibrant CMYK, premium matte finish, anti-curl polypropylene.",
     isNew: true,
-    emoji: "🧥",
-    category: "Apparel",
-    categorySlug: "t-shirts",
+    image: "/roll-up-banner.png",
+    category: "Displays",
+    categorySlug: "roll-up",
     bgColor: "#E8EEF7",
   },
   {
     id: 2,
-    name: "Personalized Coffee Mug",
-    description: "Dishwasher-safe, vibrant print. Perfect for branding or gifting.",
+    name: "Custom Stickers",
+    description: "Die-cut, vinyl, holographic or transparent — any shape and size you need.",
     isNew: false,
-    emoji: "☕",
-    category: "Drinkware",
-    categorySlug: "mugs",
-    bgColor: "#F0EBE3",
-  },
-  {
-    id: 3,
-    name: "Business Card Pack (100)",
-    description: "Matte or glossy finish, free design help included.",
-    isNew: false,
-    emoji: "💼",
-    category: "Stationery",
-    categorySlug: "business-cards",
+    image: "/Custom Stickers.png",
+    category: "Stickers",
+    categorySlug: "stickers",
     bgColor: "#E3EBF0",
   },
   {
+    id: 3,
+    name: "Custom Pens",
+    description: "Branded pens with your logo. Minimum 50 pieces — 35 EGP per piece.",
+    isNew: false,
+    image: "/Pen1.png",
+    category: "Merch",
+    categorySlug: "pens",
+    bgColor: "#F0EBE3",
+  },
+  {
     id: 4,
-    name: "Custom Tote Bag",
-    description: "Eco-friendly canvas bags with full-colour print. Perfect for events & gifting.",
+    name: "Custom Mugs",
+    description: "Personalised mugs including classic white and magic colour-changing options.",
     isNew: true,
-    emoji: "👜",
-    category: "Bags",
-    categorySlug: "tote-bags",
-    bgColor: "#EBE3F0",
+    image: "/Tote Mug1.png",
+    category: "Drinkware",
+    categorySlug: "mugs",
+    bgColor: "#FFF3E0",
   },
 ];
 
@@ -80,18 +79,13 @@ function SectionTitle({ title }: { title: string }) {
 }
 
 /* ── Product card ── */
-function ProductCard({
-  product,
-  onQuoteClick,
-}: {
-  product: Product;
-  onQuoteClick: (name: string) => void;
-}) {
+function ProductCard({ product }: { product: Product }) {
   const [hovered, setHovered] = useState(false);
 
   return (
-    <div
-      className="relative flex flex-col rounded-2xl overflow-hidden transition-all duration-300 cursor-pointer"
+    <Link
+      href={`/categories/${product.categorySlug}`}
+      className="relative flex flex-col rounded-2xl overflow-hidden transition-all duration-300"
       style={{
         backgroundColor: "#fff",
         boxShadow: hovered
@@ -112,29 +106,32 @@ function ProductCard({
         </div>
       )}
 
-      {/* Category chip — links to category page */}
-      <a
-        href={`/categories/${product.categorySlug}`}
-        className="absolute top-3 left-3 z-10 text-[10px] font-semibold px-2.5 py-1 rounded-full hover:opacity-80 transition-opacity"
+      {/* Category chip */}
+      <div
+        className="absolute top-3 left-3 z-10 text-[10px] font-semibold px-2.5 py-1 rounded-full"
         style={{
           backgroundColor: siteConfig.colors.lightBar,
           color: siteConfig.colors.primary,
         }}
-        onClick={(e) => e.stopPropagation()}
       >
         {product.category}
-      </a>
+      </div>
 
-      {/* Placeholder image */}
+      {/* Product image */}
       <div
-        className="w-full flex items-center justify-center transition-transform duration-300"
+        className="w-full relative overflow-hidden transition-transform duration-300"
         style={{
           height: "200px",
           backgroundColor: product.bgColor,
           transform: hovered ? "scale(1.03)" : "scale(1)",
         }}
       >
-        <span className="text-6xl select-none">{product.emoji}</span>
+        <Image
+          src={product.image}
+          alt={product.name}
+          fill
+          className="object-contain p-6"
+        />
       </div>
 
       {/* Content */}
@@ -151,23 +148,19 @@ function ProductCard({
           </h3>
           <p className="text-sm text-gray-500 leading-relaxed">{product.description}</p>
         </div>
-
-
+        <div
+          className="text-xs font-semibold flex items-center gap-1 transition-all duration-200"
+          style={{ color: siteConfig.colors.accent }}
+        >
+          View Details →
+        </div>
       </div>
-    </div>
+    </Link>
   );
 }
 
 /* ── Main component ── */
 export default function TrendingProducts() {
-  const [modalOpen, setModalOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState("");
-
-  function openQuote(productName: string) {
-    setSelectedProduct(productName);
-    setModalOpen(true);
-  }
-
   return (
     <section
       className="w-full py-14 px-4 sm:px-6 lg:px-8"
@@ -179,29 +172,10 @@ export default function TrendingProducts() {
         {/* 4-col grid → 2-col tablet → 1-col mobile */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {products.map((product) => (
-            <ProductCard key={product.id} product={product} onQuoteClick={openQuote} />
+            <ProductCard key={product.id} product={product} />
           ))}
         </div>
-
-        {/* View all link */}
-        <div className="flex justify-center mt-10">
-          <a
-            href="/categories/stickers"
-            className="inline-flex items-center gap-2 text-sm font-semibold transition-all duration-200 hover:gap-3"
-            style={{ color: siteConfig.colors.primary }}
-          >
-            Browse All Products
-            <ArrowRight size={16} />
-          </a>
-        </div>
       </div>
-
-      {/* Quote Modal */}
-      <QuoteModal
-        isOpen={modalOpen}
-        productName={selectedProduct}
-        onClose={() => setModalOpen(false)}
-      />
     </section>
   );
 }

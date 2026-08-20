@@ -13,7 +13,7 @@ export const siteConfig = {
   logoStacked: "/logo-stacked.png",
   contact: {
     address: "24 Makram Ebeid, Madinet Nasr City, Egypt",
-    phone: "01200956004",
+    phone: "01041998484",
     email: "Romiz.Print@gmail.com",
   },
   social: {
