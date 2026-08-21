@@ -7,6 +7,7 @@ import { ShoppingCart, Upload, CheckCircle2 } from "lucide-react";
 import { siteConfig } from "../../config/site";
 import { getProductBySlug, productData } from "../../data/products";
 import { useCart } from "../../context/CartContext";
+import DesignFileUploader from "../../components/DesignFileUploader";
 
 export default function ProductPageClient({ 
   productSlug,
@@ -26,9 +27,6 @@ export default function ProductPageClient({
   const [addedToCart, setAddedToCart] = useState(false);
   const [totalPrice, setTotalPrice] = useState(1);
 
-  // Upload simulation state
-  const [uploadState, setUploadState] = useState<"idle" | "uploading" | "success">("idle");
-  const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadedUrl, setUploadedUrl] = useState<string | null>(null);
 
   if (typeof window !== "undefined") {
@@ -97,22 +95,6 @@ export default function ProductPageClient({
     } else {
       setQuantityInput(quantity.toString());
     }
-  };
-
-  const handleSimulatedUpload = () => {
-    setUploadState("uploading");
-    setUploadProgress(0);
-    
-    let progress = 0;
-    const interval = setInterval(() => {
-      progress += 10;
-      setUploadProgress(progress);
-      if (progress >= 100) {
-        clearInterval(interval);
-        setUploadState("success");
-        setUploadedUrl("https://uploadthing.com/f/simulated-file.pdf");
-      }
-    }, 200);
   };
 
   const handleAddToCart = () => {
@@ -231,34 +213,7 @@ export default function ProductPageClient({
                   />
                 </div>
                 
-                {uploadState === "idle" && (
-                  <button 
-                    onClick={handleSimulatedUpload}
-                    className="flex items-center justify-center gap-2 w-full py-3 rounded-lg border-2 border-dashed border-gray-300 text-gray-600 hover:border-[#0B4DA2] hover:text-[#0B4DA2] transition-colors"
-                  >
-                    <Upload size={18} />
-                    Upload Design File (Optional)
-                  </button>
-                )}
-                
-                {uploadState === "uploading" && (
-                  <div className="w-full py-3 px-4 rounded-lg border-2 border-gray-200 bg-gray-50 flex flex-col gap-2">
-                    <div className="flex justify-between text-sm font-medium text-gray-600">
-                      <span>Uploading...</span>
-                      <span>{uploadProgress}%</span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div className="bg-[#0B4DA2] h-2 rounded-full transition-all duration-200" style={{ width: `${uploadProgress}%` }}></div>
-                    </div>
-                  </div>
-                )}
-                
-                {uploadState === "success" && (
-                  <div className="w-full py-3 px-4 rounded-lg border-2 border-green-500 bg-green-50 flex items-center justify-center gap-2 text-green-700 font-medium">
-                    <CheckCircle2 size={18} />
-                    Design File Uploaded
-                  </div>
-                )}
+                <DesignFileUploader onUploadComplete={(url) => setUploadedUrl(url)} />
               </>
             )}
           </div>
