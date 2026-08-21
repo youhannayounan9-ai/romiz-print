@@ -54,7 +54,7 @@ const slides = [
     badge: null,
     accentSubHeadline: false,
     image: {
-      src: "/Custom Apparel & Drinkware.png",
+      src: "/apparel-drinkware.jpg",
       alt: "Custom apparel and drinkware Cairo",
       loading: "lazy" as const,
     },
