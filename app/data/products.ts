@@ -155,8 +155,10 @@ export function getProductByName(slug: string, name: string): CategoryProduct | 
 
 /** Get a specific product by its unique slug across all categories */
 export function getProductBySlug(productSlug: string): { product: CategoryProduct, categorySlug: string } | undefined {
+  if (!productSlug) return undefined;
+  const target = productSlug.toLowerCase().trim();
   for (const [catSlug, products] of Object.entries(productData)) {
-    const p = products.find(prod => prod.slug === productSlug);
+    const p = products.find(prod => prod.slug.toLowerCase().trim() === target);
     if (p) return { product: p, categorySlug: catSlug };
   }
   return undefined;

@@ -18,13 +18,21 @@ export default function ProductPageClient({ productSlug }: { productSlug: string
   const [addedToCart, setAddedToCart] = useState(false);
   const [totalPrice, setTotalPrice] = useState(1);
 
+  if (typeof window !== "undefined") {
+    console.log("🔍 ProductPageClient - received slug:", productSlug);
+    const allProducts = Object.values(productData).flat();
+    console.log("🔍 Available product slugs:", allProducts.map(p => ({ name: p.name, slug: p.slug })));
+  }
+
   const result = getProductBySlug(productSlug);
   const product = result?.product;
   const categorySlug = result?.categorySlug;
 
-  // Debugging slug matching
   if (typeof window !== "undefined") {
-    console.log("Looking for slug:", productSlug);
+    console.log("🔍 Found product:", product ? product.name : "NOT FOUND");
+    if (!product) {
+      console.error("❌ Product not found for slug:", productSlug);
+    }
   }
 
   useEffect(() => {
@@ -61,9 +69,6 @@ export default function ProductPageClient({ productSlug }: { productSlug: string
 
   if (!loaded) return <div className="min-h-screen pt-20 text-center">Loading...</div>;
   if (!product) {
-    if (typeof window !== "undefined") {
-      console.log("Available slugs:", Object.values(productData).flat().map(p => p.slug));
-    }
     return <div className="min-h-screen pt-20 text-center">Product not found.</div>;
   }
 

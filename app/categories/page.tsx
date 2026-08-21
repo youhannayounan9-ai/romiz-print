@@ -8,9 +8,13 @@ export const metadata = {
   description: "Browse all custom printing categories and products from ROMIZ PRINT.",
 };
 
-export default function AllCategoriesPage({ searchParams }: { searchParams: { filter?: string } }) {
-  const filter = searchParams.filter;
+export default async function AllCategoriesPage({ searchParams }: { searchParams: Promise<{ filter?: string }> }) {
+  const resolvedParams = await searchParams;
+  const filter = resolvedParams.filter;
   let displayedCategories = categories;
+
+  console.log("🔍 Categories page - filter param:", filter);
+  console.log("🔍 All category slugs:", categories.map(c => c.slug));
 
   if (filter === "marketing-print") {
     displayedCategories = categories.filter(c => ["business-cards", "flyers", "pens"].includes(c.slug));
@@ -21,6 +25,9 @@ export default function AllCategoriesPage({ searchParams }: { searchParams: { fi
   } else if (filter === "custom-merch") {
     displayedCategories = categories.filter(c => ["stickers", "mugs"].includes(c.slug));
   }
+
+  console.log("🔍 Filtered categories count:", displayedCategories.length);
+  console.log("🔍 Filtered category slugs:", displayedCategories.map(c => c.slug));
 
   return (
     <div style={{ backgroundColor: siteConfig.colors.background }} className="min-h-screen">
