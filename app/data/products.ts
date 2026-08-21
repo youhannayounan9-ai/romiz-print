@@ -28,7 +28,7 @@ export const productData: Record<string, CategoryProduct[]> = {
       slug: "custom-framed-poster",
       name: "Custom Framed Poster",
       description: "Premium framed posters with multiple sizes and frame colour options.",
-      image: "/Frame customize.png",
+      image: "/frame (8).jpeg",
       bgColor: "#F0EBE3",
       basePrice: 250, // Starting from 250 EGP for 15x21 cm
     },
