@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 
 /* ─── Frame collection filenames ─── */
 // Folder 1: Frame collection
-const frameNumbers1 = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41];
+const frameNumbers1 = [1,2,3,4,5,6,7,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41];
 const frameGalleryImages1 = frameNumbers1.map((n) => {
   const jpegNums = [1,2,5,6,7,8,10,11,12,28,29,34,38];
   const ext = jpegNums.includes(n) ? "jpeg" : "jpg";
@@ -216,7 +216,6 @@ export default function CategoryPageClient({ categoryName, slug }: { categoryNam
            Array.from({ length: products.length || 1 }).map((_, i) => <SkeletonCard key={i} />)
         ) : (
           products.map((product) => {
-            const productSlug = product.name.toLowerCase().replace(/\s+/g, '-');
             return (
               <ProductCard
                 key={product.id}
@@ -224,7 +223,7 @@ export default function CategoryPageClient({ categoryName, slug }: { categoryNam
                 description={product.description}
                 image={product.image}
                 isNew={product.isNew}
-                productSlug={`${slug}?p=${productSlug}`} // Using query param so the dynamic route can parse the category slug and the product slug
+                productSlug={(product as any).slug}
               />
             )
           })
@@ -236,7 +235,7 @@ export default function CategoryPageClient({ categoryName, slug }: { categoryNam
         <GallerySection 
           title="Ready-made Frames" 
           images={frameGalleryImages} 
-          onImageClick={() => router.push(`/products/frame?p=custom-framed-poster`)}
+          onImageClick={() => router.push(`/products/custom-framed-poster`)}
         />
       )}
 
@@ -245,7 +244,7 @@ export default function CategoryPageClient({ categoryName, slug }: { categoryNam
         <GallerySection 
           title="Ready-Made T-Shirts" 
           images={tshirtGalleryImages} 
-          onImageClick={() => router.push(`/products/t-shirts?p=custom-t-shirt`)}
+          onImageClick={() => router.push(`/products/custom-t-shirt`)}
         />
       )}
     </>

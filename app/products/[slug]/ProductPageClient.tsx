@@ -5,10 +5,10 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { ShoppingCart, Upload, CheckCircle2 } from "lucide-react";
 import { siteConfig } from "../../config/site";
-import { productData } from "../../data/products";
+import { getProductBySlug } from "../../data/products";
 import { useCart } from "../../context/CartContext";
 
-export default function ProductPageClient({ categorySlug, productSlug }: { categorySlug: string, productSlug?: string }) {
+export default function ProductPageClient({ productSlug }: { productSlug: string }) {
   const router = useRouter();
   const { addItem } = useCart();
   
@@ -18,11 +18,9 @@ export default function ProductPageClient({ categorySlug, productSlug }: { categ
   const [addedToCart, setAddedToCart] = useState(false);
   const [totalPrice, setTotalPrice] = useState(1);
 
-  // Fallback to first product in category if no specific product slug is provided
-  const categoryProducts = productData[categorySlug] || [];
-  const product = productSlug 
-    ? categoryProducts.find(p => p.name.toLowerCase().replace(/\s+/g, '-') === productSlug) || categoryProducts[0]
-    : categoryProducts[0];
+  const result = getProductBySlug(productSlug);
+  const product = result?.product;
+  const categorySlug = result?.categorySlug;
 
   useEffect(() => {
     if (product) {
