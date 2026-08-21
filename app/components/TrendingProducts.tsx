@@ -22,7 +22,7 @@ const products: Product[] = [
     name: "Custom Frames",
     description: "Premium framed posters, multiple sizes and colors.",
     isNew: true,
-    image: "/Frame customize.png",
+    image: "/frame (8).jpeg",
     category: "Frames",
     categorySlug: "frame",
     bgColor: "#E8EEF7",
