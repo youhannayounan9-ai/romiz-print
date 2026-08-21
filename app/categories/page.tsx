@@ -12,13 +12,13 @@ export default function AllCategoriesPage({ searchParams }: { searchParams: { fi
   const filter = searchParams.filter;
   let displayedCategories = categories;
 
-  if (filter === "marketing") {
+  if (filter === "marketing-print") {
     displayedCategories = categories.filter(c => ["business-cards", "flyers", "pens"].includes(c.slug));
-  } else if (filter === "banners") {
+  } else if (filter === "banners-displays") {
     displayedCategories = categories.filter(c => ["banners", "roll-up", "frame"].includes(c.slug));
-  } else if (filter === "apparel") {
+  } else if (filter === "apparel-bags") {
     displayedCategories = categories.filter(c => ["t-shirts", "tote-bags"].includes(c.slug));
-  } else if (filter === "merch") {
+  } else if (filter === "custom-merch") {
     displayedCategories = categories.filter(c => ["stickers", "mugs"].includes(c.slug));
   }
 

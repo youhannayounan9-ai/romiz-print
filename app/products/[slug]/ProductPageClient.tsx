@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { ShoppingCart, Upload, CheckCircle2 } from "lucide-react";
 import { siteConfig } from "../../config/site";
-import { getProductBySlug } from "../../data/products";
+import { getProductBySlug, productData } from "../../data/products";
 import { useCart } from "../../context/CartContext";
 
 export default function ProductPageClient({ productSlug }: { productSlug: string }) {
@@ -21,6 +21,11 @@ export default function ProductPageClient({ productSlug }: { productSlug: string
   const result = getProductBySlug(productSlug);
   const product = result?.product;
   const categorySlug = result?.categorySlug;
+
+  // Debugging slug matching
+  if (typeof window !== "undefined") {
+    console.log("Looking for slug:", productSlug);
+  }
 
   useEffect(() => {
     if (product) {
@@ -55,7 +60,12 @@ export default function ProductPageClient({ productSlug }: { productSlug: string
   }, [options, categorySlug, product]);
 
   if (!loaded) return <div className="min-h-screen pt-20 text-center">Loading...</div>;
-  if (!product) return <div className="min-h-screen pt-20 text-center">Product not found.</div>;
+  if (!product) {
+    if (typeof window !== "undefined") {
+      console.log("Available slugs:", Object.values(productData).flat().map(p => p.slug));
+    }
+    return <div className="min-h-screen pt-20 text-center">Product not found.</div>;
+  }
 
   const handleOptionChange = (key: string, value: string) => {
     setOptions(prev => ({ ...prev, [key]: value }));
