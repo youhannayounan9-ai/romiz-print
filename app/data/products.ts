@@ -23,7 +23,7 @@ export const productData: Record<string, CategoryProduct[]> = {
       id: 1,
       name: "Custom Framed Poster",
       description: "Premium framed posters with multiple sizes and frame colour options.",
-      image: "/frame1.png",
+      image: "/frame (8).png",
       bgColor: "#F0EBE3",
     },
   ],
