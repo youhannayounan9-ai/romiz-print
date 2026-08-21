@@ -10,6 +10,17 @@ import { siteConfig } from "../config/site";
 export default function CartPage() {
   const { items, removeItem, updateQuantity, subtotal, totalItems } = useCart();
   const [mounted, setMounted] = useState(false);
+  
+  const [editingItemId, setEditingItemId] = useState<string | null>(null);
+  const [quantityInput, setQuantityInput] = useState("");
+
+  const handleQuantitySubmit = (id: string) => {
+    const parsed = parseInt(quantityInput, 10);
+    if (!isNaN(parsed) && parsed > 0) {
+      updateQuantity(id, parsed);
+    }
+    setEditingItemId(null);
+  };
 
   useEffect(() => {
     setMounted(true);
@@ -80,7 +91,29 @@ export default function CartPage() {
                           onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
                           className="w-8 h-8 flex items-center justify-center text-lg hover:bg-gray-200 transition-colors rounded-l-lg"
                         >-</button>
-                        <span className="w-10 text-center text-sm font-semibold">{item.quantity}</span>
+                        {editingItemId === item.id ? (
+                          <input 
+                            type="number"
+                            min="1"
+                            autoFocus
+                            value={quantityInput}
+                            onChange={(e) => setQuantityInput(e.target.value)}
+                            onBlur={() => handleQuantitySubmit(item.id)}
+                            onKeyDown={(e) => e.key === "Enter" && handleQuantitySubmit(item.id)}
+                            className="w-12 text-center text-sm font-semibold bg-white border border-[#0B4DA2] rounded outline-none"
+                          />
+                        ) : (
+                          <span 
+                            onDoubleClick={() => {
+                              setQuantityInput(item.quantity.toString());
+                              setEditingItemId(item.id);
+                            }}
+                            className="w-10 text-center text-sm font-semibold cursor-text select-none"
+                            title="Double-click to edit"
+                          >
+                            {item.quantity}
+                          </span>
+                        )}
                         <button 
                           onClick={() => updateQuantity(item.id, item.quantity + 1)}
                           className="w-8 h-8 flex items-center justify-center text-lg hover:bg-gray-200 transition-colors rounded-r-lg"

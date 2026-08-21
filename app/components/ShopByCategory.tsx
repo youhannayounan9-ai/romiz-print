@@ -56,9 +56,9 @@ const mainCategories = [
 
 /* 8 popular product icons */
 const popularSlugs = [
-  "roll-up",
+  "stickers",
   "frame",
-  "banners",
+  "t-shirts",
   "business-cards",
   "tote-bags",
   "flyers",

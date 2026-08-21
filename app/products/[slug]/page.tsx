@@ -10,11 +10,14 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function ProductPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ image?: string; readyMade?: string }>;
 }) {
   const resolvedParams = await params;
+  const resolvedSearchParams = await searchParams;
   console.log("🔍 [slug] page.tsx - resolvedParams.slug:", resolvedParams.slug);
   
-  return <ProductPageClient productSlug={resolvedParams.slug} />;
+  return <ProductPageClient productSlug={resolvedParams.slug} searchParams={resolvedSearchParams} />;
 }

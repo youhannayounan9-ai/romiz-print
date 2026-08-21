@@ -8,15 +8,28 @@ import { siteConfig } from "../../config/site";
 import { getProductBySlug, productData } from "../../data/products";
 import { useCart } from "../../context/CartContext";
 
-export default function ProductPageClient({ productSlug }: { productSlug: string }) {
+export default function ProductPageClient({ 
+  productSlug,
+  searchParams,
+}: { 
+  productSlug: string;
+  searchParams?: { image?: string; readyMade?: string };
+}) {
   const router = useRouter();
   const { addItem } = useCart();
   
   const [loaded, setLoaded] = useState(false);
   const [options, setOptions] = useState<Record<string, string>>({});
   const [quantity, setQuantity] = useState(1);
+  const [isEditingQuantity, setIsEditingQuantity] = useState(false);
+  const [quantityInput, setQuantityInput] = useState("1");
   const [addedToCart, setAddedToCart] = useState(false);
   const [totalPrice, setTotalPrice] = useState(1);
+
+  // Upload simulation state
+  const [uploadState, setUploadState] = useState<"idle" | "uploading" | "success">("idle");
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadedUrl, setUploadedUrl] = useState<string | null>(null);
 
   if (typeof window !== "undefined") {
     console.log("🔍 ProductPageClient - received slug:", productSlug);
@@ -76,18 +89,50 @@ export default function ProductPageClient({ productSlug }: { productSlug: string
     setOptions(prev => ({ ...prev, [key]: value }));
   };
 
+  const handleQuantitySubmit = () => {
+    setIsEditingQuantity(false);
+    const parsed = parseInt(quantityInput, 10);
+    if (!isNaN(parsed) && parsed > 0) {
+      setQuantity(parsed);
+    } else {
+      setQuantityInput(quantity.toString());
+    }
+  };
+
+  const handleSimulatedUpload = () => {
+    setUploadState("uploading");
+    setUploadProgress(0);
+    
+    let progress = 0;
+    const interval = setInterval(() => {
+      progress += 10;
+      setUploadProgress(progress);
+      if (progress >= 100) {
+        clearInterval(interval);
+        setUploadState("success");
+        setUploadedUrl("https://uploadthing.com/f/simulated-file.pdf");
+      }
+    }, 200);
+  };
+
   const handleAddToCart = () => {
     addItem({
       productId: product.id,
       name: product.name,
-      image: product.image,
+      image: searchParams?.image || product.image,
       price: totalPrice,
       quantity: quantity,
-      options,
+      options: {
+        ...options,
+        ...(uploadedUrl ? { "Design File": uploadedUrl } : {})
+      },
     });
     setAddedToCart(true);
     setTimeout(() => setAddedToCart(false), 3000);
   };
+
+  const isReadyMade = searchParams?.readyMade === "true";
+  const displayImage = searchParams?.image || product.image;
 
   return (
     <div className="min-h-screen py-10 px-4 sm:px-6 lg:px-8 bg-white">
@@ -96,7 +141,7 @@ export default function ProductPageClient({ productSlug }: { productSlug: string
         {/* Left: Image Gallery */}
         <div className="flex-1">
           <div className="relative w-full h-[400px] sm:h-[500px] rounded-2xl overflow-hidden bg-gray-50 border border-gray-100 flex items-center justify-center">
-            <Image src={product.image} alt={product.name} fill className="object-contain p-8" />
+            <Image src={displayImage} alt={product.name} fill className="object-contain p-8" />
           </div>
           {/* Note: We could add a mini carousel here for extra images if needed */}
         </div>
@@ -144,16 +189,18 @@ export default function ProductPageClient({ productSlug }: { productSlug: string
                     <option value="White">White</option>
                   </select>
                 </div>
-                <div className="flex items-center gap-2 mt-2">
-                  <input 
-                    type="checkbox" 
-                    id="customDesign" 
-                    checked={options["custom design"] === "Yes"}
-                    onChange={(e) => handleOptionChange("custom design", e.target.checked ? "Yes" : "No")}
-                    className="w-4 h-4 rounded border-gray-300 text-[#0B4DA2]"
-                  />
-                  <label htmlFor="customDesign" className="text-sm font-medium">Add Custom Design (+50 EGP)</label>
-                </div>
+                {!isReadyMade && (
+                  <div className="flex items-center gap-2 mt-2">
+                    <input 
+                      type="checkbox" 
+                      id="customDesign" 
+                      checked={options["custom design"] === "Yes"}
+                      onChange={(e) => handleOptionChange("custom design", e.target.checked ? "Yes" : "No")}
+                      className="w-4 h-4 rounded border-gray-300 text-[#0B4DA2]"
+                    />
+                    <label htmlFor="customDesign" className="text-sm font-medium">Add Custom Design (+50 EGP)</label>
+                  </div>
+                )}
               </>
             )}
 
@@ -172,20 +219,48 @@ export default function ProductPageClient({ productSlug }: { productSlug: string
             )}
 
             {/* General Customization Note & File Upload (simulated) */}
-            <div>
-              <label className="block text-sm font-semibold mb-1">Customization Notes</label>
-              <textarea 
-                value={options.notes || ""}
-                onChange={(e) => handleOptionChange("notes", e.target.value)}
-                placeholder="E.g. brand colours, text, logo placement..."
-                className="w-full p-3 rounded-lg border border-gray-200 focus:border-[#0B4DA2] outline-none h-24 resize-none"
-              />
-            </div>
-            
-            <button className="flex items-center justify-center gap-2 w-full py-3 rounded-lg border-2 border-dashed border-gray-300 text-gray-600 hover:border-[#0B4DA2] hover:text-[#0B4DA2] transition-colors">
-              <Upload size={18} />
-              Upload Design File (Optional)
-            </button>
+            {!isReadyMade && (
+              <>
+                <div>
+                  <label className="block text-sm font-semibold mb-1">Customization Notes</label>
+                  <textarea 
+                    value={options.notes || ""}
+                    onChange={(e) => handleOptionChange("notes", e.target.value)}
+                    placeholder="E.g. brand colours, text, logo placement..."
+                    className="w-full p-3 rounded-lg border border-gray-200 focus:border-[#0B4DA2] outline-none h-24 resize-none"
+                  />
+                </div>
+                
+                {uploadState === "idle" && (
+                  <button 
+                    onClick={handleSimulatedUpload}
+                    className="flex items-center justify-center gap-2 w-full py-3 rounded-lg border-2 border-dashed border-gray-300 text-gray-600 hover:border-[#0B4DA2] hover:text-[#0B4DA2] transition-colors"
+                  >
+                    <Upload size={18} />
+                    Upload Design File (Optional)
+                  </button>
+                )}
+                
+                {uploadState === "uploading" && (
+                  <div className="w-full py-3 px-4 rounded-lg border-2 border-gray-200 bg-gray-50 flex flex-col gap-2">
+                    <div className="flex justify-between text-sm font-medium text-gray-600">
+                      <span>Uploading...</span>
+                      <span>{uploadProgress}%</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div className="bg-[#0B4DA2] h-2 rounded-full transition-all duration-200" style={{ width: `${uploadProgress}%` }}></div>
+                    </div>
+                  </div>
+                )}
+                
+                {uploadState === "success" && (
+                  <div className="w-full py-3 px-4 rounded-lg border-2 border-green-500 bg-green-50 flex items-center justify-center gap-2 text-green-700 font-medium">
+                    <CheckCircle2 size={18} />
+                    Design File Uploaded
+                  </div>
+                )}
+              </>
+            )}
           </div>
 
           <hr className="border-gray-100 my-2" />
@@ -197,7 +272,31 @@ export default function ProductPageClient({ productSlug }: { productSlug: string
                 onClick={() => setQuantity(q => Math.max(1, q - 1))}
                 className="w-10 h-10 flex items-center justify-center text-xl font-medium hover:bg-gray-200 rounded-md transition-colors"
               >-</button>
-              <span className="w-12 text-center font-semibold">{quantity}</span>
+              
+              {isEditingQuantity ? (
+                <input 
+                  type="number"
+                  min="1"
+                  autoFocus
+                  value={quantityInput}
+                  onChange={(e) => setQuantityInput(e.target.value)}
+                  onBlur={handleQuantitySubmit}
+                  onKeyDown={(e) => e.key === "Enter" && handleQuantitySubmit()}
+                  className="w-12 text-center font-semibold bg-white border border-[#0B4DA2] rounded outline-none"
+                />
+              ) : (
+                <span 
+                  onDoubleClick={() => {
+                    setQuantityInput(quantity.toString());
+                    setIsEditingQuantity(true);
+                  }}
+                  className="w-12 text-center font-semibold cursor-text select-none"
+                  title="Double-click to edit"
+                >
+                  {quantity}
+                </span>
+              )}
+
               <button 
                 onClick={() => setQuantity(q => q + 1)}
                 className="w-10 h-10 flex items-center justify-center text-xl font-medium hover:bg-gray-200 rounded-md transition-colors"

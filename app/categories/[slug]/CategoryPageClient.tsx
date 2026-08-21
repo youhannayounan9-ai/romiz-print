@@ -86,7 +86,7 @@ function SkeletonCard() {
 }
 
 /* ── Gallery section ── */
-function GallerySection({ title, images, onImageClick }: { title: string; images: string[], onImageClick?: () => void }) {
+function GallerySection({ title, images, onImageClick }: { title: string; images: string[], onImageClick?: (src: string) => void }) {
   return (
     <section className="mt-16 w-full">
       <div className="flex items-center justify-center gap-4 mb-8">
@@ -104,7 +104,7 @@ function GallerySection({ title, images, onImageClick }: { title: string; images
           <div
             key={idx}
             className="relative aspect-square rounded-xl overflow-hidden bg-gray-100 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.02] cursor-pointer"
-            onClick={onImageClick}
+            onClick={() => onImageClick && onImageClick(src)}
           >
             <Image
               src={src}
@@ -235,7 +235,7 @@ export default function CategoryPageClient({ categoryName, slug }: { categoryNam
         <GallerySection 
           title="Ready-made Frames" 
           images={frameGalleryImages} 
-          onImageClick={() => router.push(`/products/custom-framed-poster`)}
+          onImageClick={(src) => router.push(`/products/custom-framed-poster?image=${encodeURIComponent(src)}&readyMade=true`)}
         />
       )}
 
@@ -244,7 +244,7 @@ export default function CategoryPageClient({ categoryName, slug }: { categoryNam
         <GallerySection 
           title="Ready-Made T-Shirts" 
           images={tshirtGalleryImages} 
-          onImageClick={() => router.push(`/products/custom-t-shirt`)}
+          onImageClick={(src) => router.push(`/products/custom-t-shirt?image=${encodeURIComponent(src)}&readyMade=true`)}
         />
       )}
     </>
