@@ -196,7 +196,7 @@ export default function HeroCarousel() {
                 alt={slide.image.alt}
                 fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1024px) 320px, 420px"
-                className="object-cover"
+                className={slide.id === 3 ? "object-contain" : "object-cover"}
                 loading={slide.image.loading}
                 style={{
                   transition: "opacity 0.35s ease",

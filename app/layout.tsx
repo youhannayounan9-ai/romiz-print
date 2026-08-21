@@ -6,6 +6,7 @@ import NavRow from "./components/NavRow";
 import Footer from "./components/Footer";
 import FloatingWhatsApp from "./components/FloatingWhatsApp";
 import { siteConfig } from "./config/site";
+import { CartProvider } from "./context/CartContext";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -61,11 +62,13 @@ export default function RootLayout({
         <link rel="manifest" href="/manifest.json" />
       </head>
       <body className="min-h-full flex flex-col" style={{ backgroundColor: "#F5F7FA" }}>
-        <Header />
-        <NavRow />
-        <main className="flex-1">{children}</main>
-        <Footer />
-        <FloatingWhatsApp />
+        <CartProvider>
+          <Header />
+          <NavRow />
+          <main className="flex-1">{children}</main>
+          <Footer />
+          <FloatingWhatsApp />
+        </CartProvider>
       </body>
     </html>
   );

@@ -4,20 +4,25 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Settings2 } from "lucide-react";
-import dynamic from "next/dynamic";
 import { siteConfig } from "../../config/site";
 import { getProductsForCategory } from "../../data/products";
-import type { FieldConfig } from "../../components/CustomizationModal";
-
-const CustomizationModal = dynamic(() => import("../../components/CustomizationModal"), { ssr: false });
+import { useRouter } from "next/navigation";
 
 /* ─── Frame collection filenames ─── */
-const frameNumbers = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41];
-const frameGalleryImages = frameNumbers.map((n) => {
+// Folder 1: Frame collection
+const frameNumbers1 = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41];
+const frameGalleryImages1 = frameNumbers1.map((n) => {
   const jpegNums = [1,2,5,6,7,8,10,11,12,28,29,34,38];
   const ext = jpegNums.includes(n) ? "jpeg" : "jpg";
   return `/Frame collection/frame (${n}).${ext}`;
 });
+
+// Folder 2: Frame collection 2 (frame (1) to frame (39))
+const frameNumbers2 = Array.from({ length: 39 }, (_, i) => i + 1);
+const frameGalleryImages2 = frameNumbers2.map(n => `/Frame collection 2/frame (${n}).jpg`);
+
+// Merged Frame Gallery
+const frameGalleryImages = [...frameGalleryImages1, ...frameGalleryImages2];
 
 /* ─── T-shirt collection (1..23, all .jpg) ─── */
 const tshirtGalleryImages = Array.from({ length: 23 }, (_, i) => `/T-shirt collection/${i + 1}.jpg`);
@@ -65,89 +70,6 @@ const categoryIntros: Record<string, { headline: string; body: string }> = {
   },
 };
 
-const getModalFields = (slug: string): FieldConfig[] => {
-  switch (slug) {
-    case "roll-up":
-      return [
-        { id: "design", label: "Describe your design / upload file", type: "textarea", required: false, placeholder: "E.g. brand colours, text, logo placement..." },
-      ];
-    case "frame":
-      return [
-        { id: "size", label: "Size", type: "select", required: true, options: ["20x30 cm", "30x40 cm", "40x50 cm"] },
-        { id: "color", label: "Frame Color", type: "color", required: true, options: ["Black", "Silver", "#D2B48C"] },
-      ];
-    case "banners":
-      return [
-        { id: "width", label: "Width (cm)", type: "select", required: true, options: ["90", "110", "120", "130", "140", "150", "160", "170", "180", "190", "200"] },
-        { id: "height", label: "Height (cm)", type: "select", required: true, options: ["50", "100", "150", "200"] },
-      ];
-    case "business-cards":
-      return [
-        { id: "paper", label: "Paper Type", type: "select", required: true, options: ["300 gm (normal)", "300 gm (protection)", "Fabriano", "Cristal (White/Gray/Gold)", "700 gm", "IDs"] },
-      ];
-    case "tote-bags":
-    case "mugs":
-    case "pens":
-      return [
-        { id: "design", label: "Describe your design", type: "textarea", required: true, placeholder: "Tell us what you want printed..." },
-      ];
-    case "flyers":
-      return [
-        { id: "size_qty", label: "Size & Quantity", type: "select", required: true, options: ["A5 20*15: 2000 pcs (15-25% discount)", "A5 20*15: 1000 pcs", "A4 30*20: 2000 pcs (15-25% discount)", "A4 30*20: 1000 pcs", "A3 30*40: 1000 pcs (15-25% discount)"] },
-        { id: "weight", label: "Paper Weight", type: "select", required: true, options: ["80g", "130g", "150g", "200g", "250g", "300g"] },
-        { id: "options", label: "Print Options", type: "select", required: true, options: ["4-color double-sided", "Glossy", "Matte"] },
-      ];
-    case "stickers":
-      return [
-        { id: "size", label: "Size", type: "select", required: true, options: ["Small (5x5 cm)", "Medium (10x10 cm)", "Large (15x15 cm)", "Custom"] },
-        { id: "material", label: "Material", type: "select", required: true, options: ["Vinyl", "Paper", "Holographic", "Transparent"] },
-        { id: "finish", label: "Finish", type: "select", required: true, options: ["Matte", "Glossy", "Unlaminated"] },
-        { id: "shape", label: "Shape", type: "select", required: true, options: ["Die-cut", "Circle", "Square", "Rectangle"] },
-        { id: "quantity", label: "Quantity", type: "select", required: true, options: ["10", "25", "50", "100", "250", "500", "1000"] },
-      ];
-    case "t-shirts":
-      return [
-        { id: "type", label: "Product Type", type: "select", required: true, options: ["T-Shirt", "Hoodie"] },
-        { id: "size", label: "Size", type: "select", required: true, options: ["Small", "Medium", "Large", "XLarge"] },
-        { id: "color", label: "Color", type: "color", required: true, options: ["Black", "White", "Gray", "Navy", "Red"] },
-        { id: "design", label: "Describe your design", type: "textarea", required: true },
-      ];
-    default:
-      return [];
-  }
-};
-
-const getModalExamples = (slug: string): string[] => {
-  switch (slug) {
-    case "roll-up": return ["/roll-up-banner.png"];
-    case "frame": return ["/Frame customize.png"];
-    case "banners": return ["/Banner1.png"];
-    case "business-cards": return ["/New card.png"];
-    case "tote-bags": return ["/Tote Bag.png"];
-    case "flyers": return ["/Flyers.png"];
-    case "mugs": return ["/Tote Mug1.png", "/black magic mug.png"];
-    case "pens": return ["/Pen1.png"];
-    case "stickers": return ["/Custom Stickers.png"];
-    case "t-shirts": return ["/T-Shirts.png", "/Hoodies.png"];
-    default: return [];
-  }
-};
-
-const getPricingNode = (slug: string): React.ReactNode | undefined => {
-  if (slug === "pens") return "Minimum 50 pieces - 35 EGP per piece";
-  if (slug === "flyers") {
-    return (
-      <div className="flex flex-col gap-2">
-        <p className="font-semibold text-gray-900">Pricing Information:</p>
-        <div className="relative w-full h-40 rounded-lg overflow-hidden border border-gray-200">
-          <Image src="/FlyersInfo.png" alt="Flyers Pricing Table" fill className="object-contain" />
-        </div>
-      </div>
-    );
-  }
-  return undefined;
-};
-
 /* ── Skeleton card ── */
 function SkeletonCard() {
   return (
@@ -164,7 +86,7 @@ function SkeletonCard() {
 }
 
 /* ── Gallery section ── */
-function GallerySection({ title, images }: { title: string; images: string[] }) {
+function GallerySection({ title, images, onImageClick }: { title: string; images: string[], onImageClick?: () => void }) {
   return (
     <section className="mt-16 w-full">
       <div className="flex items-center justify-center gap-4 mb-8">
@@ -179,7 +101,11 @@ function GallerySection({ title, images }: { title: string; images: string[] }) 
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
         {images.map((src, idx) => (
-          <div key={idx} className="relative aspect-square rounded-xl overflow-hidden bg-gray-100 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.02]">
+          <div
+            key={idx}
+            className="relative aspect-square rounded-xl overflow-hidden bg-gray-100 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.02] cursor-pointer"
+            onClick={onImageClick}
+          >
             <Image
               src={src}
               alt={`Gallery image ${idx + 1}`}
@@ -200,18 +126,24 @@ function ProductCard({
   description,
   image,
   isNew,
-  onCustomize,
-  customizeLabel,
+  productSlug,
 }: {
   name: string;
   description: string;
   image: string;
   isNew?: boolean;
-  onCustomize: () => void;
-  customizeLabel: string;
+  productSlug: string;
 }) {
+  const router = useRouter();
+  
+  const handleCustomize = () => {
+    router.push(`/products/${productSlug}`);
+  };
+
+  const displayName = name.replace("Custom ", "");
+
   return (
-    <div className="flex flex-col rounded-3xl overflow-hidden bg-white shadow-xl border border-gray-100 max-w-sm w-full">
+    <div className="flex flex-col rounded-3xl overflow-hidden bg-white shadow-xl border border-gray-100 max-w-sm w-full mx-auto">
       <div className="w-full relative bg-gray-50" style={{ height: "280px" }}>
         <Image src={image} alt={name} fill className="object-contain p-4" />
         {isNew && (
@@ -229,12 +161,12 @@ function ProductCard({
           <p className="text-sm text-gray-500 leading-relaxed">{description}</p>
         </div>
         <button
-          onClick={onCustomize}
+          onClick={handleCustomize}
           className="mt-auto w-full flex items-center justify-center gap-2 py-3.5 rounded-xl text-sm font-bold text-white transition-all duration-200 hover:-translate-y-0.5 shadow-md hover:shadow-lg"
           style={{ backgroundColor: siteConfig.colors.accent }}
         >
           <Settings2 size={16} />
-          {customizeLabel}
+          Customize Your {displayName}
         </button>
       </div>
     </div>
@@ -244,23 +176,16 @@ function ProductCard({
 /* ── Main client component ── */
 export default function CategoryPageClient({ categoryName, slug }: { categoryName: string; slug: string }) {
   const [loaded, setLoaded] = useState(false);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [modalProductName, setModalProductName] = useState("");
+  const router = useRouter();
 
   useEffect(() => {
     const t = setTimeout(() => setLoaded(true), 300);
     return () => clearTimeout(t);
   }, []);
 
-  const openModal = (productName: string) => {
-    setModalProductName(productName);
-    setModalOpen(true);
-  };
-
   const products = getProductsForCategory(slug, categoryName);
-  const product = products.length > 0 ? products[0] : null;
 
-  if (!product && loaded) {
+  if (products.length === 0 && loaded) {
     return <div className="text-center py-20">Product not found.</div>;
   }
 
@@ -285,91 +210,42 @@ export default function CategoryPageClient({ categoryName, slug }: { categoryNam
         ) : null;
       })()}
 
-      {/* ── T-SHIRTS: Two cards side by side ── */}
-      {isTshirts ? (
-        <div className="flex flex-col sm:flex-row gap-6 justify-center items-stretch mt-6">
-          {!loaded ? (
-            <>
-              <SkeletonCard />
-              <SkeletonCard />
-            </>
-          ) : (
-            <>
+      {/* Dynamic Product Cards */}
+      <div className={`grid gap-6 justify-center ${products.length > 1 ? "grid-cols-1 md:grid-cols-2 max-w-4xl" : "grid-cols-1 max-w-sm"} mx-auto mt-6`}>
+        {!loaded ? (
+           Array.from({ length: products.length || 1 }).map((_, i) => <SkeletonCard key={i} />)
+        ) : (
+          products.map((product) => {
+            const productSlug = product.name.toLowerCase().replace(/\s+/g, '-');
+            return (
               <ProductCard
-                name="Custom T-Shirts"
-                description="Premium cotton tees with vibrant full-colour print. Perfect for teams, events, or retail."
-                image="/T-Shirts.png"
-                isNew
-                onCustomize={() => openModal("Custom T-Shirts")}
-                customizeLabel="Customize T-Shirts"
+                key={product.id}
+                name={product.name}
+                description={product.description}
+                image={product.image}
+                isNew={product.isNew}
+                productSlug={`${slug}?p=${productSlug}`} // Using query param so the dynamic route can parse the category slug and the product slug
               />
-              <ProductCard
-                name="Custom Hoodies"
-                description="Warm fleece hoodies with your custom design. Available in multiple sizes and colours."
-                image="/Hoodies.png"
-                onCustomize={() => openModal("Custom Hoodies")}
-                customizeLabel="Customize Hoodies"
-              />
-            </>
-          )}
-        </div>
-      ) : (
-        /* ── ALL OTHER CATEGORIES: Single card ── */
-        <div className="flex justify-center mt-6">
-          {!loaded || !product ? (
-            <SkeletonCard />
-          ) : (
-            <div className="flex flex-col rounded-3xl overflow-hidden bg-white shadow-xl max-w-sm w-full border border-gray-100">
-              <div className="w-full relative bg-gray-50" style={{ height: "300px" }}>
-                <Image src={product.image} alt={product.name} fill className="object-contain p-4" />
-                {product.isNew && (
-                  <span
-                    className="absolute top-4 right-4 z-10 text-[10px] font-bold px-3 py-1.5 rounded-full text-white shadow-sm"
-                    style={{ backgroundColor: siteConfig.colors.accent }}
-                  >
-                    NEW
-                  </span>
-                )}
-              </div>
-              <div className="flex flex-col p-6 sm:p-8 gap-4 text-center">
-                <div>
-                  <h3 className="font-bold text-xl mb-2" style={{ color: siteConfig.colors.dark }}>{product.name}</h3>
-                  <p className="text-sm text-gray-500 leading-relaxed">{product.description}</p>
-                </div>
-                <button
-                  onClick={() => openModal(product.name)}
-                  className="mt-4 w-full flex items-center justify-center gap-2 py-3.5 rounded-xl text-sm font-bold text-white transition-all duration-200 hover:-translate-y-0.5 shadow-md hover:shadow-lg"
-                  style={{ backgroundColor: siteConfig.colors.accent }}
-                >
-                  <Settings2 size={16} />
-                  Customize {product.name.replace("Custom ", "")}
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-      )}
+            )
+          })
+        )}
+      </div>
 
       {/* ── FRAME GALLERY ── */}
       {isFrame && loaded && (
-        <GallerySection title="Ready-made Frames" images={frameGalleryImages} />
+        <GallerySection 
+          title="Ready-made Frames" 
+          images={frameGalleryImages} 
+          onImageClick={() => router.push(`/products/frame?p=custom-framed-poster`)}
+        />
       )}
 
       {/* ── T-SHIRT GALLERY ── */}
       {isTshirts && loaded && (
-        <GallerySection title="Ready-Made T-Shirts" images={tshirtGalleryImages} />
-      )}
-
-      {/* Modal */}
-      {product && (
-        <CustomizationModal
-          isOpen={modalOpen}
-          onClose={() => setModalOpen(false)}
-          productName={modalProductName || product.name}
-          fields={getModalFields(slug)}
-          examples={getModalExamples(slug)}
-          pricing={getPricingNode(slug)}
-          fileRequired={["banners", "business-cards", "flyers", "stickers", "roll-up"].includes(slug)}
+        <GallerySection 
+          title="Ready-Made T-Shirts" 
+          images={tshirtGalleryImages} 
+          onImageClick={() => router.push(`/products/t-shirts?p=custom-t-shirt`)}
         />
       )}
     </>

@@ -8,7 +8,20 @@ export const metadata = {
   description: "Browse all custom printing categories and products from ROMIZ PRINT.",
 };
 
-export default function AllCategoriesPage() {
+export default function AllCategoriesPage({ searchParams }: { searchParams: { filter?: string } }) {
+  const filter = searchParams.filter;
+  let displayedCategories = categories;
+
+  if (filter === "marketing") {
+    displayedCategories = categories.filter(c => ["business-cards", "flyers", "pens"].includes(c.slug));
+  } else if (filter === "banners") {
+    displayedCategories = categories.filter(c => ["banners", "roll-up", "frame"].includes(c.slug));
+  } else if (filter === "apparel") {
+    displayedCategories = categories.filter(c => ["t-shirts", "tote-bags"].includes(c.slug));
+  } else if (filter === "merch") {
+    displayedCategories = categories.filter(c => ["stickers", "mugs"].includes(c.slug));
+  }
+
   return (
     <div style={{ backgroundColor: siteConfig.colors.background }} className="min-h-screen">
       {/* ── Hero ── */}
@@ -44,7 +57,7 @@ export default function AllCategoriesPage() {
                 fontFamily: "var(--font-space-grotesk), system-ui, sans-serif",
               }}
             >
-              All Categories
+              {filter ? `${filter.charAt(0).toUpperCase() + filter.slice(1)} Categories` : "All Categories"}
             </h1>
             <p className="text-sm sm:text-base text-gray-500 leading-relaxed max-w-lg">
               Explore our complete range of premium custom printing solutions. From high-impact banners and professional business cards to personalized apparel and promotional items.
@@ -57,7 +70,7 @@ export default function AllCategoriesPage() {
       <section className="w-full px-4 sm:px-6 lg:px-8 py-16">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-6 gap-y-12 justify-items-center">
-            {categories.map((cat) => {
+            {displayedCategories.map((cat) => {
               const Icon = cat.icon;
               return (
                 <Link

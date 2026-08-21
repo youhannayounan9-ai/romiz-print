@@ -19,12 +19,12 @@ interface Product {
 const products: Product[] = [
   {
     id: 1,
-    name: "Roll Up Banner",
-    description: "Ultra-clear 85×200 cm banner. Vibrant CMYK, premium matte finish, anti-curl polypropylene.",
+    name: "Custom Frames",
+    description: "Premium framed posters, multiple sizes and colors.",
     isNew: true,
-    image: "/roll-up-banner.png",
-    category: "Displays",
-    categorySlug: "roll-up",
+    image: "/Frame customize.png",
+    category: "Frames",
+    categorySlug: "frame",
     bgColor: "#E8EEF7",
   },
   {
