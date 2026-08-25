@@ -3,10 +3,11 @@
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Search, User, Menu, X, ShoppingCart } from "lucide-react";
+import { Search, User, Menu, X, ShoppingCart, Sun, Moon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { siteConfig } from "../config/site";
 import { useCart } from "../context/CartContext";
+import { useTheme } from "../context/ThemeContext";
 import { productData, CategoryProduct } from "../data/products";
 
 const POPULAR_SEARCH_TAGS = ["Mugs", "Stickers", "Business Cards", "T-Shirts", "Roll Up"];
@@ -21,6 +22,7 @@ export default function Header() {
   const searchRef = useRef<HTMLFormElement>(null);
   const router = useRouter();
   const { totalItems } = useCart();
+  const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
     setMounted(true);
@@ -177,6 +179,26 @@ export default function Header() {
 
           {/* ── RIGHT: Actions ── */}
           <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
+            {/* Dark Mode Toggle */}
+            <button
+              onClick={toggleTheme}
+              aria-label="Toggle Dark Mode"
+              className="p-2 rounded-lg transition-all duration-300 hover:bg-gray-100 text-gray-700 relative overflow-hidden"
+              title={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
+            >
+              <span
+                className="transition-all duration-300"
+                style={{ display: "block", transform: theme === "dark" ? "rotate(0deg) scale(1)" : "rotate(180deg) scale(0.8)", opacity: theme === "dark" ? 1 : 0, position: theme === "dark" ? "relative" : "absolute" }}
+              >
+                <Sun size={22} />
+              </span>
+              <span
+                className="transition-all duration-300"
+                style={{ display: "block", transform: theme === "light" ? "rotate(0deg) scale(1)" : "rotate(180deg) scale(0.8)", opacity: theme === "light" ? 1 : 0, position: theme === "light" ? "relative" : "absolute" }}
+              >
+                <Moon size={22} />
+              </span>
+            </button>
             {/* Account Icon */}
             <Link
               href="/admin?access=ROMIZ_ADMIN_2026"

@@ -38,7 +38,7 @@ const mainCategories = [
   },
   {
     title: "Apparel & Bags",
-    subtitle: "T-Shirts, Hoodies, Tote Bags",
+    subtitle: "T-Shirts, Hoodies, Tote Bags, Caps",
     icon: Shirt,
     href: "/categories?filter=apparel-bags",
     gradient: "linear-gradient(135deg, #1E2530 0%, #37474f 100%)",

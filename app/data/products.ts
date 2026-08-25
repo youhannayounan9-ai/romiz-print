@@ -19,7 +19,7 @@ export const productData: Record<string, CategoryProduct[]> = {
       image: "/roll-up-banner.png",
       bgColor: "#E8EEF7",
       isNew: true,
-      basePrice: 1,
+      basePrice: 1600,
     },
   ],
   frame: [
@@ -41,7 +41,7 @@ export const productData: Record<string, CategoryProduct[]> = {
       description: "Durable custom vinyl banners available in multiple widths and heights.",
       image: "/Banner1.png",
       bgColor: "#E3EBF0",
-      basePrice: 1,
+      basePrice: 135,
     },
   ],
   "business-cards": [
@@ -63,7 +63,7 @@ export const productData: Record<string, CategoryProduct[]> = {
       description: "Eco-friendly tote bags custom printed with your unique design or logo.",
       image: "/Tote Bag.png",
       bgColor: "#E8F5E9",
-      basePrice: 1,
+      basePrice: 200,
     },
   ],
   flyers: [
@@ -85,7 +85,7 @@ export const productData: Record<string, CategoryProduct[]> = {
       description: "Personalised classic white mug with full-colour sublimation printing.",
       image: "/Customize your mug.png.jpeg",
       bgColor: "#E8EEF7",
-      basePrice: 1,
+      basePrice: 170,
     },
     {
       id: "mug-magic-1",
@@ -94,7 +94,7 @@ export const productData: Record<string, CategoryProduct[]> = {
       description: "Colour-changing magic mug that reveals your design when filled with hot liquid.",
       image: "/black magic mug.png",
       bgColor: "#1E2530",
-      basePrice: 1,
+      basePrice: 170,
       isNew: true,
     }
   ],
@@ -140,7 +140,29 @@ export const productData: Record<string, CategoryProduct[]> = {
       basePrice: 700, // Assuming base price same as t-shirt for now, can adjust in product page
     }
   ],
+  caps: [
+    {
+      id: "cap-1",
+      slug: "custom-cap",
+      name: "Custom Cap",
+      description: "Premium embroidered or printed caps with your logo or design. Available in adjustable sizes.",
+      image: "/Caps.png",
+      bgColor: "#E8F5E9",
+      isNew: true,
+      basePrice: 275,
+    },
+  ],
 };
+
+// Slugs for variable-priced products that require a quote
+export const QUOTE_BASED_SLUGS = new Set([
+  "custom-business-cards",
+  "custom-stickers",
+  "custom-flyers",
+]);
+
+// Per-meter pricing for banners
+export const BANNER_PRICE_PER_METER = 135;
 
 /** Get products for any category slug */
 export function getProductsForCategory(slug: string, categoryName: string): CategoryProduct[] {
