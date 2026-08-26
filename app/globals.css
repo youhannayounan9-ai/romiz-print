@@ -10,54 +10,17 @@
   --font-body: var(--font-inter);
 }
 
+/* Tailwind v4 dark mode selector */
+@variant dark (&:where(.dark, .dark *));
+
 :root {
   --background: #F5F7FA;
   --foreground: #1E2530;
 }
 
-/* Dark Mode Variables */
-html.dark {
-  --background: #0f1117;
+.dark {
+  --background: #0b0f1a;
   --foreground: #e8eaf0;
-  color-scheme: dark;
-}
-
-html.dark body {
-  background-color: #0f1117;
-  color: #e8eaf0;
-}
-
-html.dark .bg-white {
-  background-color: #1a1f2e !important;
-}
-
-html.dark .bg-\[\#F5F7FA\] {
-  background-color: #0f1117 !important;
-}
-
-html.dark .border-gray-100 {
-  border-color: #2a2f3e !important;
-}
-
-html.dark .text-gray-600,
-html.dark .text-gray-500 {
-  color: #9ca3af !important;
-}
-
-html.dark .bg-gray-50 {
-  background-color: #1a1f2e !important;
-}
-
-html.dark .bg-gray-100 {
-  background-color: #232838 !important;
-}
-
-html.dark .border-gray-200 {
-  border-color: #2a2f3e !important;
-}
-
-html.dark .shadow-sm {
-  box-shadow: 0 1px 3px 0 rgba(0,0,0,0.4) !important;
 }
 
 html {
@@ -65,12 +28,12 @@ html {
 }
 
 body {
-  background-color: var(--background, #F5F7FA);
-  color: var(--foreground, #1E2530);
+  background-color: var(--background);
+  color: var(--foreground);
   font-family: var(--font-inter), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 h1, h2, h3, h4, h5, h6 {

@@ -7,7 +7,7 @@ import Footer from "./components/Footer";
 import FloatingWhatsApp from "./components/FloatingWhatsApp";
 import { siteConfig } from "./config/site";
 import { CartProvider } from "./context/CartContext";
-import { ThemeProvider } from "./context/ThemeContext";
+import { Providers } from "./providers";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -57,13 +57,14 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${spaceGrotesk.variable} ${inter.variable} h-full antialiased`}
     >
       <head>
         <link rel="manifest" href="/manifest.json" />
       </head>
-      <body className="min-h-full flex flex-col" style={{ backgroundColor: "#F5F7FA" }}>
-        <ThemeProvider>
+      <body className="min-h-full flex flex-col bg-[#F5F7FA] dark:bg-gray-950">
+        <Providers>
           <CartProvider>
             <Header />
             <NavRow />
@@ -71,7 +72,7 @@ export default function RootLayout({
             <Footer />
             <FloatingWhatsApp />
           </CartProvider>
-        </ThemeProvider>
+        </Providers>
       </body>
     </html>
   );

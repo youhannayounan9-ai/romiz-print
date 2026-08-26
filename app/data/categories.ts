@@ -48,7 +48,7 @@ export const categories: Category[] = [
   { slug: "pens", name: "Pens", icon: Pen },
   { slug: "stickers", name: "Stickers", icon: Sticker },
   { slug: "t-shirts", name: "T-Shirts", icon: Shirt },
-  { slug: "caps", name: "Caps", icon: HardHat, isNew: true },
+  { slug: "caps", name: "Caps", icon: HardHat },
 ];
 
 export const quickLinkSlugs = [
