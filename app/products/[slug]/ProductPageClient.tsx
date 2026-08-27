@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { ShoppingCart, CheckCircle2, ChevronDown, ChevronUp, Ruler, Calculator } from "lucide-react";
+import { ShoppingCart, CheckCircle2, Ruler, Calculator } from "lucide-react";
 import { siteConfig } from "../../config/site";
 import { getProductBySlug, productData, QUOTE_BASED_SLUGS, BANNER_PRICE_PER_METER } from "../../data/products";
 import { useCart } from "../../context/CartContext";
@@ -72,7 +72,13 @@ export default function ProductPageClient({
   const isQuoteBased = product ? QUOTE_BASED_SLUGS.has(product.slug) : false;
   const isBanner = product?.slug === "custom-vinyl-banner";
   const isPens = product?.slug === "custom-pens";
+  const isFlyers = product?.slug === "custom-flyers";
+  const isStamp = product?.slug === "custom-stamp";
+  
   const isCap = categorySlug === "caps";
+  const isTShirts = categorySlug === "t-shirts"; // includes lab coats, hoodies, t-shirts
+  const isFootballKit = categorySlug === "football-kits";
+  const isApparel = isTShirts || isFootballKit;
 
   // For pens: min 50, step 50
   const qtyMin = isPens ? 50 : 1;
@@ -80,19 +86,23 @@ export default function ProductPageClient({
 
   useEffect(() => {
     if (product) {
-      const defaultQty = isPens ? 50 : 1;
+      const defaultQty = isPens ? 50 : isFlyers ? 1000 : 1;
       setQuantity(defaultQty);
       setQuantityInput(defaultQty.toString());
       setTotalPrice(product.basePrice);
       // Initialize default options
       if (categorySlug === "frame") {
         setOptions({ size: "15x21 cm", color: "Black", "custom design": "No" });
-      } else if (categorySlug === "t-shirts") {
-        setOptions({ print: "Standard" });
+      } else if (isApparel) {
+        setOptions({ size: "M" });
+      } else if (isFlyers) {
+        setOptions({ size: "A5", paper: "130g Glossy" });
+      } else if (isStamp) {
+        setOptions({ type: "Rectangular Standard", ink: "Blue" });
       }
     }
     setLoaded(true);
-  }, [product, categorySlug, isPens]);
+  }, [product, categorySlug, isPens, isApparel, isFlyers, isStamp]);
 
   // Recalculate price when options change
   useEffect(() => {
@@ -105,17 +115,25 @@ export default function ProductPageClient({
       else newPrice = 250; // 15x21 cm
 
       if (options["custom design"] === "Yes") newPrice += 50;
-    } else if (categorySlug === "t-shirts") {
-      if (options.print === "Custom Print") newPrice = 750;
-      else newPrice = 700;
     } else if (isBanner) {
       newPrice = bannerMeters * BANNER_PRICE_PER_METER;
     } else if (isPens) {
       newPrice = product.basePrice * quantity;
+    } else if (isStamp) {
+      if (options.type === "Pocket Stamp") newPrice = 150;
+      else if (options.type === "Rectangular Standard") newPrice = 250;
+      else if (options.type === "Round/Square") newPrice = 350;
+      else if (options.type === "Date Stamp") newPrice = 450;
+    } else if (isFlyers) {
+      let base = 1500;
+      if (options.size === "A4") base += 500;
+      if (options.paper === "150g Glossy") base += 200;
+      else if (options.paper === "300g Matte") base += 500;
+      newPrice = base * (quantity / 1000);
     }
 
     setTotalPrice(newPrice);
-  }, [options, categorySlug, product, isBanner, bannerMeters, isPens, quantity]);
+  }, [options, categorySlug, product, isBanner, bannerMeters, isPens, quantity, isStamp, isFlyers]);
 
   if (!loaded) return <div className="min-h-screen pt-20 text-center">Loading...</div>;
   if (!product) {
@@ -129,9 +147,10 @@ export default function ProductPageClient({
   const handleQuantitySubmit = () => {
     setIsEditingQuantity(false);
     const parsed = parseInt(quantityInput, 10);
+    const customStep = isFlyers ? 1000 : qtyStep;
     if (!isNaN(parsed) && parsed >= qtyMin) {
       // Snap to nearest step
-      const snapped = Math.round(parsed / qtyStep) * qtyStep;
+      const snapped = Math.round(parsed / customStep) * customStep;
       setQuantity(Math.max(qtyMin, snapped));
       setQuantityInput(Math.max(qtyMin, snapped).toString());
     } else {
@@ -142,19 +161,21 @@ export default function ProductPageClient({
   const handleAddToCart = () => {
     const cartPrice = isBanner 
       ? totalPrice  // total for selected meters
-      : isPens 
-        ? totalPrice // total for pens
+      : (isPens || isFlyers) 
+        ? totalPrice 
         : totalPrice;
 
     addItem({
       productId: product.id,
+      productSlug: product.slug,
       name: product.name,
       image: searchParams?.image || product.image,
       price: cartPrice,
-      quantity: isBanner ? 1 : quantity,
+      quantity: (isBanner || isPens || isFlyers) ? 1 : quantity, // if total is calculated in price, qt=1
       options: {
         ...options,
         ...(isBanner ? { "Meters": bannerMeters.toString() } : {}),
+        ...((isPens || isFlyers) ? { "Quantity": quantity.toString() } : {}),
         ...(uploadedUrl ? { "Design File": uploadedUrl } : {})
       },
     });
@@ -167,14 +188,14 @@ export default function ProductPageClient({
 
   // Size chart config
   const sizeChartSrc = categorySlug === "frame" ? "/Frame sizes.png.png"
-    : (categorySlug === "t-shirts" || isCap) ? "/T-shirt sizes.png.png"
+    : isApparel ? "/T-shirt sizes.png.png"
     : null;
   const sizeChartLabel = categorySlug === "frame" ? "Frame Size Chart"
-    : (categorySlug === "t-shirts" || isCap) ? "Apparel Size Chart"
+    : isApparel ? "Apparel Size Chart"
     : null;
 
   return (
-    <div className="min-h-screen py-10 px-4 sm:px-6 lg:px-8 bg-white">
+    <div className="min-h-screen py-10 px-4 sm:px-6 lg:px-8 bg-white dark:bg-[#0f1219]">
       {sizeChartOpen && sizeChartSrc && sizeChartLabel && (
         <SizeChartModal src={sizeChartSrc} label={sizeChartLabel} onClose={() => setSizeChartOpen(false)} />
       )}
@@ -183,15 +204,15 @@ export default function ProductPageClient({
         
         {/* Left: Image Gallery */}
         <div className="flex-1">
-          <div className="relative w-full h-[400px] sm:h-[500px] rounded-2xl overflow-hidden bg-gray-50 border border-gray-100 flex items-center justify-center">
+          <div className="relative w-full h-[400px] sm:h-[500px] rounded-2xl overflow-hidden bg-gray-50 dark:bg-[#1a1f2e] border border-gray-100 dark:border-gray-800 flex items-center justify-center">
             <Image src={displayImage} alt={product.name} fill className="object-contain p-8" />
           </div>
 
           {/* Flyers pricing info image */}
-          {product.slug === "custom-flyers" && (
+          {isFlyers && (
             <div className="mt-6">
               <p className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">Pricing Details</p>
-              <div className="relative w-full rounded-2xl overflow-hidden border border-gray-100 shadow-sm" style={{ height: 300 }}>
+              <div className="relative w-full rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-800 shadow-sm" style={{ height: 300 }}>
                 <Image src="/FlyersInfo.png" alt="Flyers Pricing" fill className="object-contain" />
               </div>
             </div>
@@ -213,10 +234,10 @@ export default function ProductPageClient({
         {/* Right: Details & Form */}
         <div className="flex-1 flex flex-col gap-6">
           <div>
-            <h1 className="text-3xl sm:text-4xl font-bold mb-2" style={{ color: siteConfig.colors.dark }}>
+            <h1 className="text-3xl sm:text-4xl font-bold mb-2 text-gray-900 dark:text-white">
               {product.name}
             </h1>
-            <p className="text-gray-600 leading-relaxed text-lg">{product.description}</p>
+            <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-lg">{product.description}</p>
           </div>
 
           {/* Price Display */}
@@ -232,18 +253,18 @@ export default function ProductPageClient({
           ) : isBanner ? (
             <div>
               <div className="text-3xl font-bold" style={{ color: siteConfig.colors.primary }}>
-                {(bannerMeters * BANNER_PRICE_PER_METER).toLocaleString()}{" "}
+                {totalPrice.toLocaleString()}{" "}
                 <span className="text-xl">EGP</span>
               </div>
               <div className="text-sm text-gray-500 mt-1">{BANNER_PRICE_PER_METER} EGP / meter</div>
             </div>
-          ) : isPens ? (
+          ) : (isPens || isFlyers) ? (
             <div>
               <div className="text-3xl font-bold" style={{ color: siteConfig.colors.primary }}>
-                {(product.basePrice * quantity).toLocaleString()}{" "}
+                {totalPrice.toLocaleString()}{" "}
                 <span className="text-xl">EGP</span>
               </div>
-              <div className="text-sm text-gray-500 mt-1">{product.basePrice} EGP per piece</div>
+              <div className="text-sm text-gray-500 mt-1">Total price for {quantity} items</div>
             </div>
           ) : (
             <div className="text-3xl font-bold" style={{ color: siteConfig.colors.primary }}>
@@ -251,28 +272,28 @@ export default function ProductPageClient({
             </div>
           )}
 
-          <hr className="border-gray-100" />
+          <hr className="border-gray-100 dark:border-gray-800" />
 
           {/* Banner Calculator */}
           {isBanner && (
-            <div className="rounded-2xl border-2 p-5" style={{ borderColor: siteConfig.colors.lightBar, backgroundColor: "#f0f5ff" }}>
+            <div className="rounded-2xl border-2 p-5" style={{ borderColor: siteConfig.colors.lightBar, backgroundColor: "var(--light-bar)" }}>
               <div className="flex items-center gap-2 mb-3">
                 <Calculator size={20} style={{ color: siteConfig.colors.primary }} />
                 <span className="font-bold text-sm" style={{ color: siteConfig.colors.primary }}>Banner Size Calculator</span>
               </div>
-              <label className="block text-sm font-semibold mb-1">How many meters do you need?</label>
+              <label className="block text-sm font-semibold mb-1 text-gray-900 dark:text-white">How many meters do you need?</label>
               <input
                 type="number"
-                min="1"
-                step="1"
+                min="0.1"
+                step="0.1"
                 value={bannerMeters}
-                onChange={(e) => setBannerMeters(Math.max(1, parseInt(e.target.value) || 1))}
-                className="w-full p-3 rounded-lg border border-gray-200 focus:border-[#0B4DA2] outline-none text-lg font-semibold"
+                onChange={(e) => setBannerMeters(Math.max(0.1, parseFloat(e.target.value) || 0.1))}
+                className="w-full p-3 rounded-lg border border-gray-200 dark:border-gray-700 focus:border-[#0B4DA2] bg-white dark:bg-gray-800 outline-none text-lg font-semibold"
               />
               <div className="mt-3 flex items-center justify-between text-sm">
-                <span className="text-gray-500">Rate: {BANNER_PRICE_PER_METER} EGP / meter</span>
+                <span className="text-gray-600 dark:text-gray-400">Rate: {BANNER_PRICE_PER_METER} EGP / meter</span>
                 <span className="font-bold text-lg" style={{ color: siteConfig.colors.accent }}>
-                  Total: {(bannerMeters * BANNER_PRICE_PER_METER).toLocaleString()} EGP
+                  Total: {totalPrice.toLocaleString()} EGP
                 </span>
               </div>
             </div>
@@ -283,11 +304,11 @@ export default function ProductPageClient({
             {categorySlug === "frame" && (
               <>
                 <div>
-                  <label className="block text-sm font-semibold mb-1">Size</label>
+                  <label className="block text-sm font-semibold mb-1 text-gray-900 dark:text-white">Size</label>
                   <select 
                     value={options.size || "15x21 cm"}
                     onChange={(e) => handleOptionChange("size", e.target.value)}
-                    className="w-full p-3 rounded-lg border border-gray-200 focus:border-[#0B4DA2] focus:ring-1 focus:ring-[#0B4DA2] outline-none transition-colors"
+                    className="w-full p-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:border-[#0B4DA2] outline-none"
                   >
                     <option value="15x21 cm">15x21 cm (250 EGP)</option>
                     <option value="20x30 cm">20x30 cm (350 EGP)</option>
@@ -295,11 +316,11 @@ export default function ProductPageClient({
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold mb-1">Frame Color</label>
+                  <label className="block text-sm font-semibold mb-1 text-gray-900 dark:text-white">Frame Color</label>
                   <select 
                     value={options.color || "Black"}
                     onChange={(e) => handleOptionChange("color", e.target.value)}
-                    className="w-full p-3 rounded-lg border border-gray-200 focus:border-[#0B4DA2] outline-none"
+                    className="w-full p-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:border-[#0B4DA2] outline-none"
                   >
                     <option value="Black">Black</option>
                     <option value="Brown">Brown</option>
@@ -315,36 +336,97 @@ export default function ProductPageClient({
                       onChange={(e) => handleOptionChange("custom design", e.target.checked ? "Yes" : "No")}
                       className="w-4 h-4 rounded border-gray-300 text-[#0B4DA2]"
                     />
-                    <label htmlFor="customDesign" className="text-sm font-medium">Add Custom Design (+50 EGP)</label>
+                    <label htmlFor="customDesign" className="text-sm font-medium text-gray-900 dark:text-white">Add Custom Design (+50 EGP)</label>
                   </div>
                 )}
               </>
             )}
 
-            {categorySlug === "t-shirts" && (
+            {isApparel && (
               <div>
-                <label className="block text-sm font-semibold mb-1">Print Option</label>
+                <label className="block text-sm font-semibold mb-1 text-gray-900 dark:text-white">Size</label>
                 <select 
-                  value={options.print || "Standard"}
-                  onChange={(e) => handleOptionChange("print", e.target.value)}
-                  className="w-full p-3 rounded-lg border border-gray-200 focus:border-[#0B4DA2] outline-none"
+                  value={options.size || "M"}
+                  onChange={(e) => handleOptionChange("size", e.target.value)}
+                  className="w-full p-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:border-[#0B4DA2] outline-none"
                 >
-                  <option value="Standard">Standard (700 EGP)</option>
-                  <option value="Custom Print">Custom Print (750 EGP)</option>
+                  <option value="S">S</option>
+                  <option value="M">M</option>
+                  <option value="L">L</option>
+                  <option value="XL">XL</option>
+                  <option value="2XL">2XL</option>
                 </select>
               </div>
+            )}
+
+            {isStamp && (
+              <>
+                <div>
+                  <label className="block text-sm font-semibold mb-1 text-gray-900 dark:text-white">Stamp Type & Size</label>
+                  <select 
+                    value={options.type || "Rectangular Standard"}
+                    onChange={(e) => handleOptionChange("type", e.target.value)}
+                    className="w-full p-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:border-[#0B4DA2] outline-none"
+                  >
+                    <option value="Pocket Stamp">Pocket Stamp (150 EGP)</option>
+                    <option value="Rectangular Standard">Rectangular Standard (250 EGP)</option>
+                    <option value="Round/Square">Round/Square (350 EGP)</option>
+                    <option value="Date Stamp">Date Stamp (450 EGP)</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold mb-1 text-gray-900 dark:text-white">Ink Color</label>
+                  <select 
+                    value={options.ink || "Blue"}
+                    onChange={(e) => handleOptionChange("ink", e.target.value)}
+                    className="w-full p-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:border-[#0B4DA2] outline-none"
+                  >
+                    <option value="Blue">Blue</option>
+                    <option value="Black">Black</option>
+                    <option value="Red">Red</option>
+                  </select>
+                </div>
+              </>
+            )}
+
+            {isFlyers && (
+              <>
+                <div>
+                  <label className="block text-sm font-semibold mb-1 text-gray-900 dark:text-white">Flyer Size</label>
+                  <select 
+                    value={options.size || "A5"}
+                    onChange={(e) => handleOptionChange("size", e.target.value)}
+                    className="w-full p-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:border-[#0B4DA2] outline-none"
+                  >
+                    <option value="A5">A5</option>
+                    <option value="A4">A4 (+500 EGP per 1000)</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold mb-1 text-gray-900 dark:text-white">Paper Type & Weight</label>
+                  <select 
+                    value={options.paper || "130g Glossy"}
+                    onChange={(e) => handleOptionChange("paper", e.target.value)}
+                    className="w-full p-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:border-[#0B4DA2] outline-none"
+                  >
+                    <option value="130g Glossy">130g Glossy</option>
+                    <option value="150g Glossy">150g Glossy (+200 EGP per 1000)</option>
+                    <option value="300g Matte">300g Matte (+500 EGP per 1000)</option>
+                  </select>
+                </div>
+              </>
             )}
 
             {/* General Customization Note & File Upload */}
             {!isReadyMade && !isQuoteBased && (
               <>
                 <div>
-                  <label className="block text-sm font-semibold mb-1">Customization Notes</label>
+                  <label className="block text-sm font-semibold mb-1 text-gray-900 dark:text-white">Customization Notes</label>
                   <textarea 
                     value={options.notes || ""}
                     onChange={(e) => handleOptionChange("notes", e.target.value)}
                     placeholder="E.g. brand colours, text, logo placement..."
-                    className="w-full p-3 rounded-lg border border-gray-200 focus:border-[#0B4DA2] outline-none h-24 resize-none"
+                    className="w-full p-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:border-[#0B4DA2] outline-none h-24 resize-none"
                   />
                 </div>
                 
@@ -373,28 +455,28 @@ export default function ProductPageClient({
             )}
           </div>
 
-          <hr className="border-gray-100 my-2" />
+          <hr className="border-gray-100 dark:border-gray-800 my-2" />
 
           {/* Add to Cart / Quantity */}
           {!isQuoteBased && (
             <div className="flex items-center gap-4">
-              <div className="flex items-center bg-gray-50 rounded-lg border border-gray-200 p-1">
+              <div className="flex items-center bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-1">
                 <button 
-                  onClick={() => setQuantity(q => Math.max(qtyMin, q - qtyStep))}
-                  className="w-10 h-10 flex items-center justify-center text-xl font-medium hover:bg-gray-200 rounded-md transition-colors"
+                  onClick={() => setQuantity(q => Math.max(isFlyers ? 1000 : qtyMin, q - (isFlyers ? 1000 : qtyStep)))}
+                  className="w-10 h-10 flex items-center justify-center text-xl font-medium hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md transition-colors"
                 >-</button>
                 
                 {isEditingQuantity ? (
                   <input 
                     type="number"
-                    min={qtyMin}
-                    step={qtyStep}
+                    min={isFlyers ? 1000 : qtyMin}
+                    step={isFlyers ? 1000 : qtyStep}
                     autoFocus
                     value={quantityInput}
                     onChange={(e) => setQuantityInput(e.target.value)}
                     onBlur={handleQuantitySubmit}
                     onKeyDown={(e) => e.key === "Enter" && handleQuantitySubmit()}
-                    className="w-14 text-center font-semibold bg-white border border-[#0B4DA2] rounded outline-none"
+                    className="w-16 text-center font-semibold bg-white dark:bg-gray-900 border border-[#0B4DA2] rounded outline-none text-gray-900 dark:text-white"
                   />
                 ) : (
                   <span 
@@ -402,7 +484,7 @@ export default function ProductPageClient({
                       setQuantityInput(quantity.toString());
                       setIsEditingQuantity(true);
                     }}
-                    className="w-14 text-center font-semibold cursor-text select-none"
+                    className="w-16 text-center font-semibold cursor-text select-none text-gray-900 dark:text-white"
                     title="Double-click to edit"
                   >
                     {quantity}
@@ -410,13 +492,16 @@ export default function ProductPageClient({
                 )}
 
                 <button 
-                  onClick={() => setQuantity(q => q + qtyStep)}
-                  className="w-10 h-10 flex items-center justify-center text-xl font-medium hover:bg-gray-200 rounded-md transition-colors"
+                  onClick={() => setQuantity(q => q + (isFlyers ? 1000 : qtyStep))}
+                  className="w-10 h-10 flex items-center justify-center text-xl font-medium hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md transition-colors"
                 >+</button>
               </div>
 
               {isPens && (
                 <span className="text-xs text-gray-500">Min. 50 pcs • Steps of 50</span>
+              )}
+              {isFlyers && (
+                <span className="text-xs text-gray-500">Min. 1000 pcs • Steps of 1000</span>
               )}
 
               <button 

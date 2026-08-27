@@ -29,10 +29,15 @@ export default function CartPage() {
   if (!mounted) return <div className="min-h-screen pt-20 text-center">Loading Cart...</div>;
 
   const handleCheckout = () => {
-    // Generate a WhatsApp message with cart details
+    // Generate a WhatsApp message with cart details using text and links
+    const baseUrl = window.location.origin;
     let message = "Hello, I would like to order the following items:\n\n";
+    
     items.forEach((item, index) => {
-      message += `${index + 1}. ${item.name} (x${item.quantity})\n`;
+      const productLink = item.productSlug ? `${baseUrl}/products/${item.productSlug}` : `${baseUrl}`;
+      message += `${index + 1}. *${item.name}* (x${item.quantity})\n`;
+      message += `   Link: ${productLink}\n`;
+      
       if (item.options) {
         Object.entries(item.options).forEach(([k, v]) => {
           message += `   - ${k}: ${v}\n`;
@@ -40,7 +45,8 @@ export default function CartPage() {
       }
       message += `   - Price: ${item.price * item.quantity} EGP\n\n`;
     });
-    message += `Total: ${subtotal} EGP\n\n`;
+    
+    message += `*Total: ${subtotal} EGP*\n\n`;
     message += "Please let me know how to proceed.";
 
     const waUrl = `https://wa.me/201041998484?text=${encodeURIComponent(message)}`;

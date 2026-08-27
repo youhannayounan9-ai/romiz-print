@@ -5,6 +5,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 export interface CartItem {
   id: string; // Unique ID for the cart item (usually productId + options hash)
   productId: string | number;
+  productSlug: string;
   name: string;
   image: string;
   price: number;

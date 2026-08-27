@@ -48,10 +48,12 @@ export const categories: Category[] = [
   { slug: "pens", name: "Pens", icon: Pen },
   { slug: "stickers", name: "Stickers", icon: Sticker },
   { slug: "t-shirts", name: "T-Shirts", icon: Shirt },
-  { slug: "caps", name: "Caps", icon: HardHat },
+  { slug: "football-kits", name: "Football Kits", icon: Shirt, isNew: true },
+  { slug: "caps", name: "Caps", icon: HardHat, isNew: true },
 ];
 
 export const quickLinkSlugs = [
+  "caps",
   "roll-up",
   "frame",
   "banners",
@@ -60,4 +62,6 @@ export const quickLinkSlugs = [
   "flyers",
   "mugs",
   "pens",
+  "stickers",
+  "t-shirts",
 ];

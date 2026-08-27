@@ -21,11 +21,27 @@ const frameGalleryImages1 = frameNumbers1.map((n) => {
 const frameNumbers2 = Array.from({ length: 39 }, (_, i) => i + 1);
 const frameGalleryImages2 = frameNumbers2.map(n => `/Frame collection 2/frame (${n}).jpg`);
 
-// Merged Frame Gallery
-const frameGalleryImages = [...frameGalleryImages1, ...frameGalleryImages2];
+// Folder 3: Frame collection 3 (framee (1) to framee (27))
+const frameNumbers3 = Array.from({ length: 27 }, (_, i) => i + 1);
+const frameGalleryImages3 = frameNumbers3.map(n => {
+  const ext = n >= 21 && n <= 27 ? "jpg" : "jpeg";
+  return `/Frame collection 3/framee (${n}).${ext}`;
+});
 
-/* ─── T-shirt collection (1..23, all .jpg) ─── */
+// Merged Frame Gallery
+const frameGalleryImages = [...frameGalleryImages1, ...frameGalleryImages2, ...frameGalleryImages3];
+
+/* ─── Apparel collections ─── */
 const tshirtGalleryImages = Array.from({ length: 23 }, (_, i) => `/T-shirt collection/${i + 1}.jpg`);
+
+const footballKitFiles = [
+  "ac 1.jpg", "ac 2.jpg", "ar 1.jpg", "ar 2.jpg", "bayern 1.jpg", "bayern 2.jpg", 
+  "bc 1.jpg", "bc 2.jpg", "bc 3.jpg", "bc 4.jpg", "ch 1.jpg", "ch 2.jpg", 
+  "in 1.jpg", "in 2.jpg", "jv 1.jpg", "jv 2.jpg", "li 1.jpg", "li 2.jpg", 
+  "man 1.jpg", "man 2.jpg", "man 3.jpg", "man 4.jpg", "man 5.jpg", "man 6.jpg", 
+  "psg 1.jpg", "psg 2.jpg", "rm 1.jpg", "rm 2.jpg", "rm 3.jpg", "rm 4.jpg"
+];
+const footballKitImages = footballKitFiles.map(f => `/football kits/${f}`);
 
 const categoryIntros: Record<string, { headline: string; body: string }> = {
   "roll-up": {
@@ -66,8 +82,16 @@ const categoryIntros: Record<string, { headline: string; body: string }> = {
   },
   "t-shirts": {
     headline: "Custom Apparel Printing in Cairo",
-    body: "Premium cotton t-shirts and hoodies with vibrant print. Perfect for teams, events, or personal use.",
+    body: "Premium cotton t-shirts, hoodies, and lab coats with vibrant print. Perfect for teams, events, or personal use.",
   },
+  "football-kits": {
+    headline: "Football Kits & Teamwear",
+    body: "High-performance football kits ready for your team logo and player names.",
+  },
+  caps: {
+    headline: "Custom Caps & Hats",
+    body: "Premium embroidered or printed caps with your logo or design. Perfect for corporate wear or casual merch.",
+  }
 };
 
 /* ── Skeleton card ── */
@@ -119,6 +143,76 @@ function GallerySection({ title, images, onImageClick }: { title: string; images
     </section>
   );
 }
+
+/* ── T-Shirt Tabbed Gallery section ── */
+function TShirtGallerySection({ onImageClick }: { onImageClick: (src: string, isKit: boolean) => void }) {
+  const [activeTab, setActiveTab] = useState<"all" | "shirts" | "kits">("all");
+
+  const images = activeTab === "all" ? [...tshirtGalleryImages, ...footballKitImages] 
+               : activeTab === "shirts" ? tshirtGalleryImages 
+               : footballKitImages;
+
+  return (
+    <section className="mt-16 w-full">
+      <div className="flex flex-col items-center justify-center gap-6 mb-8">
+        <div className="flex items-center justify-center gap-4 w-full">
+          <span className="flex-1 max-w-24 h-px" style={{ backgroundColor: "#D6E2F0" }} />
+          <h2
+            className="text-2xl sm:text-3xl font-bold text-center whitespace-nowrap"
+            style={{ color: siteConfig.colors.dark, fontFamily: "var(--font-space-grotesk), system-ui, sans-serif" }}
+          >
+            Apparel Collection
+          </h2>
+          <span className="flex-1 max-w-24 h-px" style={{ backgroundColor: "#D6E2F0" }} />
+        </div>
+        
+        {/* Tabs */}
+        <div className="flex flex-wrap justify-center gap-2 p-1 bg-gray-100 rounded-xl">
+          <button 
+            onClick={() => setActiveTab("all")}
+            className={`px-6 py-2 rounded-lg text-sm font-bold transition-all ${activeTab === "all" ? "bg-white shadow-sm text-[#0B4DA2]" : "text-gray-500 hover:text-gray-800"}`}
+          >
+            All Shirts
+          </button>
+          <button 
+            onClick={() => setActiveTab("shirts")}
+            className={`px-6 py-2 rounded-lg text-sm font-bold transition-all ${activeTab === "shirts" ? "bg-white shadow-sm text-[#0B4DA2]" : "text-gray-500 hover:text-gray-800"}`}
+          >
+            Ready-made T-Shirts
+          </button>
+          <button 
+            onClick={() => setActiveTab("kits")}
+            className={`px-6 py-2 rounded-lg text-sm font-bold transition-all ${activeTab === "kits" ? "bg-white shadow-sm text-[#0B4DA2]" : "text-gray-500 hover:text-gray-800"}`}
+          >
+            Football Kits
+          </button>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+        {images.map((src, idx) => {
+          const isKit = src.includes("football kits");
+          return (
+            <div
+              key={idx}
+              className="relative aspect-square rounded-xl overflow-hidden bg-gray-100 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.02] cursor-pointer"
+              onClick={() => onImageClick(src, isKit)}
+            >
+              <Image
+                src={src}
+                alt={`Gallery image ${idx + 1}`}
+                fill
+                className="object-cover"
+                sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 20vw"
+              />
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
 
 /* ── Product card ── */
 function ProductCard({
@@ -241,10 +335,11 @@ export default function CategoryPageClient({ categoryName, slug }: { categoryNam
 
       {/* ── T-SHIRT GALLERY ── */}
       {isTshirts && loaded && (
-        <GallerySection 
-          title="Ready-Made T-Shirts" 
-          images={tshirtGalleryImages} 
-          onImageClick={(src) => router.push(`/products/custom-t-shirt?image=${encodeURIComponent(src)}&readyMade=true`)}
+        <TShirtGallerySection 
+          onImageClick={(src, isKit) => {
+            const productSlug = isKit ? "custom-football-kit" : "custom-t-shirt";
+            router.push(`/products/${productSlug}?image=${encodeURIComponent(src)}&readyMade=true`);
+          }}
         />
       )}
     </>

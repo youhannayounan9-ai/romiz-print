@@ -94,7 +94,7 @@ export const productData: Record<string, CategoryProduct[]> = {
       description: "Colour-changing magic mug that reveals your design when filled with hot liquid.",
       image: "/black magic mug.png",
       bgColor: "#1E2530",
-      basePrice: 170,
+      basePrice: 270,
       isNew: true,
     }
   ],
@@ -138,6 +138,28 @@ export const productData: Record<string, CategoryProduct[]> = {
       image: "/Hoodies.png",
       bgColor: "#E8EEF7",
       basePrice: 700, // Assuming base price same as t-shirt for now, can adjust in product page
+    },
+    {
+      id: "lab-coat-1",
+      slug: "custom-lab-coat",
+      name: "Custom Lab Coat",
+      description: "Professional medical and laboratory coats with custom logo embroidery or print.",
+      image: "/Lab coat.png", // Assuming image exists
+      bgColor: "#F0EBE3",
+      isNew: true,
+      basePrice: 400,
+    }
+  ],
+  "football-kits": [
+    {
+      id: "football-kit-1",
+      slug: "custom-football-kit",
+      name: "Custom Football Kit",
+      description: "Ready-made and custom-printed football kits for teams. High-performance breathable fabric.",
+      image: "/football kits/rm 1.jpg", // Default image
+      bgColor: "#E8EEF7",
+      isNew: true,
+      basePrice: 500, // Placeholder base price
     }
   ],
   caps: [
@@ -152,13 +174,24 @@ export const productData: Record<string, CategoryProduct[]> = {
       basePrice: 275,
     },
   ],
+  stamps: [
+    {
+      id: "stamp-1",
+      slug: "custom-stamp",
+      name: "Custom Rubber Stamp",
+      description: "High-quality self-inking stamps in various sizes and ink colours.",
+      image: "/Stamp.png", // Assuming image exists
+      bgColor: "#E3EBF0",
+      isNew: true,
+      basePrice: 350,
+    }
+  ]
 };
 
 // Slugs for variable-priced products that require a quote
 export const QUOTE_BASED_SLUGS = new Set([
   "custom-business-cards",
   "custom-stickers",
-  "custom-flyers",
 ]);
 
 // Per-meter pricing for banners

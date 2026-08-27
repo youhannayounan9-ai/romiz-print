@@ -22,7 +22,7 @@ import { categories } from "../data/categories";
 const mainCategories = [
   {
     title: "Marketing & Print",
-    subtitle: "Business Cards, Flyers, Pens",
+    subtitle: "Business Cards, Flyers, Pens, Stamps",
     icon: Printer,
     href: "/categories?filter=marketing-print",
     gradient: "linear-gradient(135deg, #0B4DA2 0%, #1565c0 100%)",
@@ -38,7 +38,7 @@ const mainCategories = [
   },
   {
     title: "Apparel & Bags",
-    subtitle: "T-Shirts, Hoodies, Tote Bags, Caps",
+    subtitle: "T-Shirts, Hoodies, Tote Bags, Caps, Lab Coats",
     icon: Shirt,
     href: "/categories?filter=apparel-bags",
     gradient: "linear-gradient(135deg, #1E2530 0%, #37474f 100%)",
@@ -46,7 +46,7 @@ const mainCategories = [
   },
   {
     title: "Custom Merch",
-    subtitle: "Stickers, Mugs & More",
+    subtitle: "Stickers, Mugs, Football Kits",
     icon: Gift,
     href: "/categories?filter=custom-merch",
     gradient: "linear-gradient(135deg, #6a1b9a 0%, #8e24aa 100%)",
