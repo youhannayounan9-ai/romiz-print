@@ -63,7 +63,7 @@ export default function RootLayout({
       <head>
         <link rel="manifest" href="/manifest.json" />
       </head>
-      <body className="min-h-full flex flex-col bg-[#F5F7FA] dark:bg-gray-950">
+      <body className="min-h-full flex flex-col">
         <Providers>
           <CartProvider>
             <Header />

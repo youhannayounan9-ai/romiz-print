@@ -39,14 +39,7 @@ export default function MegaMenu({ isOpen, onClose }: MegaMenuProps) {
                   onClick={onClose}
                   className="group relative flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-[#F5F7FA] transition-all duration-200"
                 >
-                  {cat.isNew && (
-                    <span
-                      className="absolute top-2 right-2 text-[9px] font-bold px-1.5 py-0.5 rounded-full text-white"
-                      style={{ backgroundColor: siteConfig.colors.accent }}
-                    >
-                      NEW
-                    </span>
-                  )}
+
                   <div
                     className="w-10 h-10 rounded-lg flex items-center justify-center transition-colors duration-200"
                     style={{ backgroundColor: "#E8EEF7" }}

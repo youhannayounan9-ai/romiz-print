@@ -141,12 +141,10 @@ function CategoryTile({
   slug,
   name,
   icon: Icon,
-  isNew,
 }: {
   slug: string;
   name: string;
   icon: LucideIcon;
-  isNew?: boolean;
 }) {
   const [hovered, setHovered] = useState(false);
 
@@ -170,14 +168,7 @@ function CategoryTile({
             : "0 2px 8px rgba(0,0,0,0.06)",
         }}
       >
-        {isNew && (
-          <span
-            className="absolute -top-1 -right-1 text-[9px] font-bold px-1.5 py-0.5 rounded-full text-white z-10"
-            style={{ backgroundColor: siteConfig.colors.primary }}
-          >
-            NEW
-          </span>
-        )}
+
         <Icon
           size={26}
           className="transition-colors duration-300"
@@ -245,7 +236,7 @@ export default function ShopByCategory() {
                     slug={cat.slug}
                     name={cat.name}
                     icon={cat.icon}
-                    isNew={cat.isNew}
+
                   />
                 ))}
           </div>

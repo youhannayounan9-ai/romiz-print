@@ -93,14 +93,7 @@ export default async function AllCategoriesPage({ searchParams }: { searchParams
                   >
                     <div className="absolute inset-0 rounded-3xl bg-[#0B4DA2] opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-xl" />
                     
-                    {cat.isNew && (
-                      <span
-                        className="absolute -top-3 -right-3 z-10 text-[10px] font-bold px-2 py-1 rounded-full text-white shadow-sm"
-                        style={{ backgroundColor: siteConfig.colors.accent }}
-                      >
-                        NEW
-                      </span>
-                    )}
+
                     
                     <Icon
                       size={40}

@@ -34,7 +34,7 @@ export interface Category {
   slug: string;
   name: string;
   icon: LucideIcon;
-  isNew?: boolean;
+
 }
 
 export const categories: Category[] = [
@@ -48,8 +48,10 @@ export const categories: Category[] = [
   { slug: "pens", name: "Pens", icon: Pen },
   { slug: "stickers", name: "Stickers", icon: Sticker },
   { slug: "t-shirts", name: "T-Shirts", icon: Shirt },
-  { slug: "football-kits", name: "Football Kits", icon: Shirt, isNew: true },
-  { slug: "caps", name: "Caps", icon: HardHat, isNew: true },
+  { slug: "football-kits", name: "Football Kits", icon: Shirt },
+  { slug: "caps", name: "Caps", icon: HardHat },
+  { slug: "lab-coats", name: "Lab Coats", icon: Shirt },
+  { slug: "stamps", name: "Stamps", icon: FileText },
 ];
 
 export const quickLinkSlugs = [
@@ -64,4 +66,7 @@ export const quickLinkSlugs = [
   "pens",
   "stickers",
   "t-shirts",
+  "football-kits",
+  "lab-coats",
+  "stamps"
 ];

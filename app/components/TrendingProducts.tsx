@@ -9,7 +9,7 @@ interface Product {
   id: number;
   name: string;
   description: string;
-  isNew?: boolean;
+
   image: string;
   category: string;
   categorySlug: string;
@@ -21,7 +21,7 @@ const products: Product[] = [
     id: 1,
     name: "Custom Frames",
     description: "Premium framed posters, multiple sizes and colors.",
-    isNew: true,
+
     image: "/frame (8).jpeg",
     category: "Frames",
     categorySlug: "frame",
@@ -31,7 +31,7 @@ const products: Product[] = [
     id: 2,
     name: "Football Kits",
     description: "Custom and ready-made football kits for teams. High-performance fabric.",
-    isNew: true,
+
     image: "/football kits/rm 1.jpg",
     category: "Apparel",
     categorySlug: "football-kits",
@@ -41,7 +41,7 @@ const products: Product[] = [
     id: "cap-1" as any,
     name: "Custom Caps",
     description: "Premium embroidered or printed caps with your logo or design.",
-    isNew: true,
+
     image: "/Caps.png",
     category: "Apparel",
     categorySlug: "caps",
@@ -51,7 +51,7 @@ const products: Product[] = [
     id: 4,
     name: "Custom Mugs",
     description: "Personalised mugs including classic white and magic colour-changing options.",
-    isNew: true,
+
     image: "/Customize your mug.png.jpeg",
     category: "Drinkware",
     categorySlug: "mugs",
@@ -96,15 +96,7 @@ function ProductCard({ product }: { product: Product }) {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      {/* NEW badge */}
-      {product.isNew && (
-        <div
-          className="absolute top-3 right-3 z-10 text-[10px] font-bold px-2.5 py-1 rounded-full text-white"
-          style={{ backgroundColor: siteConfig.colors.accent }}
-        >
-          NEW
-        </div>
-      )}
+
 
       {/* Category chip */}
       <div

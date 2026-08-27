@@ -5,7 +5,7 @@ export interface CategoryProduct {
   description: string;
   image: string;
   bgColor: string;
-  isNew?: boolean;
+
   basePrice: number;
 }
 
@@ -18,7 +18,7 @@ export const productData: Record<string, CategoryProduct[]> = {
       description: "Ultra-clear banner with vibrant CMYK, premium matte finish, anti-curl polypropylene.",
       image: "/roll-up-banner.png",
       bgColor: "#E8EEF7",
-      isNew: true,
+
       basePrice: 1600,
     },
   ],
@@ -95,7 +95,7 @@ export const productData: Record<string, CategoryProduct[]> = {
       image: "/black magic mug.png",
       bgColor: "#1E2530",
       basePrice: 270,
-      isNew: true,
+
     }
   ],
   pens: [
@@ -146,7 +146,7 @@ export const productData: Record<string, CategoryProduct[]> = {
       description: "Professional medical and laboratory coats with custom logo embroidery or print.",
       image: "/Lab coat.png", // Assuming image exists
       bgColor: "#F0EBE3",
-      isNew: true,
+
       basePrice: 400,
     }
   ],
@@ -158,7 +158,7 @@ export const productData: Record<string, CategoryProduct[]> = {
       description: "Ready-made and custom-printed football kits for teams. High-performance breathable fabric.",
       image: "/football kits/rm 1.jpg", // Default image
       bgColor: "#E8EEF7",
-      isNew: true,
+
       basePrice: 500, // Placeholder base price
     }
   ],
@@ -170,7 +170,7 @@ export const productData: Record<string, CategoryProduct[]> = {
       description: "Premium embroidered or printed caps with your logo or design. Available in adjustable sizes.",
       image: "/Caps.png",
       bgColor: "#E8F5E9",
-      isNew: true,
+
       basePrice: 275,
     },
   ],
@@ -182,7 +182,7 @@ export const productData: Record<string, CategoryProduct[]> = {
       description: "High-quality self-inking stamps in various sizes and ink colours.",
       image: "/Stamp.png", // Assuming image exists
       bgColor: "#E3EBF0",
-      isNew: true,
+
       basePrice: 350,
     }
   ]

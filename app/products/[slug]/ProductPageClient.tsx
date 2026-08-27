@@ -96,7 +96,7 @@ export default function ProductPageClient({
       } else if (isApparel) {
         setOptions({ size: "M" });
       } else if (isFlyers) {
-        setOptions({ size: "A5", paper: "130g Glossy" });
+        setOptions({ size: "A5 (Half Page)", paper: "80g (Simple)", notes: "" });
       } else if (isStamp) {
         setOptions({ type: "Rectangular Standard", ink: "Blue" });
       }
@@ -125,10 +125,12 @@ export default function ProductPageClient({
       else if (options.type === "Round/Square") newPrice = 350;
       else if (options.type === "Date Stamp") newPrice = 450;
     } else if (isFlyers) {
-      let base = 1500;
-      if (options.size === "A4") base += 500;
-      if (options.paper === "150g Glossy") base += 200;
-      else if (options.paper === "300g Matte") base += 500;
+      let base = 1200;
+      if (options.size === "A4 (Full Page)") base = 1800;
+      else if (options.size === "A3") base = 2800;
+      if (options.paper === "150g Glossy (Standard)") base += 200;
+      else if (options.paper === "250g Glossy (Heavy)") base += 500;
+      else if (options.paper === "300g Cardstock (Premium)") base += 900;
       newPrice = base * (quantity / 1000);
     }
 
@@ -394,25 +396,36 @@ export default function ProductPageClient({
                 <div>
                   <label className="block text-sm font-semibold mb-1 text-gray-900 dark:text-white">Flyer Size</label>
                   <select 
-                    value={options.size || "A5"}
+                    value={options.size || "A5 (Half Page)"}
                     onChange={(e) => handleOptionChange("size", e.target.value)}
                     className="w-full p-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:border-[#0B4DA2] outline-none"
                   >
-                    <option value="A5">A5</option>
-                    <option value="A4">A4 (+500 EGP per 1000)</option>
+                    <option value="A5 (Half Page)">A5 — Half Page</option>
+                    <option value="A4 (Full Page)">A4 — Full Page</option>
+                    <option value="A3">A3</option>
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold mb-1 text-gray-900 dark:text-white">Paper Type & Weight</label>
+                  <label className="block text-sm font-semibold mb-1 text-gray-900 dark:text-white">Paper Weight</label>
                   <select 
-                    value={options.paper || "130g Glossy"}
+                    value={options.paper || "80g (Simple)"}
                     onChange={(e) => handleOptionChange("paper", e.target.value)}
                     className="w-full p-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:border-[#0B4DA2] outline-none"
                   >
-                    <option value="130g Glossy">130g Glossy</option>
-                    <option value="150g Glossy">150g Glossy (+200 EGP per 1000)</option>
-                    <option value="300g Matte">300g Matte (+500 EGP per 1000)</option>
+                    <option value="80g (Simple)">80g — Simple</option>
+                    <option value="150g Glossy (Standard)">150g Glossy — Standard</option>
+                    <option value="250g Glossy (Heavy)">250g Glossy — Heavy</option>
+                    <option value="300g Cardstock (Premium)">300g Cardstock — Premium</option>
                   </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold mb-1 text-gray-900 dark:text-white">Custom Notes</label>
+                  <textarea
+                    value={options.notes || ""}
+                    onChange={(e) => handleOptionChange("notes", e.target.value)}
+                    placeholder="E.g. brand colours, text, logo placement..."
+                    className="w-full p-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:border-[#0B4DA2] outline-none h-24 resize-none"
+                  />
                 </div>
               </>
             )}

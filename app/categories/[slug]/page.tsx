@@ -89,15 +89,7 @@ export default async function CategoryPage({ params }: PageProps) {
               <span className="flex-1 max-w-20 h-px" style={{ backgroundColor: "#C4D4ED" }} />
             </div>
 
-            {/* isNew badge */}
-            {category.isNew && (
-              <span
-                className="text-xs font-bold px-3 py-1 rounded-full text-white"
-                style={{ backgroundColor: siteConfig.colors.accent }}
-              >
-                🆕 New Category
-              </span>
-            )}
+
 
             <p className="text-sm sm:text-base text-gray-500 leading-relaxed max-w-lg">
               Discover our full range of custom{" "}

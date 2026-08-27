@@ -7,7 +7,7 @@ import { Search, User, Menu, X, ShoppingCart, Sun, Moon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { siteConfig } from "../config/site";
 import { useCart } from "../context/CartContext";
-import { useTheme } from "../context/ThemeContext";
+import { useTheme } from "next-themes";
 import { productData, CategoryProduct } from "../data/products";
 
 const POPULAR_SEARCH_TAGS = ["Mugs", "Stickers", "Business Cards", "T-Shirts", "Roll Up"];
@@ -22,7 +22,7 @@ export default function Header() {
   const searchRef = useRef<HTMLFormElement>(null);
   const router = useRouter();
   const { totalItems } = useCart();
-  const { theme, toggleTheme } = useTheme();
+  const { theme, setTheme } = useTheme();
 
   useEffect(() => {
     setMounted(true);
@@ -181,7 +181,7 @@ export default function Header() {
           <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
             {/* Dark Mode Toggle */}
             <button
-              onClick={toggleTheme}
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
               aria-label="Toggle Dark Mode"
               className="p-2 rounded-lg transition-all duration-300 hover:bg-gray-100 text-gray-700 relative overflow-hidden"
               title={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}

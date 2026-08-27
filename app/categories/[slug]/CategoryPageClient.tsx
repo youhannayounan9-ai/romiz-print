@@ -91,7 +91,15 @@ const categoryIntros: Record<string, { headline: string; body: string }> = {
   caps: {
     headline: "Custom Caps & Hats",
     body: "Premium embroidered or printed caps with your logo or design. Perfect for corporate wear or casual merch.",
-  }
+  },
+  "lab-coats": {
+    headline: "Custom Lab Coats & Uniforms",
+    body: "Professionally printed lab coats and uniforms for clinics, labs, and corporate teams.",
+  },
+  stamps: {
+    headline: "Custom Stamps",
+    body: "Self-inking and traditional stamps in various types and sizes. Perfect for offices and clinics.",
+  },
 };
 
 /* ── Skeleton card ── */
@@ -219,13 +227,11 @@ function ProductCard({
   name,
   description,
   image,
-  isNew,
   productSlug,
 }: {
   name: string;
   description: string;
   image: string;
-  isNew?: boolean;
   productSlug: string;
 }) {
   const router = useRouter();
@@ -240,14 +246,6 @@ function ProductCard({
     <div className="flex flex-col rounded-3xl overflow-hidden bg-white shadow-xl border border-gray-100 max-w-sm w-full mx-auto">
       <div className="w-full relative bg-gray-50" style={{ height: "280px" }}>
         <Image src={image} alt={name} fill className="object-contain p-4" />
-        {isNew && (
-          <span
-            className="absolute top-4 right-4 z-10 text-[10px] font-bold px-3 py-1.5 rounded-full text-white shadow-sm"
-            style={{ backgroundColor: siteConfig.colors.accent }}
-          >
-            NEW
-          </span>
-        )}
       </div>
       <div className="flex flex-col p-6 gap-4 text-center flex-1">
         <div>
@@ -285,6 +283,7 @@ export default function CategoryPageClient({ categoryName, slug }: { categoryNam
 
   const isTshirts = slug === "t-shirts";
   const isFrame = slug === "frame";
+  const isFootballKitsPage = slug === "football-kits";
 
   return (
     <>
@@ -316,7 +315,6 @@ export default function CategoryPageClient({ categoryName, slug }: { categoryNam
                 name={product.name}
                 description={product.description}
                 image={product.image}
-                isNew={product.isNew}
                 productSlug={(product as any).slug}
               />
             )
@@ -330,6 +328,15 @@ export default function CategoryPageClient({ categoryName, slug }: { categoryNam
           title="Ready-made Frames" 
           images={frameGalleryImages} 
           onImageClick={(src) => router.push(`/products/custom-framed-poster?image=${encodeURIComponent(src)}&readyMade=true`)}
+        />
+      )}
+
+      {/* ── FOOTBALL KITS GALLERY ── */}
+      {isFootballKitsPage && loaded && (
+        <GallerySection 
+          title="Football Kits Gallery" 
+          images={footballKitImages} 
+          onImageClick={(src) => router.push(`/products/custom-football-kit?image=${encodeURIComponent(src)}&readyMade=true`)}
         />
       )}
 
