@@ -25,7 +25,7 @@ const frameGalleryImages2 = frameNumbers2.map(n => `/Frame collection 2/frame ($
 const frameNumbers3 = Array.from({ length: 27 }, (_, i) => i + 1);
 const frameGalleryImages3 = frameNumbers3.map(n => {
   const ext = n >= 21 && n <= 27 ? "jpg" : "jpeg";
-  return `/Frame collection 3/framee (${n}).${ext}`;
+  return `/Frame collection 3/frame (${n}).${ext}`;
 });
 
 // Merged Frame Gallery

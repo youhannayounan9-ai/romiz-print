@@ -143,7 +143,7 @@ export const productData: Record<string, CategoryProduct[]> = {
   "lab-coats": [
     {
       id: "lab-coat-1",
-      slug: "lab-coats",
+      slug: "custom-lab-coat",
       name: "Custom Lab Coat",
       description: "Professional medical and laboratory coats with custom logo embroidery or print.",
       image: "/lab-coat.png",

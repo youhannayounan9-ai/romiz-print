@@ -180,16 +180,12 @@ export default function Header() {
           {/* ── RIGHT: Actions ── */}
           <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
             {/* Dark Mode Toggle */}
-            <button
-              onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
-              aria-label="Toggle Dark Mode"
-              className="p-2 rounded-lg transition-all duration-300 hover:bg-gray-100 text-gray-700 relative overflow-hidden"
-              title={resolvedTheme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
+            <button 
+              onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
+              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 transition-colors"
+              aria-label="Toggle theme"
             >
-              {mounted && (
-                resolvedTheme === "dark" ? <Sun size={22} /> : <Moon size={22} />
-              )}
-              {!mounted && <Moon size={22} />}
+              {mounted ? (resolvedTheme === 'dark' ? '☀️' : '🌙') : '🌙'}
             </button>
             {/* Account Icon */}
             <Link

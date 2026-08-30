@@ -162,6 +162,21 @@ export default function Footer() {
                   Instagram
                 </span>
               </a>
+              <a 
+                href="https://www.tiktok.com/@romiz.print?_r=1&_t=ZS-99FQl6hAdTJ" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 text-sm text-gray-400 hover:text-[#FF7A1A] transition-all duration-200 group"
+              >
+                <span className="w-10 h-10 rounded-xl flex items-center justify-center bg-white/5 group-hover:bg-white/10 transition-colors duration-200">
+                  <svg viewBox="0 0 24 24" className="w-5 h-5" fill="currentColor">
+                    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.33 6.33 0 0 0-1-.05A6.34 6.34 0 0 0 5 15.71a6.34 6.34 0 0 0 6.33 6.33 6.34 6.34 0 0 0 6.33-6.33V10.6a8.26 8.26 0 0 0 3.45.75V8.22a5.18 5.18 0 0 1-1.59-.24z"/>
+                  </svg>
+                </span>
+                <span className="group-hover:text-[#FF7A1A] transition-colors duration-200 font-medium">
+                  TikTok
+                </span>
+              </a>
             </div>
           </div>
 
