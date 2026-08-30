@@ -8,12 +8,6 @@ import {
   Layout,
   Shirt,
   Gift,
-  Pen,
-  Coffee,
-  Tag,
-  ShoppingBag,
-  FileText,
-  Briefcase,
 } from "lucide-react";
 import { siteConfig } from "../config/site";
 import { categories } from "../data/categories";
@@ -38,7 +32,7 @@ const mainCategories = [
   },
   {
     title: "Apparel & Bags",
-    subtitle: "T-Shirts, Hoodies, Tote Bags, Caps, Lab Coats",
+    subtitle: "T-Shirts, Hoodies, Tote Bags, Caps, Lab Coats, Football Kits",
     icon: Shirt,
     href: "/categories?filter=apparel-bags",
     gradient: "linear-gradient(135deg, #1E2530 0%, #37474f 100%)",
@@ -46,7 +40,7 @@ const mainCategories = [
   },
   {
     title: "Custom Merch",
-    subtitle: "Stickers, Mugs, Football Kits",
+    subtitle: "Stickers, Mugs",
     icon: Gift,
     href: "/categories?filter=custom-merch",
     gradient: "linear-gradient(135deg, #6a1b9a 0%, #8e24aa 100%)",
@@ -56,6 +50,7 @@ const mainCategories = [
 
 /* 8 popular product icons */
 const popularSlugs = [
+  "caps",
   "stickers",
   "frame",
   "t-shirts",
@@ -63,24 +58,22 @@ const popularSlugs = [
   "tote-bags",
   "flyers",
   "mugs",
-  "pens",
 ];
 
 /* ── Decorative section title ── */
 function SectionTitle({ title }: { title: string }) {
   return (
     <div className="flex items-center justify-center gap-4 mb-10">
-      <span className="flex-1 max-w-24 h-px" style={{ backgroundColor: "#D6E2F0" }} />
+      <span className="flex-1 max-w-24 h-px bg-slate-200 dark:bg-slate-700" />
       <h2
-        className="text-2xl sm:text-3xl font-bold text-center whitespace-nowrap"
+        className="text-2xl sm:text-3xl font-bold text-center whitespace-nowrap text-slate-900 dark:text-white"
         style={{
-          color: siteConfig.colors.dark,
           fontFamily: "var(--font-space-grotesk), system-ui, sans-serif",
         }}
       >
         {title}
       </h2>
-      <span className="flex-1 max-w-24 h-px" style={{ backgroundColor: "#D6E2F0" }} />
+      <span className="flex-1 max-w-24 h-px bg-slate-200 dark:bg-slate-700" />
     </div>
   );
 }
@@ -157,18 +150,17 @@ function CategoryTile({
     >
       {/* Circle */}
       <div
-        className="relative flex items-center justify-center rounded-full transition-all duration-300"
+        className="relative flex items-center justify-center rounded-full transition-all duration-300 dark:bg-slate-800"
         style={{
           width: "clamp(72px, 9vw, 110px)",
           height: "clamp(72px, 9vw, 110px)",
-          backgroundColor: hovered ? siteConfig.colors.accent : siteConfig.colors.lightBar,
+          backgroundColor: hovered ? siteConfig.colors.accent : undefined,
           transform: hovered ? "scale(1.08)" : "scale(1)",
           boxShadow: hovered
             ? "0 8px 30px rgba(255, 122, 26, 0.30)"
             : "0 2px 8px rgba(0,0,0,0.06)",
         }}
       >
-
         <Icon
           size={26}
           className="transition-colors duration-300"
@@ -178,8 +170,8 @@ function CategoryTile({
 
       {/* Name */}
       <span
-        className="text-xs sm:text-sm font-medium text-center leading-tight transition-colors duration-300"
-        style={{ color: hovered ? siteConfig.colors.accent : siteConfig.colors.dark }}
+        className="text-xs sm:text-sm font-medium text-center leading-tight transition-colors duration-300 dark:text-slate-200"
+        style={{ color: hovered ? siteConfig.colors.accent : undefined }}
       >
         {name}
       </span>
@@ -192,10 +184,10 @@ function SkeletonTile() {
   return (
     <div className="flex flex-col items-center gap-3 animate-pulse">
       <div
-        className="rounded-full bg-gray-200"
+        className="rounded-full bg-slate-200 dark:bg-slate-700"
         style={{ width: "clamp(72px, 9vw, 110px)", height: "clamp(72px, 9vw, 110px)" }}
       />
-      <div className="h-3 w-20 rounded-full bg-gray-200" />
+      <div className="h-3 w-20 rounded-full bg-slate-200 dark:bg-slate-700" />
     </div>
   );
 }
@@ -214,7 +206,7 @@ export default function ShopByCategory() {
     .filter(Boolean) as typeof categories;
 
   return (
-    <section className="w-full py-14 px-4 sm:px-6 lg:px-8" style={{ backgroundColor: "#fff" }}>
+    <section className="w-full py-14 px-4 sm:px-6 lg:px-8 bg-white dark:bg-slate-900 transition-colors duration-300">
       <div className="max-w-7xl mx-auto">
         {/* ── MAIN CATEGORY CARDS ── */}
         <SectionTitle title="Shop By Category" />
@@ -231,14 +223,13 @@ export default function ShopByCategory() {
             {!loaded
               ? Array.from({ length: 8 }).map((_, i) => <SkeletonTile key={i} />)
               : popularCategories.map((cat) => (
-                  <CategoryTile
-                    key={cat.slug}
-                    slug={cat.slug}
-                    name={cat.name}
-                    icon={cat.icon}
-
-                  />
-                ))}
+                <CategoryTile
+                  key={cat.slug}
+                  slug={cat.slug}
+                  name={cat.name}
+                  icon={cat.icon}
+                />
+              ))}
           </div>
         </div>
 
