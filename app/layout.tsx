@@ -63,7 +63,7 @@ export default function RootLayout({
       <head>
         <link rel="manifest" href="/manifest.json" />
       </head>
-      <body className="min-h-full flex flex-col" suppressHydrationWarning>
+      <body className="min-h-full flex flex-col bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition-colors duration-200" suppressHydrationWarning>
         <ThemeProvider>
           <CartProvider>
             <Header />

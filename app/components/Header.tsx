@@ -70,7 +70,7 @@ export default function Header() {
   const searchSuggestions = getSearchSuggestions();
 
   return (
-    <header className="sticky top-0 z-50 bg-white border-b border-gray-100 shadow-sm">
+    <header className="sticky top-0 z-50 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shadow-sm transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-wrap md:flex-nowrap items-center justify-between gap-y-3 md:gap-4 py-3 md:py-0 min-h-[64px] lg:min-h-[80px]">
           

@@ -4,8 +4,8 @@
   --color-primary: #0B4DA2;
   --color-dark: #1E2530;
   --color-accent: #FF7A1A;
-  --color-background: #F5F7FA;
-  --color-light-bar: #E8EEF7;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
   --font-heading: var(--font-space-grotesk);
   --font-body: var(--font-inter);
 }
@@ -14,13 +14,13 @@
 @variant dark (&:where(.dark, .dark *));
 
 :root {
-  --background: #F5F7FA;
-  --foreground: #1E2530;
+  --background: #ffffff;
+  --foreground: #171717;
 }
 
 .dark {
-  --background: #0b0f1a;
-  --foreground: #e8eaf0;
+  --background: #0a0a0a;
+  --foreground: #ededed;
 }
 
 html {
@@ -28,7 +28,7 @@ html {
 }
 
 body {
-  background-color: var(--background);
+  background: var(--background);
   color: var(--foreground);
   font-family: var(--font-inter), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
