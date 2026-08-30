@@ -22,7 +22,7 @@ export default function Header() {
   const searchRef = useRef<HTMLFormElement>(null);
   const router = useRouter();
   const { totalItems } = useCart();
-  const { resolvedTheme, setTheme } = useTheme();
+  const { theme, resolvedTheme, setTheme } = useTheme();
 
   useEffect(() => {
     setMounted(true);
@@ -180,13 +180,26 @@ export default function Header() {
           {/* ── RIGHT: Actions ── */}
           <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
             {/* Dark Mode Toggle */}
-            <button 
-              onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
-              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 transition-colors"
-              aria-label="Toggle theme"
-            >
-              {mounted ? (resolvedTheme === 'dark' ? '☀️' : '🌙') : '🌙'}
-            </button>
+            {!mounted ? (
+              <button className="p-2 w-9 h-9" aria-label="Toggle theme">🌙</button>
+            ) : (
+              <button
+                onClick={() => {
+                  const newTheme = resolvedTheme === 'dark' ? 'light' : 'dark';
+                  setTheme(newTheme);
+                  console.log('Theme changed to:', newTheme); // Debug log
+                  console.log('Current theme:', theme, 'Resolved:', resolvedTheme);
+                }}
+                className="p-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200"
+                aria-label="Toggle dark mode"
+              >
+                {resolvedTheme === 'dark' ? (
+                  <span className="text-xl">☀️</span>
+                ) : (
+                  <span className="text-xl">🌙</span>
+                )}
+              </button>
+            )}
             {/* Account Icon */}
             <Link
               href="/admin?access=ROMIZ_ADMIN_2026"
