@@ -139,14 +139,15 @@ export const productData: Record<string, CategoryProduct[]> = {
       bgColor: "#E8EEF7",
       basePrice: 700, // Assuming base price same as t-shirt for now, can adjust in product page
     },
+  ],
+  "lab-coats": [
     {
       id: "lab-coat-1",
-      slug: "custom-lab-coat",
+      slug: "lab-coats",
       name: "Custom Lab Coat",
       description: "Professional medical and laboratory coats with custom logo embroidery or print.",
-      image: "/Lab coat.png", // Assuming image exists
+      image: "/lab-coat.png",
       bgColor: "#F0EBE3",
-
       basePrice: 400,
     }
   ],
@@ -178,9 +179,9 @@ export const productData: Record<string, CategoryProduct[]> = {
     {
       id: "stamp-1",
       slug: "custom-stamp",
-      name: "Custom Rubber Stamp",
+      name: "Custom Stamp",
       description: "High-quality self-inking stamps in various sizes and ink colours.",
-      image: "/Stamp.png", // Assuming image exists
+      image: "/Stamp.png.jpg", // Assuming image exists
       bgColor: "#E3EBF0",
 
       basePrice: 350,

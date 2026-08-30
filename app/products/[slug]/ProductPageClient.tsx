@@ -76,9 +76,10 @@ export default function ProductPageClient({
   const isStamp = product?.slug === "custom-stamp";
   
   const isCap = categorySlug === "caps";
-  const isTShirts = categorySlug === "t-shirts"; // includes lab coats, hoodies, t-shirts
+  const isTShirts = categorySlug === "t-shirts"; // includes hoodies, t-shirts
   const isFootballKit = categorySlug === "football-kits";
-  const isApparel = isTShirts || isFootballKit;
+  const isLabCoat = categorySlug === "lab-coats";
+  const isApparel = isTShirts || isFootballKit || isLabCoat;
 
   // For pens: min 50, step 50
   const qtyMin = isPens ? 50 : 1;
@@ -431,7 +432,7 @@ export default function ProductPageClient({
             )}
 
             {/* General Customization Note & File Upload */}
-            {!isReadyMade && !isQuoteBased && (
+            {!isReadyMade && !isQuoteBased && !isFlyers && (
               <>
                 <div>
                   <label className="block text-sm font-semibold mb-1 text-gray-900 dark:text-white">Customization Notes</label>

@@ -22,7 +22,7 @@ export default function Header() {
   const searchRef = useRef<HTMLFormElement>(null);
   const router = useRouter();
   const { totalItems } = useCart();
-  const { theme, setTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
 
   useEffect(() => {
     setMounted(true);
@@ -181,23 +181,15 @@ export default function Header() {
           <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
             {/* Dark Mode Toggle */}
             <button
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
               aria-label="Toggle Dark Mode"
               className="p-2 rounded-lg transition-all duration-300 hover:bg-gray-100 text-gray-700 relative overflow-hidden"
-              title={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
+              title={resolvedTheme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
             >
-              <span
-                className="transition-all duration-300"
-                style={{ display: "block", transform: theme === "dark" ? "rotate(0deg) scale(1)" : "rotate(180deg) scale(0.8)", opacity: theme === "dark" ? 1 : 0, position: theme === "dark" ? "relative" : "absolute" }}
-              >
-                <Sun size={22} />
-              </span>
-              <span
-                className="transition-all duration-300"
-                style={{ display: "block", transform: theme === "light" ? "rotate(0deg) scale(1)" : "rotate(180deg) scale(0.8)", opacity: theme === "light" ? 1 : 0, position: theme === "light" ? "relative" : "absolute" }}
-              >
-                <Moon size={22} />
-              </span>
+              {mounted && (
+                resolvedTheme === "dark" ? <Sun size={22} /> : <Moon size={22} />
+              )}
+              {!mounted && <Moon size={22} />}
             </button>
             {/* Account Icon */}
             <Link

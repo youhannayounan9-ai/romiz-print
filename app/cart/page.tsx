@@ -54,17 +54,17 @@ export default function CartPage() {
   };
 
   return (
-    <div className="min-h-screen py-10 px-4 sm:px-6 lg:px-8 bg-[#F5F7FA]">
+    <div className="min-h-screen py-10 px-4 sm:px-6 lg:px-8 bg-[#F5F7FA] dark:bg-[#0f1219]">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-3xl font-bold mb-8" style={{ color: siteConfig.colors.dark, fontFamily: "var(--font-space-grotesk)" }}>
+        <h1 className="text-3xl font-bold mb-8 text-gray-900 dark:text-white" style={{ fontFamily: "var(--font-space-grotesk)" }}>
           Your Cart
         </h1>
 
         {items.length === 0 ? (
-          <div className="bg-white rounded-2xl p-12 flex flex-col items-center justify-center text-center shadow-sm">
-            <ShoppingBag size={64} className="text-gray-300 mb-4" />
+          <div className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-2xl p-12 flex flex-col items-center justify-center text-center shadow-sm">
+            <ShoppingBag size={64} className="text-gray-300 dark:text-gray-600 mb-4" />
             <h2 className="text-2xl font-semibold mb-2">Your cart is empty</h2>
-            <p className="text-gray-500 mb-6">Looks like you haven't added anything to your cart yet.</p>
+            <p className="text-gray-500 dark:text-gray-400 mb-6">Looks like you haven't added anything to your cart yet.</p>
             <Link 
               href="/categories"
               className="px-6 py-3 rounded-xl font-bold text-white transition-transform hover:-translate-y-0.5 shadow-md"
@@ -78,12 +78,12 @@ export default function CartPage() {
             {/* Cart Items */}
             <div className="flex-1 flex flex-col gap-4">
               {items.map((item) => (
-                <div key={item.id} className="bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
-                  <div className="relative w-24 h-24 rounded-xl bg-gray-50 flex-shrink-0 border border-gray-100">
+                <div key={item.id} className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white p-4 sm:p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
+                  <div className="relative w-24 h-24 rounded-xl bg-gray-50 dark:bg-gray-900 flex-shrink-0 border border-gray-100 dark:border-gray-700">
                     <Image src={item.image} alt={item.name} fill className="object-contain p-2" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-bold text-lg mb-1" style={{ color: siteConfig.colors.dark }}>{item.name}</h3>
+                    <h3 className="font-bold text-lg mb-1">{item.name}</h3>
                     {item.options && (
                       <div className="text-sm text-gray-500 flex flex-wrap gap-x-4 gap-y-1 mb-3">
                         {Object.entries(item.options).map(([k, v]) => (
@@ -146,11 +146,11 @@ export default function CartPage() {
 
             {/* Order Summary */}
             <div className="w-full lg:w-[380px] flex-shrink-0">
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8 sticky top-24">
-                <h2 className="text-xl font-bold mb-6" style={{ color: siteConfig.colors.dark }}>Order Summary</h2>
+              <div className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 sm:p-8 sticky top-24">
+                <h2 className="text-xl font-bold mb-6">Order Summary</h2>
                 
-                <div className="flex flex-col gap-3 mb-6 pb-6 border-b border-gray-100">
-                  <div className="flex justify-between text-gray-600">
+                <div className="flex flex-col gap-3 mb-6 pb-6 border-b border-gray-100 dark:border-gray-700">
+                  <div className="flex justify-between text-gray-600 dark:text-gray-400">
                     <span>Items ({totalItems})</span>
                     <span>{subtotal} EGP</span>
                   </div>
@@ -161,7 +161,7 @@ export default function CartPage() {
                 </div>
 
                 <div className="flex justify-between items-end mb-8">
-                  <span className="text-lg font-bold" style={{ color: siteConfig.colors.dark }}>Subtotal</span>
+                  <span className="text-lg font-bold">Subtotal</span>
                   <div className="text-right">
                     <span className="text-2xl font-bold" style={{ color: siteConfig.colors.primary }}>{subtotal} EGP</span>
                   </div>
