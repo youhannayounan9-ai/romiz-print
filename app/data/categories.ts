@@ -34,10 +34,10 @@ export interface Category {
   slug: string;
   name: string;
   icon: LucideIcon;
-
 }
 
 export const categories: Category[] = [
+  { slug: "caps", name: "Caps", icon: HardHat },
   { slug: "roll-up", name: "Roll Up", icon: Layout },
   { slug: "frame", name: "Frame", icon: Image },
   { slug: "banners", name: "Banners", icon: Flag },
@@ -49,7 +49,6 @@ export const categories: Category[] = [
   { slug: "stickers", name: "Stickers", icon: Sticker },
   { slug: "t-shirts", name: "T-Shirts", icon: Shirt },
   { slug: "football-kits", name: "Football Kits", icon: Shirt },
-  { slug: "caps", name: "Caps", icon: HardHat },
   { slug: "lab-coats", name: "Lab Coats", icon: Shirt },
   { slug: "stamps", name: "Stamps", icon: FileText },
 ];
@@ -68,5 +67,5 @@ export const quickLinkSlugs = [
   "t-shirts",
   "football-kits",
   "lab-coats",
-  "stamps"
+  "stamps",
 ];
