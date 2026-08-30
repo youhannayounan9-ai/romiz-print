@@ -21,7 +21,7 @@ export default async function AllCategoriesPage({ searchParams }: { searchParams
   } else if (filter === "banners-displays") {
     displayedCategories = categories.filter(c => ["banners", "roll-up", "frame"].includes(c.slug));
   } else if (filter === "apparel-bags") {
-    displayedCategories = categories.filter(c => ["t-shirts", "tote-bags", "football-kits", "caps"].includes(c.slug));
+    displayedCategories = categories.filter(c => ["t-shirts", "tote-bags", "football-kits", "caps", "lab-coats"].includes(c.slug));
   } else if (filter === "custom-merch") {
     displayedCategories = categories.filter(c => ["stickers", "mugs"].includes(c.slug));
   }
@@ -92,16 +92,16 @@ export default async function AllCategoriesPage({ searchParams }: { searchParams
                     }}
                   >
                     <div className="absolute inset-0 rounded-3xl bg-[#0B4DA2] opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-xl" />
-                    
 
-                    
+
+
                     <Icon
                       size={40}
                       className="relative z-10 transition-colors duration-300"
                       style={{ color: siteConfig.colors.primary }}
                       color="currentColor"
                     />
-                    
+
                     {/* Make the icon white on hover using a hack with nested classes */}
                     <style>{`
                       .group:hover .relative.z-10 {
