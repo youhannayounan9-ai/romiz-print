@@ -77,25 +77,58 @@ export default function CartPage() {
           <div className="flex flex-col lg:flex-row gap-8">
             {/* Cart Items */}
             <div className="flex-1 flex flex-col gap-4">
-              {items.map((item) => (
+              {items.map((item) => {
+                // Extract the uploaded design URL if present (stored in options["Design File"])
+                const designFileUrl = item.options?.["Design File"];
+                // Check if it's an absolute URL (uploaded file) vs a path
+                const isUploadedDesign = designFileUrl && (designFileUrl.startsWith("http") || designFileUrl.startsWith("/"));
+                
+                return (
                 <div key={item.id} className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white p-4 sm:p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
+                  {/* Product image */}
                   <div className="relative w-24 h-24 rounded-xl bg-gray-50 dark:bg-gray-900 flex-shrink-0 border border-gray-100 dark:border-gray-700">
                     <Image src={item.image} alt={item.name} fill className="object-contain p-2" />
                   </div>
+
                   <div className="flex-1">
                     <h3 className="font-bold text-lg mb-1">{item.name}</h3>
                     {item.options && (
                       <div className="text-sm text-gray-500 flex flex-wrap gap-x-4 gap-y-1 mb-3">
-                        {Object.entries(item.options).map(([k, v]) => (
-                          <span key={k} className="capitalize"><span className="font-medium text-gray-700">{k}:</span> {v}</span>
-                        ))}
+                        {Object.entries(item.options)
+                          .filter(([k]) => k !== "Design File") // hide raw URL
+                          .map(([k, v]) => (
+                            <span key={k} className="capitalize">
+                              <span className="font-medium text-gray-700 dark:text-gray-300">{k}:</span> {v}
+                            </span>
+                          ))}
+                        {/* Show design uploaded badge */}
+                        {isUploadedDesign && (
+                          <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-400 font-medium border border-green-200 dark:border-green-800">
+                            ✓ Custom design uploaded
+                          </span>
+                        )}
+                      </div>
+                    )}
+                    {/* Uploaded design thumbnail */}
+                    {isUploadedDesign && designFileUrl && (
+                      <div className="mb-3">
+                        <p className="text-xs text-gray-500 mb-1">Your design:</p>
+                        <div className="relative w-20 h-20 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 bg-gray-50">
+                          <Image 
+                            src={designFileUrl} 
+                            alt="Uploaded design" 
+                            fill 
+                            className="object-contain p-1"
+                            unoptimized // needed for external upload URLs
+                          />
+                        </div>
                       </div>
                     )}
                     <div className="flex items-center gap-4">
-                      <div className="flex items-center bg-gray-50 rounded-lg border border-gray-200">
+                      <div className="flex items-center bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
                         <button 
                           onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
-                          className="w-8 h-8 flex items-center justify-center text-lg hover:bg-gray-200 transition-colors rounded-l-lg"
+                          className="w-8 h-8 flex items-center justify-center text-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors rounded-l-lg"
                         >-</button>
                         {editingItemId === item.id ? (
                           <input 
@@ -106,7 +139,7 @@ export default function CartPage() {
                             onChange={(e) => setQuantityInput(e.target.value)}
                             onBlur={() => handleQuantitySubmit(item.id)}
                             onKeyDown={(e) => e.key === "Enter" && handleQuantitySubmit(item.id)}
-                            className="w-12 text-center text-sm font-semibold bg-white border border-[#0B4DA2] rounded outline-none"
+                            className="w-12 text-center text-sm font-semibold bg-white dark:bg-gray-800 border border-[#0B4DA2] rounded outline-none"
                           />
                         ) : (
                           <span 
@@ -122,7 +155,7 @@ export default function CartPage() {
                         )}
                         <button 
                           onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                          className="w-8 h-8 flex items-center justify-center text-lg hover:bg-gray-200 transition-colors rounded-r-lg"
+                          className="w-8 h-8 flex items-center justify-center text-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors rounded-r-lg"
                         >+</button>
                       </div>
                       <button 
@@ -141,7 +174,8 @@ export default function CartPage() {
                     <div className="text-xs text-gray-500">{item.price} EGP each</div>
                   </div>
                 </div>
-              ))}
+                );
+              })}
             </div>
 
             {/* Order Summary */}

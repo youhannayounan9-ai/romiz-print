@@ -49,20 +49,34 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   }, [items, isLoaded]);
 
+  const generateItemId = (productId: string | number, options?: Record<string, string>) => {
+    if (!options || Object.keys(options).length === 0) return `${productId}`;
+    
+    // Sort keys for a stable ID regardless of insertion order
+    const sortedKeys = Object.keys(options).sort();
+    const sortedOptions = sortedKeys.map(key => {
+      // Truncate long values (e.g. upload URLs) to first 100 chars
+      const v = options[key] ?? "";
+      const truncated = v.length > 100 ? v.slice(0, 100) : v;
+      return `${key}:${truncated}`;
+    }).join("|");
+    return `${productId}-${sortedOptions}`;
+  };
+
   const addItem = (newItem: Omit<CartItem, "id">) => {
     setItems((prevItems) => {
-      // Create a unique ID based on productId and stringified options
-      const optionsString = newItem.options ? JSON.stringify(newItem.options) : "";
-      const itemId = `${newItem.productId}-${optionsString}`;
+      const itemId = generateItemId(newItem.productId, newItem.options);
 
       // Check if this exact item (with same options) already exists
       const existingItemIndex = prevItems.findIndex((item) => item.id === itemId);
 
       if (existingItemIndex >= 0) {
-        // Update quantity
-        const newItems = [...prevItems];
-        newItems[existingItemIndex].quantity += newItem.quantity;
-        return newItems;
+        // Exact same product + exact same options → increment quantity (immutable update)
+        return prevItems.map((item, idx) =>
+          idx === existingItemIndex
+            ? { ...item, quantity: item.quantity + newItem.quantity }
+            : item
+        );
       } else {
         // Add new item
         return [...prevItems, { ...newItem, id: itemId }];
