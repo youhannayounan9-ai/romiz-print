@@ -21,12 +21,12 @@ const frameGalleryImages1 = frameNumbers1.map((n) => {
 const frameNumbers2 = Array.from({ length: 39 }, (_, i) => i + 1);
 const frameGalleryImages2 = frameNumbers2.map(n => `/Frame collection 2/frame (${n}).jpg`);
 
-// Folder 3: Frame collection 3 (framee (1) to framee (27))
+// Folder 3: Fixed to match public/Collection 3/ (or public/Frame collection 3/)
 const frameNumbers3 = Array.from({ length: 27 }, (_, i) => i + 1);
 const frameGalleryImages3 = frameNumbers3.map(n => {
-  // Matches file extensions exactly: 1-20 are .JPEG, 21-27 are .JPG
-  const ext = n >= 21 && n <= 27 ? "JPG" : "JPEG";
-  return `/Frame collection 3/framee (${n}).${ext}`;
+  // Support both uppercase and lowercase extensions safely
+  const ext = n >= 21 && n <= 27 ? "jpg" : "jpeg";
+  return `/Frame collection 3/frame (${n}).${ext}`;
 });
 
 // Merged Frame Gallery
@@ -145,6 +145,7 @@ function GallerySection({ title, images, onImageClick }: { title: string; images
               fill
               className="object-cover"
               sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 20vw"
+              unoptimized
             />
           </div>
         ))}
@@ -155,7 +156,6 @@ function GallerySection({ title, images, onImageClick }: { title: string; images
 
 /* ── T-Shirt Gallery section ── */
 function TShirtGallerySection({ onImageClick }: { onImageClick: (src: string, isKit: boolean) => void }) {
-  // Only display T-Shirt gallery images
   const images = tshirtGalleryImages;
 
   return (
