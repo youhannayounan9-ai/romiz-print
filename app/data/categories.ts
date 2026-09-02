@@ -28,6 +28,7 @@ import {
   Shirt,
   BookCopy,
   HardHat,
+  Stamp,
 } from "lucide-react";
 
 export interface Category {
@@ -50,7 +51,7 @@ export const categories: Category[] = [
   { slug: "t-shirts", name: "T-Shirts", icon: Shirt },
   { slug: "football-kits", name: "Football Kits", icon: Shirt },
   { slug: "lab-coats", name: "Lab Coats", icon: Shirt },
-  { slug: "stamps", name: "Stamps", icon: FileText },
+  { slug: "stamps", name: "Stamps", icon: Stamp },
 ];
 
 export const quickLinkSlugs = [
