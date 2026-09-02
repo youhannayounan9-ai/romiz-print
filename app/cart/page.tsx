@@ -43,6 +43,9 @@ export default function CartPage() {
           message += `   - ${k}: ${v}\n`;
         });
       }
+      if (item.uploadedImage) {
+        message += `   - Custom Design: ${item.uploadedImage}\n`;
+      }
       message += `   - Price: ${item.price * item.quantity} EGP\n\n`;
     });
     
@@ -78,74 +81,56 @@ export default function CartPage() {
             {/* Cart Items */}
             <div className="flex-1 flex flex-col gap-4">
               {items.map((item) => {
-                // Extract the uploaded design URL if present (stored in options["Design File"])
-                const designFileUrl = item.options?.["Design File"];
-                // Check if it's an absolute URL (uploaded file) vs a path
-                const isUploadedDesign = designFileUrl && (designFileUrl.startsWith("http") || designFileUrl.startsWith("/"));
+                const cid = item.cartItemId;
+                const hasUpload = Boolean(item.uploadedImage);
+                const previewImage = item.uploadedImage || item.image;
                 
                 return (
-                <div key={item.id} className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white p-4 sm:p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
-                  {/* Product image */}
-                  <div className="relative w-24 h-24 rounded-xl bg-gray-50 dark:bg-gray-900 flex-shrink-0 border border-gray-100 dark:border-gray-700">
-                    <Image src={item.image} alt={item.name} fill className="object-contain p-2" />
+                <div key={cid} className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white p-4 sm:p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
+                  {/* Thumbnail — shows uploaded design if present, else product image */}
+                  <div className="relative w-24 h-24 rounded-xl bg-gray-50 dark:bg-gray-900 flex-shrink-0 border border-gray-100 dark:border-gray-700 overflow-hidden">
+                    <Image src={previewImage} alt={item.name} fill className="object-contain p-2" unoptimized={hasUpload} />
                   </div>
 
                   <div className="flex-1">
                     <h3 className="font-bold text-lg mb-1">{item.name}</h3>
-                    {item.options && (
-                      <div className="text-sm text-gray-500 flex flex-wrap gap-x-4 gap-y-1 mb-3">
-                        {Object.entries(item.options)
-                          .filter(([k]) => k !== "Design File") // hide raw URL
-                          .map(([k, v]) => (
-                            <span key={k} className="capitalize">
-                              <span className="font-medium text-gray-700 dark:text-gray-300">{k}:</span> {v}
-                            </span>
-                          ))}
-                        {/* Show design uploaded badge */}
-                        {isUploadedDesign && (
-                          <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-400 font-medium border border-green-200 dark:border-green-800">
-                            ✓ Custom design uploaded
+                    {item.options && Object.keys(item.options).length > 0 && (
+                      <div className="text-sm text-gray-500 dark:text-gray-400 flex flex-wrap gap-x-4 gap-y-1 mb-2">
+                        {Object.entries(item.options).map(([k, v]) => (
+                          <span key={k} className="capitalize">
+                            <span className="font-medium text-gray-700 dark:text-gray-300">{k}:</span> {v}
                           </span>
-                        )}
+                        ))}
                       </div>
                     )}
-                    {/* Uploaded design thumbnail */}
-                    {isUploadedDesign && designFileUrl && (
-                      <div className="mb-3">
-                        <p className="text-xs text-gray-500 mb-1">Your design:</p>
-                        <div className="relative w-20 h-20 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 bg-gray-50">
-                          <Image 
-                            src={designFileUrl} 
-                            alt="Uploaded design" 
-                            fill 
-                            className="object-contain p-1"
-                            unoptimized // needed for external upload URLs
-                          />
-                        </div>
-                      </div>
+                    {/* Uploaded design badge */}
+                    {hasUpload && (
+                      <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-400 font-medium border border-green-200 dark:border-green-800 mb-3">
+                        ✓ Custom design uploaded
+                      </span>
                     )}
                     <div className="flex items-center gap-4">
                       <div className="flex items-center bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
                         <button 
-                          onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
+                          onClick={() => updateQuantity(item.cartItemId, Math.max(1, item.quantity - 1))}
                           className="w-8 h-8 flex items-center justify-center text-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors rounded-l-lg"
                         >-</button>
-                        {editingItemId === item.id ? (
+                        {editingItemId === item.cartItemId ? (
                           <input 
                             type="number"
                             min="1"
                             autoFocus
                             value={quantityInput}
                             onChange={(e) => setQuantityInput(e.target.value)}
-                            onBlur={() => handleQuantitySubmit(item.id)}
-                            onKeyDown={(e) => e.key === "Enter" && handleQuantitySubmit(item.id)}
+                            onBlur={() => handleQuantitySubmit(item.cartItemId)}
+                            onKeyDown={(e) => e.key === "Enter" && handleQuantitySubmit(item.cartItemId)}
                             className="w-12 text-center text-sm font-semibold bg-white dark:bg-gray-800 border border-[#0B4DA2] rounded outline-none"
                           />
                         ) : (
                           <span 
                             onDoubleClick={() => {
                               setQuantityInput(item.quantity.toString());
-                              setEditingItemId(item.id);
+                              setEditingItemId(item.cartItemId);
                             }}
                             className="w-10 text-center text-sm font-semibold cursor-text select-none"
                             title="Double-click to edit"
@@ -154,12 +139,12 @@ export default function CartPage() {
                           </span>
                         )}
                         <button 
-                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                          onClick={() => updateQuantity(item.cartItemId, item.quantity + 1)}
                           className="w-8 h-8 flex items-center justify-center text-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors rounded-r-lg"
                         >+</button>
                       </div>
                       <button 
-                        onClick={() => removeItem(item.id)}
+                        onClick={() => removeItem(item.cartItemId)}
                         className="p-2 text-gray-400 hover:text-red-500 transition-colors"
                         aria-label="Remove item"
                       >

@@ -173,13 +173,13 @@ export default function ProductPageClient({
       productSlug: product.slug,
       name: product.name,
       image: searchParams?.image || product.image,
+      uploadedImage: uploadedUrl || undefined,
       price: cartPrice,
-      quantity: (isBanner || isPens || isFlyers) ? 1 : quantity, // if total is calculated in price, qt=1
+      quantity: (isBanner || isPens || isFlyers) ? 1 : quantity,
       options: {
         ...options,
         ...(isBanner ? { "Meters": bannerMeters.toString() } : {}),
         ...((isPens || isFlyers) ? { "Quantity": quantity.toString() } : {}),
-        ...(uploadedUrl ? { "Design File": uploadedUrl } : {})
       },
     });
     setAddedToCart(true);
