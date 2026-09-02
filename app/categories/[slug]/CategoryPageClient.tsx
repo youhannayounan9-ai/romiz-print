@@ -21,12 +21,12 @@ const frameGalleryImages1 = frameNumbers1.map((n) => {
 const frameNumbers2 = Array.from({ length: 39 }, (_, i) => i + 1);
 const frameGalleryImages2 = frameNumbers2.map(n => `/Frame collection 2/frame (${n}).jpg`);
 
-// Folder 3: Fixed to match public/Collection 3/ (or public/Frame collection 3/)
+// Folder 3: Frame collection 3 (framee (1) to framee (27))
 const frameNumbers3 = Array.from({ length: 27 }, (_, i) => i + 1);
-const frameGalleryImages3 = frameNumbers3.map(n => {
-  // Support both uppercase and lowercase extensions safely
+const frameGalleryImages3 = frameNumbers3.map((n) => {
+  // Items 21 to 27 are .jpg, items 1 to 20 are .jpeg
   const ext = n >= 21 && n <= 27 ? "jpg" : "jpeg";
-  return `/Frame collection 3/frame (${n}).${ext}`;
+  return `/Frame collection 3/framee (${n}).${ext}`;
 });
 
 // Merged Frame Gallery
