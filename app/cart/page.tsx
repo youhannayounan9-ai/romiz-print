@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Trash2, ArrowRight, ShoppingBag } from "lucide-react";
+import { Trash2, ArrowRight, ShoppingBag, ExternalLink } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import { siteConfig } from "../config/site";
 
@@ -28,32 +28,56 @@ export default function CartPage() {
 
   if (!mounted) return <div className="min-h-screen pt-20 text-center">Loading Cart...</div>;
 
+  /**
+   * Generates a full URL including all query parameters (image, readyMade, upload)
+   * so both the user and WhatsApp can access the exact product variation.
+   */
+  const getItemProductUrl = (item: typeof items[number], baseUrl: string = "") => {
+    const slug = item.productSlug || "custom-framed-poster";
+    let url = `${baseUrl}/products/${slug}`;
+    const params: string[] = [];
+
+    // Prioritize uploaded image or ready-made gallery image
+    const activeImage = item.uploadedImage || item.image;
+    if (activeImage) {
+      params.push(`image=${encodeURIComponent(activeImage)}`);
+    }
+
+    if (item.options?.["Ready-Made Design"]) {
+      params.push(`readyMade=true`);
+    }
+
+    if (params.length > 0) {
+      url += `?${params.join("&")}`;
+    }
+
+    return url;
+  };
+
   const handleCheckout = () => {
     const baseUrl = window.location.origin;
-    let message = "Hello, I would like to order the following items:\n\n";
+    let message = "*New Order - Romiz Print*\n\n";
 
     items.forEach((item, index) => {
-      const productLink = item.productSlug ? `${baseUrl}/products/${item.productSlug}` : `${baseUrl}`;
+      const fullProductUrl = getItemProductUrl(item, baseUrl);
+
       message += `*${index + 1}. ${item.name}*\n`;
       message += `   • Quantity: ${item.quantity}\n`;
       message += `   • Unit Price: ${item.price} EGP\n`;
-      message += `   • Item Total: ${item.price * item.quantity} EGP\n`;
-      message += `   • Product Page: ${productLink}\n`;
+      message += `   • Subtotal: ${item.price * item.quantity} EGP\n`;
 
+      // Print item-specific options
       if (item.options && Object.keys(item.options).length > 0) {
         Object.entries(item.options).forEach(([k, v]) => {
           if (v) message += `   • ${k}: ${v}\n`;
         });
       }
 
-      if (item.uploadedImage) {
-        message += `   • Image/Design File: ${item.uploadedImage}\n`;
-      }
-
-      message += `\n`;
+      // Direct Link to the Exact Frame/Product Configuration
+      message += `   • Item Link: ${fullProductUrl}\n\n`;
     });
 
-    message += `*Total Order Value: ${subtotal} EGP*\n\n`;
+    message += `*Total Amount: ${subtotal} EGP*\n\n`;
     message += "Please let me know how to proceed with payment and shipping.";
 
     const waUrl = `https://wa.me/201041998484?text=${encodeURIComponent(message)}`;
@@ -82,24 +106,40 @@ export default function CartPage() {
           </div>
         ) : (
           <div className="flex flex-col lg:flex-row gap-8">
-            {/* Cart Items */}
+            {/* Cart Items List */}
             <div className="flex-1 flex flex-col gap-4">
               {items.map((item) => {
                 const cid = item.cartItemId;
                 const hasUpload = Boolean(item.uploadedImage);
                 const previewImage = item.uploadedImage || item.image;
+                const itemLink = getItemProductUrl(item);
 
                 return (
-                  <div key={cid} className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white p-4 sm:p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
-                    {/* Thumbnail */}
-                    <div className="relative w-24 h-24 rounded-xl bg-gray-50 dark:bg-gray-900 flex-shrink-0 border border-gray-100 dark:border-gray-700 overflow-hidden">
-                      <Image src={previewImage} alt={item.name} fill className="object-contain p-2" unoptimized={hasUpload || previewImage.startsWith("/")} />
-                    </div>
+                  <div key={cid} className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white p-4 sm:p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 transition-all hover:border-gray-300">
 
+                    {/* Clickable Thumbnail Image */}
+                    <Link href={itemLink} className="relative w-24 h-24 rounded-xl bg-gray-50 dark:bg-gray-900 flex-shrink-0 border border-gray-100 dark:border-gray-700 overflow-hidden group">
+                      <Image
+                        src={previewImage}
+                        alt={item.name}
+                        fill
+                        className="object-contain p-2 group-hover:scale-105 transition-transform"
+                        unoptimized={hasUpload || previewImage.startsWith("/")}
+                      />
+                      <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <ExternalLink size={16} className="text-white drop-shadow" />
+                      </div>
+                    </Link>
+
+                    {/* Product Info & Clickable Title */}
                     <div className="flex-1">
-                      <h3 className="font-bold text-lg mb-1">{item.name}</h3>
+                      <Link href={itemLink} className="group inline-flex items-center gap-1.5 hover:text-[#0B4DA2] transition-colors">
+                        <h3 className="font-bold text-lg leading-tight group-hover:underline">{item.name}</h3>
+                        <ExternalLink size={14} className="text-gray-400 group-hover:text-[#0B4DA2]" />
+                      </Link>
+
                       {item.options && Object.keys(item.options).length > 0 && (
-                        <div className="text-sm text-gray-500 dark:text-gray-400 flex flex-wrap gap-x-4 gap-y-1 mb-2">
+                        <div className="text-sm text-gray-500 dark:text-gray-400 flex flex-wrap gap-x-4 gap-y-1 my-2">
                           {Object.entries(item.options).map(([k, v]) => (
                             <span key={k} className="capitalize">
                               <span className="font-medium text-gray-700 dark:text-gray-300">{k}:</span> {v}
@@ -107,13 +147,15 @@ export default function CartPage() {
                           ))}
                         </div>
                       )}
-                      {/* Uploaded design badge */}
+
                       {hasUpload && (
-                        <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-400 font-medium border border-green-200 dark:border-green-800 mb-3">
+                        <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-400 font-medium border border-green-200 dark:border-green-800 my-1">
                           ✓ Design attached
                         </span>
                       )}
-                      <div className="flex items-center gap-4">
+
+                      {/* Quantity & Delete Controls */}
+                      <div className="flex items-center gap-4 mt-3">
                         <div className="flex items-center bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
                           <button
                             onClick={() => updateQuantity(item.cartItemId, Math.max(1, item.quantity - 1))}
@@ -147,6 +189,7 @@ export default function CartPage() {
                             className="w-8 h-8 flex items-center justify-center text-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors rounded-r-lg"
                           >+</button>
                         </div>
+
                         <button
                           onClick={() => removeItem(item.cartItemId)}
                           className="p-2 text-gray-400 hover:text-red-500 transition-colors"
@@ -156,6 +199,7 @@ export default function CartPage() {
                         </button>
                       </div>
                     </div>
+
                     <div className="text-right sm:text-right w-full sm:w-auto mt-4 sm:mt-0 border-t sm:border-0 pt-4 sm:pt-0">
                       <div className="font-bold text-lg" style={{ color: siteConfig.colors.primary }}>
                         {item.price * item.quantity} EGP
@@ -167,7 +211,7 @@ export default function CartPage() {
               })}
             </div>
 
-            {/* Order Summary */}
+            {/* Order Summary Sidebar */}
             <div className="w-full lg:w-[380px] flex-shrink-0">
               <div className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 sm:p-8 sticky top-24">
                 <h2 className="text-xl font-bold mb-6">Order Summary</h2>
