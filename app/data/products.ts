@@ -126,7 +126,7 @@ export const productData: Record<string, CategoryProduct[]> = {
       slug: "custom-t-shirt",
       name: "Custom T-Shirt",
       description: "Premium printable cotton t-shirts available in multiple sizes and colours.",
-      image: "/T-Shirts.png",
+      image: "/T-shirt collection/23.jpg",
       bgColor: "#EBE3F0",
       basePrice: 600,
     },

@@ -32,7 +32,7 @@ const products: Product[] = [
     name: "Football Kits",
     description: "Custom and ready-made football kits for teams. High-performance fabric.",
 
-    image: "/football kits/rm 1.jpg",
+    image: "/football kits/bc 2.jpg",
     category: "Apparel",
     categorySlug: "football-kits",
     bgColor: "#E3EBF0",

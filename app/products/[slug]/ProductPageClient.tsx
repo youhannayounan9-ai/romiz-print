@@ -42,7 +42,7 @@ export default function ProductPageClient({
   searchParams,
 }: {
   productSlug: string;
-  searchParams?: { image?: string; readyMade?: string };
+  searchParams?: { image?: string; altImage?: string; readyMade?: string };
 }) {
   const router = useRouter();
   const { addItem } = useCart();
@@ -56,9 +56,11 @@ export default function ProductPageClient({
   const [totalPrice, setTotalPrice] = useState(1);
   const [sizeChartOpen, setSizeChartOpen] = useState(false);
 
+  // Active preview image (supports switching between Front & Back for Football Kits)
+  const [activePreviewImage, setActivePreviewImage] = useState<string>("");
+
   // Banner calculator
   const [bannerMeters, setBannerMeters] = useState(1);
-
   const [uploadedUrl, setUploadedUrl] = useState<string | null>(null);
 
   if (typeof window !== "undefined") {
@@ -76,12 +78,11 @@ export default function ProductPageClient({
   const isStamp = product?.slug === "custom-stamp";
 
   const isCap = categorySlug === "caps";
-  const isTShirts = categorySlug === "t-shirts"; // includes hoodies, t-shirts
+  const isTShirts = categorySlug === "t-shirts";
   const isFootballKit = categorySlug === "football-kits";
   const isLabCoat = categorySlug === "lab-coats";
   const isApparel = isTShirts || isFootballKit || isLabCoat;
 
-  // For pens: min 50, step 50
   const qtyMin = isPens ? 50 : 1;
   const qtyStep = isPens ? 50 : 1;
 
@@ -91,7 +92,10 @@ export default function ProductPageClient({
       setQuantity(defaultQty);
       setQuantityInput(defaultQty.toString());
       setTotalPrice(product.basePrice);
-      // Initialize default options
+
+      const initialImg = searchParams?.image || product.image;
+      setActivePreviewImage(initialImg);
+
       if (categorySlug === "frame") {
         setOptions({ Size: "15x21 cm", Color: "Black", "Custom Design": "No" });
       } else if (isApparel) {
@@ -103,9 +107,8 @@ export default function ProductPageClient({
       }
     }
     setLoaded(true);
-  }, [product, categorySlug, isPens, isApparel, isFlyers, isStamp]);
+  }, [product, categorySlug, isPens, isApparel, isFlyers, isStamp, searchParams?.image]);
 
-  // Recalculate price when options change
   useEffect(() => {
     if (!product) return;
     let newPrice = product.basePrice;
@@ -113,7 +116,7 @@ export default function ProductPageClient({
     if (categorySlug === "frame") {
       if (options.Size === "20x30 cm") newPrice = 350;
       else if (options.Size === "30x40 cm") newPrice = 500;
-      else newPrice = 250; // 15x21 cm
+      else newPrice = 250;
 
       if (options["Custom Design"] === "Yes") newPrice += 50;
     } else if (isBanner) {
@@ -162,15 +165,13 @@ export default function ProductPageClient({
 
   const handleAddToCart = () => {
     const isReadyMade = searchParams?.readyMade === "true";
-    const selectedImage = searchParams?.image || product.image;
-
-    // Unit price calculated for single item where applicable
+    const selectedImage = activePreviewImage || searchParams?.image || product.image;
     const unitPrice = (isPens || isFlyers) ? totalPrice / quantity : totalPrice;
 
     const finalOptions = {
       ...options,
       ...(isBanner ? { "Meters": bannerMeters.toString() } : {}),
-      ...(isReadyMade && searchParams?.image ? { "Ready-Made Design": searchParams.image } : {}),
+      ...(isReadyMade && selectedImage ? { "Ready-Made Design": selectedImage } : {}),
     };
 
     addItem({
@@ -178,7 +179,7 @@ export default function ProductPageClient({
       productSlug: product.slug,
       name: product.name,
       image: selectedImage,
-      uploadedImage: uploadedUrl || (isReadyMade ? searchParams?.image : undefined),
+      uploadedImage: uploadedUrl || (isReadyMade ? selectedImage : undefined),
       price: unitPrice,
       quantity: isBanner ? 1 : quantity,
       options: finalOptions,
@@ -189,9 +190,10 @@ export default function ProductPageClient({
   };
 
   const isReadyMade = searchParams?.readyMade === "true";
-  const displayImage = searchParams?.image || product.image;
+  const primaryImage = searchParams?.image || product.image;
+  const altImage = searchParams?.altImage;
+  const hasDualViews = Boolean(altImage);
 
-  // Size chart config
   const sizeChartSrc = categorySlug === "frame" ? "/Frame sizes.png.png"
     : isApparel ? "/T-shirt sizes.png.png"
       : null;
@@ -207,11 +209,38 @@ export default function ProductPageClient({
 
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-10">
 
-        {/* Left: Image Gallery */}
+        {/* Left: Image Gallery & View Switcher */}
         <div className="flex-1">
           <div className="relative w-full h-[400px] sm:h-[500px] rounded-2xl overflow-hidden bg-gray-50 dark:bg-[#1a1f2e] border border-gray-100 dark:border-gray-800 flex items-center justify-center">
-            <Image src={displayImage} alt={product.name} fill className="object-contain p-8" unoptimized={Boolean(searchParams?.image)} />
+            <Image src={activePreviewImage || primaryImage} alt={product.name} fill className="object-contain p-8" unoptimized />
           </div>
+
+          {/* Dual-View Switcher Thumbnails (Football Kits) */}
+          {hasDualViews && (
+            <div className="flex items-center justify-center gap-3 mt-4">
+              <button
+                onClick={() => setActivePreviewImage(primaryImage)}
+                className={`relative w-16 h-16 rounded-xl border-2 overflow-hidden transition-all ${activePreviewImage === primaryImage ? "border-[#0B4DA2] scale-105 shadow-md" : "border-gray-200 opacity-70"
+                  }`}
+              >
+                <Image src={primaryImage} alt="Main View" fill className="object-cover" unoptimized />
+                <span className="absolute bottom-0 inset-x-0 bg-black/60 text-[9px] text-white text-center py-0.5 font-bold">
+                  Selected
+                </span>
+              </button>
+
+              <button
+                onClick={() => setActivePreviewImage(altImage!)}
+                className={`relative w-16 h-16 rounded-xl border-2 overflow-hidden transition-all ${activePreviewImage === altImage ? "border-[#0B4DA2] scale-105 shadow-md" : "border-gray-200 opacity-70"
+                  }`}
+              >
+                <Image src={altImage!} alt="Alt View" fill className="object-cover" unoptimized />
+                <span className="absolute bottom-0 inset-x-0 bg-black/60 text-[9px] text-white text-center py-0.5 font-bold">
+                  Alt View
+                </span>
+              </button>
+            </div>
+          )}
 
           {/* Flyers pricing info image */}
           {isFlyers && (
@@ -433,7 +462,6 @@ export default function ProductPageClient({
               </>
             )}
 
-            {/* General Customization Note & File Upload */}
             {!isReadyMade && !isQuoteBased && !isFlyers && (
               <>
                 <div>
@@ -450,7 +478,6 @@ export default function ProductPageClient({
               </>
             )}
 
-            {/* Quote-based CTA */}
             {isQuoteBased && (
               <div className="rounded-xl p-4" style={{ backgroundColor: siteConfig.colors.lightBar }}>
                 <p className="text-sm text-gray-600 mb-3">
@@ -473,7 +500,6 @@ export default function ProductPageClient({
 
           <hr className="border-gray-100 dark:border-gray-800 my-2" />
 
-          {/* Add to Cart / Quantity */}
           {!isQuoteBased && (
             <div className="flex items-center gap-4">
               <div className="flex items-center bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-1">

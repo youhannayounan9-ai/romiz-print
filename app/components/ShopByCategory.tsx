@@ -48,15 +48,15 @@ const mainCategories = [
   },
 ];
 
-/* 8 popular product icons */
+/* 8 popular product icons — Updated to include football-kits and stamps */
 const popularSlugs = [
   "caps",
   "stickers",
   "frame",
   "t-shirts",
   "business-cards",
-  "tote-bags",
-  "flyers",
+  "football-kits",
+  "stamps",
   "mugs",
 ];
 

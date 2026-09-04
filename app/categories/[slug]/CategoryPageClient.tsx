@@ -7,9 +7,9 @@ import { Settings2 } from "lucide-react";
 import { siteConfig } from "../../config/site";
 import { getProductsForCategory } from "../../data/products";
 import { useRouter } from "next/navigation";
+import { footballKitsData, FootballKitItem } from "../../data/apparelData";
 
 /* ─── Frame collection filenames ─── */
-// Folder 1: Frame collection
 const frameNumbers1 = [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41];
 const frameGalleryImages1 = frameNumbers1.map((n) => {
   const jpegNums = [1, 2, 5, 6, 7, 8, 10, 11, 12, 28, 29, 34, 38];
@@ -17,32 +17,19 @@ const frameGalleryImages1 = frameNumbers1.map((n) => {
   return `/Frame collection/frame (${n}).${ext}`;
 });
 
-// Folder 2: Frame collection 2 (frame (1) to frame (39))
 const frameNumbers2 = Array.from({ length: 39 }, (_, i) => i + 1);
 const frameGalleryImages2 = frameNumbers2.map(n => `/Frame collection 2/frame (${n}).jpg`);
 
-// Folder 3: Frame collection 3 (framee (1) to framee (27))
 const frameNumbers3 = Array.from({ length: 27 }, (_, i) => i + 1);
 const frameGalleryImages3 = frameNumbers3.map((n) => {
-  // Items 21 to 27 are .jpg, items 1 to 20 are .jpeg
   const ext = n >= 21 && n <= 27 ? "jpg" : "jpeg";
   return `/Frame collection 3/framee (${n}).${ext}`;
 });
 
-// Merged Frame Gallery
 const frameGalleryImages = [...frameGalleryImages1, ...frameGalleryImages2, ...frameGalleryImages3];
 
-/* ─── Apparel collections ─── */
-const tshirtGalleryImages = Array.from({ length: 23 }, (_, i) => `/T-shirt collection/${i + 1}.jpg`);
-
-const footballKitFiles = [
-  "ac 1.jpg", "ac 2.jpg", "ar 1.jpg", "ar 2.jpg", "bayern 1.jpg", "bayern 2.jpg",
-  "bc 1.jpg", "bc 2.jpg", "bc 3.jpg", "bc 4.jpg", "ch 1.jpg", "ch 2.jpg",
-  "in 1.jpg", "in 2.jpg", "jv 1.jpg", "jv 2.jpg", "li 1.jpg", "li 2.jpg",
-  "man 1.jpg", "man 2.jpg", "man 3.jpg", "man 4.jpg", "man 5.jpg", "man 6.jpg",
-  "psg 1.jpg", "psg 2.jpg", "rm 1.jpg", "rm 2.jpg", "rm 3.jpg", "rm 4.jpg"
-];
-const footballKitImages = footballKitFiles.map(f => `/football kits/${f}`);
+/* ─── T-Shirt collection (Excludes 23.jpg used for main card) ─── */
+const tshirtGalleryImages = Array.from({ length: 22 }, (_, i) => `/T-shirt collection/${i + 1}.jpg`);
 
 const categoryIntros: Record<string, { headline: string; body: string }> = {
   "roll-up": {
@@ -103,7 +90,6 @@ const categoryIntros: Record<string, { headline: string; body: string }> = {
   },
 };
 
-/* ── Skeleton card ── */
 function SkeletonCard() {
   return (
     <div className="rounded-2xl overflow-hidden animate-pulse bg-white shadow-sm max-w-sm w-full mx-auto">
@@ -118,83 +104,109 @@ function SkeletonCard() {
   );
 }
 
-/* ── Gallery section ── */
-function GallerySection({ title, images, onImageClick }: { title: string; images: string[], onImageClick?: (src: string) => void }) {
+/* ── Standard Gallery Card (Frames & T-Shirts) ── */
+function GalleryCard({
+  src,
+  alt,
+  onClick,
+}: {
+  src: string;
+  alt: string;
+  onClick: () => void;
+}) {
   return (
-    <section className="mt-16 w-full">
-      <div className="flex items-center justify-center gap-4 mb-8">
-        <span className="flex-1 max-w-24 h-px" style={{ backgroundColor: "#D6E2F0" }} />
-        <h2
-          className="text-2xl sm:text-3xl font-bold text-center whitespace-nowrap"
-          style={{ color: siteConfig.colors.dark, fontFamily: "var(--font-space-grotesk), system-ui, sans-serif" }}
+    <div
+      onClick={onClick}
+      className="group flex flex-col bg-white dark:bg-gray-800 rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer"
+    >
+      <div className="relative aspect-square w-full bg-gray-50 dark:bg-gray-900 overflow-hidden">
+        <Image
+          src={src}
+          alt={alt}
+          fill
+          className="object-cover group-hover:scale-105 transition-transform duration-300"
+          sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 20vw"
+          unoptimized={src.startsWith("/")}
+        />
+      </div>
+
+      <div className="p-2.5 sm:p-3 bg-white dark:bg-gray-800 flex items-center justify-center border-t border-gray-100 dark:border-gray-700">
+        <button
+          className="w-full py-2 px-3 rounded-xl text-xs sm:text-sm font-bold text-white transition-colors duration-200 shadow-sm flex items-center justify-center gap-1.5"
+          style={{ backgroundColor: siteConfig.colors.accent }}
         >
-          {title}
-        </h2>
-        <span className="flex-1 max-w-24 h-px" style={{ backgroundColor: "#D6E2F0" }} />
+          <span>Select Design</span>
+          <span className="text-xs">→</span>
+        </button>
       </div>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-        {images.map((src, idx) => (
-          <div
-            key={idx}
-            className="relative aspect-square rounded-xl overflow-hidden bg-gray-100 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.02] cursor-pointer"
-            onClick={() => onImageClick && onImageClick(src)}
-          >
-            <Image
-              src={src}
-              alt={`Gallery image ${idx + 1}`}
-              fill
-              className="object-cover"
-              sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 20vw"
-              unoptimized
-            />
-          </div>
-        ))}
-      </div>
-    </section>
+    </div>
   );
 }
 
-/* ── T-Shirt Gallery section ── */
-function TShirtGallerySection({ onImageClick }: { onImageClick: (src: string, isKit: boolean) => void }) {
-  const images = tshirtGalleryImages;
+/* ── Football Kit Card with Front/Back Toggle Overlay ── */
+function FootballKitCard({
+  kit,
+  onSelect,
+}: {
+  kit: FootballKitItem;
+  onSelect: (activeSrc: string, altSrc: string) => void;
+}) {
+  const [activeView, setActiveView] = useState<"back" | "front">("back");
+  const activeImage = activeView === "back" ? kit.backImage : kit.frontImage;
+  const altImage = activeView === "back" ? kit.frontImage : kit.backImage;
 
   return (
-    <section className="mt-16 w-full">
-      <div className="flex flex-col items-center justify-center gap-6 mb-8">
-        <div className="flex items-center justify-center gap-4 w-full">
-          <span className="flex-1 max-w-24 h-px" style={{ backgroundColor: "#D6E2F0" }} />
-          <h2
-            className="text-2xl sm:text-3xl font-bold text-center whitespace-nowrap"
-            style={{ color: siteConfig.colors.dark, fontFamily: "var(--font-space-grotesk), system-ui, sans-serif" }}
+    <div className="group flex flex-col bg-white dark:bg-gray-800 rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-xl transition-all duration-300">
+      <div
+        className="relative aspect-square w-full bg-gray-50 dark:bg-gray-900 overflow-hidden cursor-pointer"
+        onClick={() => onSelect(activeImage, altImage)}
+      >
+        <Image
+          src={activeImage}
+          alt={`${kit.name} - ${activeView} view`}
+          fill
+          className="object-contain p-2 group-hover:scale-105 transition-transform duration-300"
+          sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 20vw"
+          unoptimized
+        />
+
+        {/* View Switcher Overlay */}
+        <div
+          className="absolute top-2 right-2 flex bg-black/60 backdrop-blur-md rounded-lg p-0.5 text-[10px] font-bold text-white z-10"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <button
+            onClick={() => setActiveView("front")}
+            className={`px-2 py-1 rounded-md transition-colors ${activeView === "front" ? "bg-white text-black" : "text-gray-300 hover:text-white"
+              }`}
           >
-            T-Shirt Collection
-          </h2>
-          <span className="flex-1 max-w-24 h-px" style={{ backgroundColor: "#D6E2F0" }} />
+            Front
+          </button>
+          <button
+            onClick={() => setActiveView("back")}
+            className={`px-2 py-1 rounded-md transition-colors ${activeView === "back" ? "bg-white text-black" : "text-gray-300 hover:text-white"
+              }`}
+          >
+            Back
+          </button>
         </div>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-        {images.map((src, idx) => (
-          <div
-            key={idx}
-            className="relative aspect-square rounded-xl overflow-hidden bg-gray-100 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.02] cursor-pointer"
-            onClick={() => onImageClick(src, false)}
-          >
-            <Image
-              src={src}
-              alt={`T-Shirt image ${idx + 1}`}
-              fill
-              className="object-cover"
-              sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 20vw"
-            />
-          </div>
-        ))}
+      <div className="p-2.5 sm:p-3 bg-white dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700">
+        <button
+          onClick={() => onSelect(activeImage, altImage)}
+          className="w-full py-2 px-3 rounded-xl text-xs sm:text-sm font-bold text-white transition-colors duration-200 shadow-sm flex items-center justify-center gap-1.5"
+          style={{ backgroundColor: siteConfig.colors.accent }}
+        >
+          <span>Customize Kit</span>
+          <span className="text-xs">→</span>
+        </button>
       </div>
-    </section>
+    </div>
   );
 }
 
-/* ── Product card ── */
+/* ── Product Card Component ── */
 function ProductCard({
   name,
   description,
@@ -217,7 +229,7 @@ function ProductCard({
   return (
     <div className="flex flex-col rounded-3xl overflow-hidden bg-white shadow-xl border border-gray-100 max-w-sm w-full mx-auto">
       <div className="w-full relative bg-gray-50" style={{ height: "280px" }}>
-        <Image src={image} alt={name} fill className="object-contain p-4" />
+        <Image src={image} alt={name} fill className="object-contain p-4" unoptimized={image.startsWith("/")} />
       </div>
       <div className="flex flex-col p-6 gap-4 text-center flex-1">
         <div>
@@ -237,7 +249,7 @@ function ProductCard({
   );
 }
 
-/* ── Main client component ── */
+/* ── Main Client Component ── */
 export default function CategoryPageClient({ categoryName, slug }: { categoryName: string; slug: string }) {
   const [loaded, setLoaded] = useState(false);
   const router = useRouter();
@@ -280,46 +292,102 @@ export default function CategoryPageClient({ categoryName, slug }: { categoryNam
         {!loaded ? (
           Array.from({ length: products.length || 1 }).map((_, i) => <SkeletonCard key={i} />)
         ) : (
-          products.map((product) => {
-            return (
-              <ProductCard
-                key={product.id}
-                name={product.name}
-                description={product.description}
-                image={product.image}
-                productSlug={(product as any).slug}
-              />
-            )
-          })
+          products.map((product) => (
+            <ProductCard
+              key={product.id}
+              name={product.name}
+              description={product.description}
+              image={product.image}
+              productSlug={(product as any).slug}
+            />
+          ))
         )}
       </div>
 
       {/* ── FRAME GALLERY ── */}
       {isFrame && loaded && (
-        <GallerySection
-          title="Ready-made Frames"
-          images={frameGalleryImages}
-          onImageClick={(src) => router.push(`/products/custom-framed-poster?image=${encodeURIComponent(src)}&readyMade=true`)}
-        />
+        <section className="mt-16 w-full">
+          <div className="flex items-center justify-center gap-4 mb-8">
+            <span className="flex-1 max-w-24 h-px" style={{ backgroundColor: "#D6E2F0" }} />
+            <h2
+              className="text-2xl sm:text-3xl font-bold text-center whitespace-nowrap"
+              style={{ color: siteConfig.colors.dark, fontFamily: "var(--font-space-grotesk), system-ui, sans-serif" }}
+            >
+              Ready-made Frames
+            </h2>
+            <span className="flex-1 max-w-24 h-px" style={{ backgroundColor: "#D6E2F0" }} />
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-5">
+            {frameGalleryImages.map((src, idx) => (
+              <GalleryCard
+                key={idx}
+                src={src}
+                alt={`Frame design ${idx + 1}`}
+                onClick={() => router.push(`/products/custom-framed-poster?image=${encodeURIComponent(src)}&readyMade=true`)}
+              />
+            ))}
+          </div>
+        </section>
       )}
 
-      {/* ── FOOTBALL KITS GALLERY ── */}
+      {/* ── FOOTBALL KITS GALLERY (Paired Front & Back) ── */}
       {isFootballKitsPage && loaded && (
-        <GallerySection
-          title="Football Kits Gallery"
-          images={footballKitImages}
-          onImageClick={(src) => router.push(`/products/custom-football-kit?image=${encodeURIComponent(src)}&readyMade=true`)}
-        />
+        <section className="mt-16 w-full">
+          <div className="flex items-center justify-center gap-4 mb-8">
+            <span className="flex-1 max-w-24 h-px" style={{ backgroundColor: "#D6E2F0" }} />
+            <h2
+              className="text-2xl sm:text-3xl font-bold text-center whitespace-nowrap"
+              style={{ color: siteConfig.colors.dark, fontFamily: "var(--font-space-grotesk), system-ui, sans-serif" }}
+            >
+              Football Kits Gallery
+            </h2>
+            <span className="flex-1 max-w-24 h-px" style={{ backgroundColor: "#D6E2F0" }} />
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-5">
+            {footballKitsData.map((kit) => (
+              <FootballKitCard
+                key={kit.id}
+                kit={kit}
+                onSelect={(activeSrc, altSrc) =>
+                  router.push(
+                    `/products/custom-football-kit?image=${encodeURIComponent(activeSrc)}&altImage=${encodeURIComponent(
+                      altSrc
+                    )}&readyMade=true`
+                  )
+                }
+              />
+            ))}
+          </div>
+        </section>
       )}
 
       {/* ── T-SHIRT GALLERY ── */}
       {isTshirts && loaded && (
-        <TShirtGallerySection
-          onImageClick={(src, isKit) => {
-            const productSlug = isKit ? "custom-football-kit" : "custom-t-shirt";
-            router.push(`/products/${productSlug}?image=${encodeURIComponent(src)}&readyMade=true`);
-          }}
-        />
+        <section className="mt-16 w-full">
+          <div className="flex items-center justify-center gap-4 mb-8">
+            <span className="flex-1 max-w-24 h-px" style={{ backgroundColor: "#D6E2F0" }} />
+            <h2
+              className="text-2xl sm:text-3xl font-bold text-center whitespace-nowrap"
+              style={{ color: siteConfig.colors.dark, fontFamily: "var(--font-space-grotesk), system-ui, sans-serif" }}
+            >
+              T-Shirt Collection
+            </h2>
+            <span className="flex-1 max-w-24 h-px" style={{ backgroundColor: "#D6E2F0" }} />
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-5">
+            {tshirtGalleryImages.map((src, idx) => (
+              <GalleryCard
+                key={idx}
+                src={src}
+                alt={`T-Shirt design ${idx + 1}`}
+                onClick={() => router.push(`/products/custom-t-shirt?image=${encodeURIComponent(src)}&readyMade=true`)}
+              />
+            ))}
+          </div>
+        </section>
       )}
     </>
   );
