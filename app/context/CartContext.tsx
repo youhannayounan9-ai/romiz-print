@@ -37,26 +37,27 @@ interface CartContextType {
 // ─── Composite key generator ──────────────────────────────────────────────────
 
 /**
- * Build a stable, unique cart line-item ID from all attributes that matter
- * for product identity. Any difference in size, color, custom design or
- * uploaded image produces a different key → separate row in cart.
+ * Build a stable, unique cart line-item ID from all attributes.
+ * Any difference in options, custom text, or uploaded image URL
+ * produces a distinct key → separate row in cart.
  */
 function generateCartItemId(item: NewCartItem): string {
-  const size = item.options?.["size"] || item.options?.["Size"] || "";
-  const color = item.options?.["color"] || item.options?.["Color"] || "";
-  const customDesign = item.options?.["custom design"] || item.options?.["Custom Design"] || "";
-  const uploadedImage = item.uploadedImage || "";
+  // Sort options keys to ensure consistent order
+  const optionsString = item.options
+    ? Object.keys(item.options)
+      .sort()
+      .map((k) => `${k}:${item.options![k]}`)
+      .join("|")
+    : "";
 
-  // Use first 120 chars of uploaded URL so different files still differ
-  const imageKey = uploadedImage.slice(0, 120);
+  const imageKey = item.uploadedImage ? item.uploadedImage.slice(0, 150) : item.image;
 
   return [
     String(item.productId),
-    size,
-    color,
-    customDesign,
+    item.productSlug,
+    optionsString,
     imageKey,
-  ].join("‖"); // use unusual separator to avoid accidental collisions
+  ].join("‖");
 }
 
 // ─── Context ──────────────────────────────────────────────────────────────────
@@ -131,7 +132,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   // ── Derived values ─────────────────────────────────────────────────────────
 
   const totalItems = items.reduce((sum, i) => sum + i.quantity, 0);
-  const subtotal   = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
+  const subtotal = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
 
   return (
     <CartContext.Provider

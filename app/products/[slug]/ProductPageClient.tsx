@@ -37,16 +37,16 @@ function SizeChartModal({ src, label, onClose }: { src: string; label: string; o
   );
 }
 
-export default function ProductPageClient({ 
+export default function ProductPageClient({
   productSlug,
   searchParams,
-}: { 
+}: {
   productSlug: string;
   searchParams?: { image?: string; readyMade?: string };
 }) {
   const router = useRouter();
   const { addItem } = useCart();
-  
+
   const [loaded, setLoaded] = useState(false);
   const [options, setOptions] = useState<Record<string, string>>({});
   const [quantity, setQuantity] = useState(1);
@@ -74,7 +74,7 @@ export default function ProductPageClient({
   const isPens = product?.slug === "custom-pens";
   const isFlyers = product?.slug === "custom-flyers";
   const isStamp = product?.slug === "custom-stamp";
-  
+
   const isCap = categorySlug === "caps";
   const isTShirts = categorySlug === "t-shirts"; // includes hoodies, t-shirts
   const isFootballKit = categorySlug === "football-kits";
@@ -93,13 +93,13 @@ export default function ProductPageClient({
       setTotalPrice(product.basePrice);
       // Initialize default options
       if (categorySlug === "frame") {
-        setOptions({ size: "15x21 cm", color: "Black", "custom design": "No" });
+        setOptions({ Size: "15x21 cm", Color: "Black", "Custom Design": "No" });
       } else if (isApparel) {
-        setOptions({ size: "M" });
+        setOptions({ Size: "M" });
       } else if (isFlyers) {
-        setOptions({ size: "A5 (Half Page)", paper: "80g (Simple)", notes: "" });
+        setOptions({ Size: "A5 (Half Page)", Paper: "80g (Simple)", Notes: "" });
       } else if (isStamp) {
-        setOptions({ type: "Rectangular Standard", ink: "Blue" });
+        setOptions({ Type: "Rectangular Standard", Ink: "Blue" });
       }
     }
     setLoaded(true);
@@ -111,27 +111,27 @@ export default function ProductPageClient({
     let newPrice = product.basePrice;
 
     if (categorySlug === "frame") {
-      if (options.size === "20x30 cm") newPrice = 350;
-      else if (options.size === "30x40 cm") newPrice = 500;
+      if (options.Size === "20x30 cm") newPrice = 350;
+      else if (options.Size === "30x40 cm") newPrice = 500;
       else newPrice = 250; // 15x21 cm
 
-      if (options["custom design"] === "Yes") newPrice += 50;
+      if (options["Custom Design"] === "Yes") newPrice += 50;
     } else if (isBanner) {
       newPrice = bannerMeters * BANNER_PRICE_PER_METER;
     } else if (isPens) {
       newPrice = product.basePrice * quantity;
     } else if (isStamp) {
-      if (options.type === "Pocket Stamp") newPrice = 150;
-      else if (options.type === "Rectangular Standard") newPrice = 250;
-      else if (options.type === "Round/Square") newPrice = 350;
-      else if (options.type === "Date Stamp") newPrice = 450;
+      if (options.Type === "Pocket Stamp") newPrice = 150;
+      else if (options.Type === "Rectangular Standard") newPrice = 250;
+      else if (options.Type === "Round/Square") newPrice = 350;
+      else if (options.Type === "Date Stamp") newPrice = 450;
     } else if (isFlyers) {
       let base = 1200;
-      if (options.size === "A4 (Full Page)") base = 1800;
-      else if (options.size === "A3") base = 2800;
-      if (options.paper === "150g Glossy (Standard)") base += 200;
-      else if (options.paper === "250g Glossy (Heavy)") base += 500;
-      else if (options.paper === "300g Cardstock (Premium)") base += 900;
+      if (options.Size === "A4 (Full Page)") base = 1800;
+      else if (options.Size === "A3") base = 2800;
+      if (options.Paper === "150g Glossy (Standard)") base += 200;
+      else if (options.Paper === "250g Glossy (Heavy)") base += 500;
+      else if (options.Paper === "300g Cardstock (Premium)") base += 900;
       newPrice = base * (quantity / 1000);
     }
 
@@ -152,7 +152,6 @@ export default function ProductPageClient({
     const parsed = parseInt(quantityInput, 10);
     const customStep = isFlyers ? 1000 : qtyStep;
     if (!isNaN(parsed) && parsed >= qtyMin) {
-      // Snap to nearest step
       const snapped = Math.round(parsed / customStep) * customStep;
       setQuantity(Math.max(qtyMin, snapped));
       setQuantityInput(Math.max(qtyMin, snapped).toString());
@@ -162,26 +161,29 @@ export default function ProductPageClient({
   };
 
   const handleAddToCart = () => {
-    const cartPrice = isBanner 
-      ? totalPrice  // total for selected meters
-      : (isPens || isFlyers) 
-        ? totalPrice 
-        : totalPrice;
+    const isReadyMade = searchParams?.readyMade === "true";
+    const selectedImage = searchParams?.image || product.image;
+
+    // Unit price calculated for single item where applicable
+    const unitPrice = (isPens || isFlyers) ? totalPrice / quantity : totalPrice;
+
+    const finalOptions = {
+      ...options,
+      ...(isBanner ? { "Meters": bannerMeters.toString() } : {}),
+      ...(isReadyMade && searchParams?.image ? { "Ready-Made Design": searchParams.image } : {}),
+    };
 
     addItem({
       productId: product.id,
       productSlug: product.slug,
       name: product.name,
-      image: searchParams?.image || product.image,
-      uploadedImage: uploadedUrl || undefined,
-      price: cartPrice,
-      quantity: (isBanner || isPens || isFlyers) ? 1 : quantity,
-      options: {
-        ...options,
-        ...(isBanner ? { "Meters": bannerMeters.toString() } : {}),
-        ...((isPens || isFlyers) ? { "Quantity": quantity.toString() } : {}),
-      },
+      image: selectedImage,
+      uploadedImage: uploadedUrl || (isReadyMade ? searchParams?.image : undefined),
+      price: unitPrice,
+      quantity: isBanner ? 1 : quantity,
+      options: finalOptions,
     });
+
     setAddedToCart(true);
     setTimeout(() => setAddedToCart(false), 3000);
   };
@@ -192,10 +194,10 @@ export default function ProductPageClient({
   // Size chart config
   const sizeChartSrc = categorySlug === "frame" ? "/Frame sizes.png.png"
     : isApparel ? "/T-shirt sizes.png.png"
-    : null;
+      : null;
   const sizeChartLabel = categorySlug === "frame" ? "Frame Size Chart"
     : isApparel ? "Apparel Size Chart"
-    : null;
+      : null;
 
   return (
     <div className="min-h-screen py-10 px-4 sm:px-6 lg:px-8 bg-white dark:bg-[#0f1219]">
@@ -204,11 +206,11 @@ export default function ProductPageClient({
       )}
 
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-10">
-        
+
         {/* Left: Image Gallery */}
         <div className="flex-1">
           <div className="relative w-full h-[400px] sm:h-[500px] rounded-2xl overflow-hidden bg-gray-50 dark:bg-[#1a1f2e] border border-gray-100 dark:border-gray-800 flex items-center justify-center">
-            <Image src={displayImage} alt={product.name} fill className="object-contain p-8" />
+            <Image src={displayImage} alt={product.name} fill className="object-contain p-8" unoptimized={Boolean(searchParams?.image)} />
           </div>
 
           {/* Flyers pricing info image */}
@@ -308,9 +310,9 @@ export default function ProductPageClient({
               <>
                 <div>
                   <label className="block text-sm font-semibold mb-1 text-gray-900 dark:text-white">Size</label>
-                  <select 
-                    value={options.size || "15x21 cm"}
-                    onChange={(e) => handleOptionChange("size", e.target.value)}
+                  <select
+                    value={options.Size || "15x21 cm"}
+                    onChange={(e) => handleOptionChange("Size", e.target.value)}
                     className="w-full p-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:border-[#0B4DA2] outline-none"
                   >
                     <option value="15x21 cm">15x21 cm (250 EGP)</option>
@@ -320,9 +322,9 @@ export default function ProductPageClient({
                 </div>
                 <div>
                   <label className="block text-sm font-semibold mb-1 text-gray-900 dark:text-white">Frame Color</label>
-                  <select 
-                    value={options.color || "Black"}
-                    onChange={(e) => handleOptionChange("color", e.target.value)}
+                  <select
+                    value={options.Color || "Black"}
+                    onChange={(e) => handleOptionChange("Color", e.target.value)}
                     className="w-full p-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:border-[#0B4DA2] outline-none"
                   >
                     <option value="Black">Black</option>
@@ -332,11 +334,11 @@ export default function ProductPageClient({
                 </div>
                 {!isReadyMade && (
                   <div className="flex items-center gap-2 mt-2">
-                    <input 
-                      type="checkbox" 
-                      id="customDesign" 
-                      checked={options["custom design"] === "Yes"}
-                      onChange={(e) => handleOptionChange("custom design", e.target.checked ? "Yes" : "No")}
+                    <input
+                      type="checkbox"
+                      id="customDesign"
+                      checked={options["Custom Design"] === "Yes"}
+                      onChange={(e) => handleOptionChange("Custom Design", e.target.checked ? "Yes" : "No")}
                       className="w-4 h-4 rounded border-gray-300 text-[#0B4DA2]"
                     />
                     <label htmlFor="customDesign" className="text-sm font-medium text-gray-900 dark:text-white">Add Custom Design (+50 EGP)</label>
@@ -348,9 +350,9 @@ export default function ProductPageClient({
             {isApparel && (
               <div>
                 <label className="block text-sm font-semibold mb-1 text-gray-900 dark:text-white">Size</label>
-                <select 
-                  value={options.size || "M"}
-                  onChange={(e) => handleOptionChange("size", e.target.value)}
+                <select
+                  value={options.Size || "M"}
+                  onChange={(e) => handleOptionChange("Size", e.target.value)}
                   className="w-full p-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:border-[#0B4DA2] outline-none"
                 >
                   <option value="S">S</option>
@@ -366,9 +368,9 @@ export default function ProductPageClient({
               <>
                 <div>
                   <label className="block text-sm font-semibold mb-1 text-gray-900 dark:text-white">Stamp Type & Size</label>
-                  <select 
-                    value={options.type || "Rectangular Standard"}
-                    onChange={(e) => handleOptionChange("type", e.target.value)}
+                  <select
+                    value={options.Type || "Rectangular Standard"}
+                    onChange={(e) => handleOptionChange("Type", e.target.value)}
                     className="w-full p-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:border-[#0B4DA2] outline-none"
                   >
                     <option value="Pocket Stamp">Pocket Stamp (150 EGP)</option>
@@ -379,9 +381,9 @@ export default function ProductPageClient({
                 </div>
                 <div>
                   <label className="block text-sm font-semibold mb-1 text-gray-900 dark:text-white">Ink Color</label>
-                  <select 
-                    value={options.ink || "Blue"}
-                    onChange={(e) => handleOptionChange("ink", e.target.value)}
+                  <select
+                    value={options.Ink || "Blue"}
+                    onChange={(e) => handleOptionChange("Ink", e.target.value)}
                     className="w-full p-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:border-[#0B4DA2] outline-none"
                   >
                     <option value="Blue">Blue</option>
@@ -396,9 +398,9 @@ export default function ProductPageClient({
               <>
                 <div>
                   <label className="block text-sm font-semibold mb-1 text-gray-900 dark:text-white">Flyer Size</label>
-                  <select 
-                    value={options.size || "A5 (Half Page)"}
-                    onChange={(e) => handleOptionChange("size", e.target.value)}
+                  <select
+                    value={options.Size || "A5 (Half Page)"}
+                    onChange={(e) => handleOptionChange("Size", e.target.value)}
                     className="w-full p-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:border-[#0B4DA2] outline-none"
                   >
                     <option value="A5 (Half Page)">A5 — Half Page</option>
@@ -408,9 +410,9 @@ export default function ProductPageClient({
                 </div>
                 <div>
                   <label className="block text-sm font-semibold mb-1 text-gray-900 dark:text-white">Paper Weight</label>
-                  <select 
-                    value={options.paper || "80g (Simple)"}
-                    onChange={(e) => handleOptionChange("paper", e.target.value)}
+                  <select
+                    value={options.Paper || "80g (Simple)"}
+                    onChange={(e) => handleOptionChange("Paper", e.target.value)}
                     className="w-full p-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:border-[#0B4DA2] outline-none"
                   >
                     <option value="80g (Simple)">80g — Simple</option>
@@ -422,8 +424,8 @@ export default function ProductPageClient({
                 <div>
                   <label className="block text-sm font-semibold mb-1 text-gray-900 dark:text-white">Custom Notes</label>
                   <textarea
-                    value={options.notes || ""}
-                    onChange={(e) => handleOptionChange("notes", e.target.value)}
+                    value={options.Notes || ""}
+                    onChange={(e) => handleOptionChange("Notes", e.target.value)}
                     placeholder="E.g. brand colours, text, logo placement..."
                     className="w-full p-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:border-[#0B4DA2] outline-none h-24 resize-none"
                   />
@@ -436,14 +438,14 @@ export default function ProductPageClient({
               <>
                 <div>
                   <label className="block text-sm font-semibold mb-1 text-gray-900 dark:text-white">Customization Notes</label>
-                  <textarea 
-                    value={options.notes || ""}
-                    onChange={(e) => handleOptionChange("notes", e.target.value)}
+                  <textarea
+                    value={options.Notes || ""}
+                    onChange={(e) => handleOptionChange("Notes", e.target.value)}
                     placeholder="E.g. brand colours, text, logo placement..."
                     className="w-full p-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:border-[#0B4DA2] outline-none h-24 resize-none"
                   />
                 </div>
-                
+
                 <DesignFileUploader onUploadComplete={(url) => setUploadedUrl(url)} />
               </>
             )}
@@ -452,7 +454,7 @@ export default function ProductPageClient({
             {isQuoteBased && (
               <div className="rounded-xl p-4" style={{ backgroundColor: siteConfig.colors.lightBar }}>
                 <p className="text-sm text-gray-600 mb-3">
-                  Pricing for this product depends on your specifications (quantity, size, paper type, etc.). 
+                  Pricing for this product depends on your specifications (quantity, size, paper type, etc.).
                   Please contact us on WhatsApp to get a custom quote!
                 </p>
                 <button
@@ -475,13 +477,13 @@ export default function ProductPageClient({
           {!isQuoteBased && (
             <div className="flex items-center gap-4">
               <div className="flex items-center bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-1">
-                <button 
+                <button
                   onClick={() => setQuantity(q => Math.max(isFlyers ? 1000 : qtyMin, q - (isFlyers ? 1000 : qtyStep)))}
                   className="w-10 h-10 flex items-center justify-center text-xl font-medium hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md transition-colors"
                 >-</button>
-                
+
                 {isEditingQuantity ? (
-                  <input 
+                  <input
                     type="number"
                     min={isFlyers ? 1000 : qtyMin}
                     step={isFlyers ? 1000 : qtyStep}
@@ -493,7 +495,7 @@ export default function ProductPageClient({
                     className="w-16 text-center font-semibold bg-white dark:bg-gray-900 border border-[#0B4DA2] rounded outline-none text-gray-900 dark:text-white"
                   />
                 ) : (
-                  <span 
+                  <span
                     onDoubleClick={() => {
                       setQuantityInput(quantity.toString());
                       setIsEditingQuantity(true);
@@ -505,7 +507,7 @@ export default function ProductPageClient({
                   </span>
                 )}
 
-                <button 
+                <button
                   onClick={() => setQuantity(q => q + (isFlyers ? 1000 : qtyStep))}
                   className="w-10 h-10 flex items-center justify-center text-xl font-medium hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md transition-colors"
                 >+</button>
@@ -518,7 +520,7 @@ export default function ProductPageClient({
                 <span className="text-xs text-gray-500">Min. 1000 pcs • Steps of 1000</span>
               )}
 
-              <button 
+              <button
                 onClick={handleAddToCart}
                 className="flex-1 flex items-center justify-center gap-2 py-4 rounded-xl text-white font-bold transition-transform hover:-translate-y-0.5 shadow-md hover:shadow-lg"
                 style={{ backgroundColor: addedToCart ? "#10B981" : siteConfig.colors.accent }}

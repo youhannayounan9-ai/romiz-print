@@ -30,7 +30,7 @@ export const productData: Record<string, CategoryProduct[]> = {
       description: "Premium framed posters with multiple sizes and frame colour options.",
       image: "/frame (8).jpeg",
       bgColor: "#F0EBE3",
-      basePrice: 250, // Starting from 250 EGP for 15x21 cm
+      basePrice: 200, // Starting from 250 EGP for 15x21 cm
     },
   ],
   banners: [
@@ -128,7 +128,7 @@ export const productData: Record<string, CategoryProduct[]> = {
       description: "Premium printable cotton t-shirts available in multiple sizes and colours.",
       image: "/T-Shirts.png",
       bgColor: "#EBE3F0",
-      basePrice: 700,
+      basePrice: 600,
     },
     {
       id: "hoodie-1",
@@ -137,7 +137,7 @@ export const productData: Record<string, CategoryProduct[]> = {
       description: "Warm fleece hoodies with your custom design. Available in multiple sizes and colours.",
       image: "/Hoodies.png",
       bgColor: "#E8EEF7",
-      basePrice: 700, // Assuming base price same as t-shirt for now, can adjust in product page
+      basePrice: 600, // Assuming base price same as t-shirt for now, can adjust in product page
     },
   ],
   "lab-coats": [
@@ -148,7 +148,7 @@ export const productData: Record<string, CategoryProduct[]> = {
       description: "Professional medical and laboratory coats with custom logo embroidery or print.",
       image: "/lab-coat.png",
       bgColor: "#F0EBE3",
-      basePrice: 400,
+      basePrice: 500,
     }
   ],
   "football-kits": [
@@ -160,7 +160,7 @@ export const productData: Record<string, CategoryProduct[]> = {
       image: "/football kits/rm 1.jpg", // Default image
       bgColor: "#E8EEF7",
 
-      basePrice: 500, // Placeholder base price
+      basePrice: 550, // Placeholder base price
     }
   ],
   caps: [
