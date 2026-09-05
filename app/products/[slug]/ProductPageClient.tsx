@@ -194,11 +194,15 @@ export default function ProductPageClient({
   const altImage = searchParams?.altImage;
   const hasDualViews = Boolean(altImage);
 
+  // Size chart config (Only show for Frames, T-Shirts, and Football Kits)
+  const showApparelSizeChart = isTShirts || isFootballKit;
+
   const sizeChartSrc = categorySlug === "frame" ? "/Frame sizes.png.png"
-    : isApparel ? "/T-shirt sizes.png.png"
+    : showApparelSizeChart ? "/T-shirt sizes.png.png"
       : null;
+
   const sizeChartLabel = categorySlug === "frame" ? "Frame Size Chart"
-    : isApparel ? "Apparel Size Chart"
+    : showApparelSizeChart ? "Apparel Size Chart"
       : null;
 
   return (
