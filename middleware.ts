@@ -4,16 +4,13 @@ import type { NextRequest } from "next/server";
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Protect all /admin routes
-  if (pathname.startsWith("/admin")) {
+  // Protect all /admin sub-pages (/admin/quotes, /admin/products, /admin/settings)
+  if (pathname.startsWith("/admin/") && pathname !== "/admin") {
     const adminToken = request.cookies.get("romiz_admin_token")?.value;
 
-    // Check for valid admin cookie session
     if (!adminToken || adminToken !== "ROMIZ_ADMIN_SESSION_ACTIVE") {
-      // If unauthorized, redirect user to the login page or customer account
-      const loginUrl = new URL("/login", request.url);
-      loginUrl.searchParams.set("redirect", pathname);
-      return NextResponse.redirect(loginUrl);
+      // Send unauthenticated users back to /admin root login screen
+      return NextResponse.redirect(new URL("/admin", request.url));
     }
   }
 
