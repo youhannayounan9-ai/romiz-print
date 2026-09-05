@@ -18,7 +18,7 @@ export default function Header() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [mounted, setMounted] = useState(false);
-  
+
   const searchRef = useRef<HTMLFormElement>(null);
   const router = useRouter();
   const { totalItems } = useCart();
@@ -26,7 +26,7 @@ export default function Header() {
 
   useEffect(() => {
     setMounted(true);
-    
+
     const handleClickOutside = (event: MouseEvent) => {
       if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
         setIsSearchFocused(false);
@@ -56,7 +56,7 @@ export default function Header() {
     if (!searchQuery.trim()) return [];
     const term = searchQuery.toLowerCase();
     const matches: (CategoryProduct & { categorySlug: string })[] = [];
-    
+
     Object.entries(productData).forEach(([slug, products]) => {
       products.forEach(p => {
         if (p.name.toLowerCase().includes(term) || slug.includes(term)) {
@@ -73,7 +73,7 @@ export default function Header() {
     <header className="sticky top-0 z-50 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shadow-sm transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-wrap md:flex-nowrap items-center justify-between gap-y-3 md:gap-4 py-3 md:py-0 min-h-[64px] lg:min-h-[80px]">
-          
+
           {/* ── LEFT: Logo ── */}
           <div className="flex-shrink-0">
             <Link href="/" className="block">
@@ -101,9 +101,9 @@ export default function Header() {
 
           {/* ── CENTER: Search with Autocomplete ── */}
           <div className="order-last md:order-none w-full md:w-auto md:flex-1 flex items-center max-w-2xl mx-auto relative">
-            <form 
+            <form
               ref={searchRef}
-              onSubmit={handleSearch} 
+              onSubmit={handleSearch}
               className="flex w-full rounded-xl border-2 border-gray-200 focus-within:border-[#0B4DA2] transition-colors duration-200 shadow-sm bg-white relative z-50"
             >
               <input
@@ -133,7 +133,7 @@ export default function Header() {
                     <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Popular Searches</h4>
                     <div className="flex flex-wrap gap-2">
                       {POPULAR_SEARCH_TAGS.map(tag => (
-                        <button 
+                        <button
                           key={tag}
                           onClick={() => handleTagClick(tag)}
                           className="px-3 py-1.5 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-full text-sm text-gray-700 transition-colors"
@@ -151,8 +151,8 @@ export default function Header() {
                         {searchSuggestions.map(product => {
                           const productSlug = product.name.toLowerCase().replace(/\s+/g, '-');
                           return (
-                            <Link 
-                              key={product.id} 
+                            <Link
+                              key={product.id}
                               href={`/products/${product.categorySlug}?p=${productSlug}`}
                               onClick={() => setIsSearchFocused(false)}
                               className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-lg transition-colors group"
@@ -187,7 +187,7 @@ export default function Header() {
                 onClick={() => {
                   const newTheme = resolvedTheme === 'dark' ? 'light' : 'dark';
                   setTheme(newTheme);
-                  console.log('Theme changed to:', newTheme); // Debug log
+                  console.log('Theme changed to:', newTheme);
                   console.log('Current theme:', theme, 'Resolved:', resolvedTheme);
                 }}
                 className="p-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200"
@@ -200,11 +200,12 @@ export default function Header() {
                 )}
               </button>
             )}
-            {/* Account Icon */}
+
+            {/* Customer Account Icon (Directs to Customer Profile / Login) */}
             <Link
-              href="/admin?access=ROMIZ_ADMIN_2026"
-              aria-label="Admin Dashboard"
-              className="p-2 rounded-lg transition-colors hover:bg-gray-100 text-gray-700"
+              href="/account"
+              aria-label="Customer Account"
+              className="p-2 rounded-lg transition-colors hover:bg-gray-100 text-gray-700 dark:text-gray-200 dark:hover:bg-gray-800"
             >
               <User size={22} />
             </Link>
@@ -213,11 +214,11 @@ export default function Header() {
             <Link
               href="/cart"
               aria-label="Shopping Cart"
-              className="relative p-2 rounded-lg transition-colors hover:bg-gray-100 text-gray-700"
+              className="relative p-2 rounded-lg transition-colors hover:bg-gray-100 text-gray-700 dark:text-gray-200 dark:hover:bg-gray-800"
             >
               <ShoppingCart size={22} />
               {mounted && totalItems > 0 && (
-                <span 
+                <span
                   className="absolute top-0 right-0 transform translate-x-1/4 -translate-y-1/4 w-5 h-5 flex items-center justify-center text-[10px] font-bold text-white rounded-full border-2 border-white"
                   style={{ backgroundColor: siteConfig.colors.accent }}
                 >
@@ -241,8 +242,8 @@ export default function Header() {
 
       {/* Mobile menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-gray-100 bg-white px-4 py-4 flex flex-col gap-2 absolute w-full shadow-md z-40">
-          {["Roll Up", "Frame", "Banners", "Business Cards", "Tote Bags", "Flyers", "Mugs", "Pens", "Stickers", "T-Shirts"].map((item) => (
+        <div className="md:hidden border-t border-gray-100 bg-white dark:bg-gray-900 px-4 py-4 flex flex-col gap-2 absolute w-full shadow-md z-40">
+          {["Roll Up", "Frame", "Banners", "Business Cards", "Tote Bags", "Flyers", "Mugs", "Pens", "Stickers", "T-Shirts", "Football Kits"].map((item) => (
             <Link
               key={item}
               href={`/categories/${item.toLowerCase().replace(/\s+/g, "-")}`}
