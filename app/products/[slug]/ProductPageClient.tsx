@@ -9,6 +9,13 @@ import { getProductBySlug, productData, QUOTE_BASED_SLUGS, BANNER_PRICE_PER_METE
 import { useCart } from "../../context/CartContext";
 import DesignFileUploader from "../../components/DesignFileUploader";
 
+/* ── Frame Size Options (Pills UI) ── */
+const FRAME_SIZES = [
+  { label: "15×21 cm", format: "(A5)", price: 200, badge: null },
+  { label: "20×30 cm", format: "(A4)", price: 300, badge: "MOST PICKED" },
+  { label: "30×40 cm", format: "(A3)", price: 450, badge: "BEST VALUE" },
+];
+
 /* ── Size Chart Modal ── */
 function SizeChartModal({ src, label, onClose }: { src: string; label: string; onClose: () => void }) {
   return (
@@ -97,7 +104,7 @@ export default function ProductPageClient({
       setActivePreviewImage(initialImg);
 
       if (categorySlug === "frame") {
-        setOptions({ Size: "15x21 cm", Color: "Black", "Custom Design": "No" });
+        setOptions({ Size: "15×21 cm (A5)", Color: "Black", "Custom Design": "No" });
       } else if (isApparel) {
         setOptions({ Size: "M" });
       } else if (isFlyers) {
@@ -114,9 +121,10 @@ export default function ProductPageClient({
     let newPrice = product.basePrice;
 
     if (categorySlug === "frame") {
-      if (options.Size === "20x30 cm") newPrice = 350;
-      else if (options.Size === "30x40 cm") newPrice = 500;
-      else newPrice = 250;
+      const currentSize = options.Size || "15×21 cm (A5)";
+      if (currentSize.includes("20×30") || currentSize.includes("20x30")) newPrice = 300;
+      else if (currentSize.includes("30×40") || currentSize.includes("30x40")) newPrice = 450;
+      else newPrice = 200; // 15×21 cm (A5)
 
       if (options["Custom Design"] === "Yes") newPrice += 50;
     } else if (isBanner) {
@@ -341,18 +349,45 @@ export default function ProductPageClient({
           <div className="flex flex-col gap-4">
             {categorySlug === "frame" && (
               <>
+                {/* Modern Frame Size Selector (Pills UI) */}
                 <div>
-                  <label className="block text-sm font-semibold mb-1 text-gray-900 dark:text-white">Size</label>
-                  <select
-                    value={options.Size || "15x21 cm"}
-                    onChange={(e) => handleOptionChange("Size", e.target.value)}
-                    className="w-full p-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:border-[#0B4DA2] outline-none"
-                  >
-                    <option value="15x21 cm">15x21 cm (250 EGP)</option>
-                    <option value="20x30 cm">20x30 cm (350 EGP)</option>
-                    <option value="30x40 cm">30x40 cm (500 EGP)</option>
-                  </select>
+                  <label className="block text-sm font-semibold mb-3 text-gray-900 dark:text-white">Size</label>
+                  <div className="grid grid-cols-3 gap-3">
+                    {FRAME_SIZES.map((sizeObj) => {
+                      const fullValue = `${sizeObj.label} ${sizeObj.format}`;
+                      const isSelected = (options.Size || "15×21 cm (A5)").includes(sizeObj.label);
+
+                      return (
+                        <button
+                          key={sizeObj.label}
+                          type="button"
+                          onClick={() => handleOptionChange("Size", fullValue)}
+                          className={`relative flex flex-col items-center justify-center p-3 sm:p-4 rounded-2xl border-2 transition-all duration-200 ${isSelected
+                              ? "border-[#0B4DA2] bg-[#0B4DA2] text-white shadow-lg scale-[1.02]"
+                              : "border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 hover:border-gray-400"
+                            }`}
+                        >
+                          {sizeObj.badge && (
+                            <span
+                              className={`absolute -top-2.5 px-2 py-0.5 rounded-full text-[9px] font-extrabold uppercase tracking-wider ${isSelected ? "bg-[#10B981] text-white" : "bg-[#0B4DA2] text-white"
+                                }`}
+                            >
+                              {sizeObj.badge}
+                            </span>
+                          )}
+                          <span className="text-sm font-bold">{sizeObj.label}</span>
+                          <span className={`text-xs font-semibold ${isSelected ? "text-blue-100" : "text-gray-400"}`}>
+                            {sizeObj.format}
+                          </span>
+                          <span className={`text-xs mt-1 font-semibold ${isSelected ? "text-white" : "text-gray-500"}`}>
+                            {sizeObj.price} EGP
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
+
                 <div>
                   <label className="block text-sm font-semibold mb-1 text-gray-900 dark:text-white">Frame Color</label>
                   <select
@@ -365,6 +400,7 @@ export default function ProductPageClient({
                     <option value="White">White</option>
                   </select>
                 </div>
+
                 {!isReadyMade && (
                   <div className="flex items-center gap-2 mt-2">
                     <input
