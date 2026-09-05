@@ -157,7 +157,7 @@ export const productData: Record<string, CategoryProduct[]> = {
       slug: "custom-football-kit",
       name: "Custom Football Kit",
       description: "Ready-made and custom-printed football kits for teams. High-performance breathable fabric.",
-      image: "/football kits/rm 1.jpg", // Default image
+      image: "/football kits/bc 2.jpg", // Default image
       bgColor: "#E8EEF7",
 
       basePrice: 550, // Placeholder base price
