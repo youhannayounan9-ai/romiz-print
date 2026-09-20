@@ -1,22 +1,62 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import { createServerClient } from "@supabase/ssr";
+import { NextResponse, type NextRequest } from "next/server";
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Protect all /admin sub-pages (/admin/quotes, /admin/products, /admin/settings)
+  // 1. Admin Session Check
   if (pathname.startsWith("/admin/") && pathname !== "/admin") {
     const adminToken = request.cookies.get("romiz_admin_token")?.value;
-
     if (!adminToken || adminToken !== "ROMIZ_ADMIN_SESSION_ACTIVE") {
-      // Send unauthenticated users back to /admin root login screen
       return NextResponse.redirect(new URL("/admin", request.url));
     }
   }
 
-  return NextResponse.next();
+  // 2. Supabase Cookie Syncing
+  let response = NextResponse.next({
+    request: {
+      headers: request.headers,
+    },
+  });
+
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return request.cookies.getAll();
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) =>
+            request.cookies.set(name, value)
+          );
+          response = NextResponse.next({
+            request,
+          });
+          cookiesToSet.forEach(({ name, value, options }) =>
+            response.cookies.set(name, value, options)
+          );
+        },
+      },
+    }
+  );
+
+  // Refresh auth token if expired
+  await supabase.auth.getUser();
+
+  return response;
 }
 
 export const config = {
-  matcher: ["/admin/:path*"],
+  matcher: [
+    /*
+     * Match all request paths except for:
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * - public asset extensions (.svg, .png, .jpg, etc.)
+     */
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+  ],
 };

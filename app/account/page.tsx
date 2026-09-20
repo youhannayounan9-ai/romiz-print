@@ -12,14 +12,35 @@ export default function CustomerAccountPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
+    // 1. Initial User Fetch
+    const checkUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
         router.push("/login");
       } else {
         setUser(user);
       }
       setLoading(false);
-    });
+    };
+
+    checkUser();
+
+    // 2. Listen for Auth State Changes (e.g. sign-in/out across tabs or redirects)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        if (session?.user) {
+          setUser(session.user);
+          setLoading(false);
+        } else {
+          setUser(null);
+          router.push("/login");
+        }
+      }
+    );
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, [router]);
 
   const handleSignOut = async () => {
@@ -28,7 +49,11 @@ export default function CustomerAccountPage() {
   };
 
   if (loading) {
-    return <div className="min-h-screen pt-20 text-center text-gray-500">Loading profile...</div>;
+    return (
+      <div className="min-h-screen pt-20 text-center text-gray-500">
+        Loading profile...
+      </div>
+    );
   }
 
   return (
@@ -38,12 +63,19 @@ export default function CustomerAccountPage() {
         {/* Profile Card */}
         <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 sm:p-8 border border-gray-100 dark:border-gray-700 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold text-white" style={{ backgroundColor: siteConfig.colors.primary }}>
+            <div
+              className="w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold text-white"
+              style={{ backgroundColor: siteConfig.colors.primary }}
+            >
               {user?.email?.[0].toUpperCase() || "U"}
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{user?.email}</h1>
-              <p className="text-xs text-gray-400 mt-0.5">Verified Customer Account</p>
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                {user?.email}
+              </h1>
+              <p className="text-xs text-gray-400 mt-0.5">
+                Verified Customer Account
+              </p>
             </div>
           </div>
 
@@ -62,19 +94,29 @@ export default function CustomerAccountPage() {
           {/* Recent Orders */}
           <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm">
             <div className="flex items-center gap-2 mb-4 text-gray-900 dark:text-white font-bold text-lg">
-              <ShoppingBag size={20} style={{ color: siteConfig.colors.primary }} />
+              <ShoppingBag
+                size={20}
+                style={{ color: siteConfig.colors.primary }}
+              />
               <h2>Order History</h2>
             </div>
-            <p className="text-sm text-gray-500">You haven't placed any online orders yet.</p>
+            <p className="text-sm text-gray-500">
+              You haven't placed any online orders yet.
+            </p>
           </div>
 
           {/* Shipping Addresses */}
           <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm">
             <div className="flex items-center gap-2 mb-4 text-gray-900 dark:text-white font-bold text-lg">
-              <MapPin size={20} style={{ color: siteConfig.colors.primary }} />
+              <MapPin
+                size={20}
+                style={{ color: siteConfig.colors.primary }}
+              />
               <h2>Saved Address</h2>
             </div>
-            <p className="text-sm text-gray-500">No address saved. It will auto-save during your next checkout.</p>
+            <p className="text-sm text-gray-500">
+              No address saved. It will auto-save during your next checkout.
+            </p>
           </div>
 
         </div>
