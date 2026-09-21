@@ -30,51 +30,6 @@ export const productData: Record<string, CategoryProduct[]> = {
       description: "Premium framed posters with multiple sizes and frame colour options.",
       image: "/frame (8).jpeg",
       bgColor: "#F0EBE3",
-      basePrice: 185, // Updated base price for A5
-    },
-    {
-      id: "frame-2",
-      slug: "custom-framed-poster-design-1",
-      name: "Custom Framed Poster Design 1",
-      description: "Ready-made framed poster artwork — pick your frame size and colour at checkout.",
-      image: "/Frame collection 2/frame (1).jpg",
-      bgColor: "#F0EBE3",
-      basePrice: 185,
-    },
-    {
-      id: "frame-3",
-      slug: "custom-framed-poster-design-2",
-      name: "Custom Framed Poster Design 2",
-      description: "Ready-made framed poster artwork — pick your frame size and colour at checkout.",
-      image: "/Frame collection 2/frame (2).jpg",
-      bgColor: "#E8EEF7",
-      basePrice: 185,
-    },
-    {
-      id: "frame-4",
-      slug: "custom-framed-poster-design-3",
-      name: "Custom Framed Poster Design 3",
-      description: "Ready-made framed poster artwork — pick your frame size and colour at checkout.",
-      image: "/Frame collection 2/frame (3).jpg",
-      bgColor: "#FFF3E0",
-      basePrice: 185,
-    },
-    {
-      id: "frame-5",
-      slug: "custom-framed-poster-design-4",
-      name: "Custom Framed Poster Design 4",
-      description: "Ready-made framed poster artwork — pick your frame size and colour at checkout.",
-      image: "/Frame collection 2/frame (4).jpg",
-      bgColor: "#E3EBF0",
-      basePrice: 185,
-    },
-    {
-      id: "frame-6",
-      slug: "custom-framed-poster-design-5",
-      name: "Custom Framed Poster Design 5",
-      description: "Ready-made framed poster artwork — pick your frame size and colour at checkout.",
-      image: "/Frame collection 2/frame (5).jpg",
-      bgColor: "#E8F5E9",
       basePrice: 185,
     },
   ],
@@ -140,7 +95,7 @@ export const productData: Record<string, CategoryProduct[]> = {
       image: "/black magic mug.png",
       bgColor: "#1E2530",
       basePrice: 270,
-    }
+    },
   ],
   pens: [
     {
@@ -172,51 +127,6 @@ export const productData: Record<string, CategoryProduct[]> = {
       description: "Premium printable cotton t-shirts available in multiple sizes and colours.",
       image: "/T-shirt collection/23.jpg",
       bgColor: "#EBE3F0",
-      basePrice: 550, // Updated price
-    },
-    {
-      id: "tshirt-2",
-      slug: "custom-t-shirt-design-1",
-      name: "Custom T-Shirt Design 1",
-      description: "Ready-made printed t-shirt design with full-colour DTF printing on premium cotton.",
-      image: "/T-shirt collection/1.jpg",
-      bgColor: "#EBE3F0",
-      basePrice: 550,
-    },
-    {
-      id: "tshirt-3",
-      slug: "custom-t-shirt-design-2",
-      name: "Custom T-Shirt Design 2",
-      description: "Ready-made printed t-shirt design with full-colour DTF printing on premium cotton.",
-      image: "/T-shirt collection/2.jpg",
-      bgColor: "#E8F5E9",
-      basePrice: 550,
-    },
-    {
-      id: "tshirt-4",
-      slug: "custom-t-shirt-design-3",
-      name: "Custom T-Shirt Design 3",
-      description: "Ready-made printed t-shirt design with full-colour DTF printing on premium cotton.",
-      image: "/T-shirt collection/3.jpg",
-      bgColor: "#FFF3E0",
-      basePrice: 550,
-    },
-    {
-      id: "tshirt-5",
-      slug: "custom-t-shirt-design-4",
-      name: "Custom T-Shirt Design 4",
-      description: "Ready-made printed t-shirt design with full-colour DTF printing on premium cotton.",
-      image: "/T-shirt collection/4.jpg",
-      bgColor: "#E8EEF7",
-      basePrice: 550,
-    },
-    {
-      id: "tshirt-6",
-      slug: "custom-t-shirt-design-5",
-      name: "Custom T-Shirt Design 5",
-      description: "Ready-made printed t-shirt design with full-colour DTF printing on premium cotton.",
-      image: "/T-shirt collection/5.jpg",
-      bgColor: "#E3EBF0",
       basePrice: 550,
     },
     {
@@ -237,8 +147,8 @@ export const productData: Record<string, CategoryProduct[]> = {
       description: "Professional medical and laboratory coats with custom logo embroidery or print.",
       image: "/lab-coat.png",
       bgColor: "#F0EBE3",
-      basePrice: 450, // Updated price
-    }
+      basePrice: 450,
+    },
   ],
   "football-kits": [
     {
@@ -248,8 +158,8 @@ export const productData: Record<string, CategoryProduct[]> = {
       description: "Ready-made and custom-printed football kits for teams. High-performance breathable fabric.",
       image: "/football kits/bc 2.jpg",
       bgColor: "#E8EEF7",
-      basePrice: 550, // Updated price
-    }
+      basePrice: 550,
+    },
   ],
   caps: [
     {
@@ -271,8 +181,8 @@ export const productData: Record<string, CategoryProduct[]> = {
       image: "/Stamp.png.jpg",
       bgColor: "#E3EBF0",
       basePrice: 350,
-    }
-  ]
+    },
+  ],
 };
 
 /* Ready-Made Collections Data */
@@ -290,7 +200,7 @@ export const FRAME_COLLECTION_4: ReadyMadeItem[] = Array.from({ length: 16 }, (_
   name: `Frame Design ${i + 1}`,
   image: `/Frame collection 4/Frame (${i + 1}).jpg`,
   category: "frames",
-  price: 185, // Starts at A5 price
+  price: 185,
 }));
 
 export const TSHIRT_COLLECTION_2: ReadyMadeItem[] = Array.from({ length: 14 }, (_, i) => ({
@@ -319,7 +229,7 @@ export const QUOTE_BASED_SLUGS = new Set([
 export const BANNER_PRICE_PER_METER = 135;
 
 /** Get products for any category slug */
-export function getProductsForCategory(slug: string, categoryName: string): CategoryProduct[] {
+export function getProductsForCategory(slug: string, categoryName?: string): CategoryProduct[] {
   return productData[slug] || [];
 }
 
@@ -339,7 +249,7 @@ export function getProductByName(slug: string, name: string): CategoryProduct | 
 }
 
 /** Get a specific product by its unique slug across all categories */
-export function getProductBySlug(productSlug: string): { product: CategoryProduct, categorySlug: string } | undefined {
+export function getProductBySlug(productSlug: string): { product: CategoryProduct; categorySlug: string } | undefined {
   if (!productSlug) return undefined;
   const target = productSlug.toLowerCase().trim();
   for (const [catSlug, products] of Object.entries(productData)) {
