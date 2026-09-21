@@ -9,26 +9,28 @@ import { getProductsForCategory, getReadyMadeByCategory } from "../../data/produ
 import { useRouter } from "next/navigation";
 import { footballKitsData, FootballKitItem } from "../../data/apparelData";
 
+/* Helper to encode paths containing spaces/parentheses */
+const safePath = (path: string) => encodeURI(path);
+
 /* ─── Frame collection filenames ─── */
 const frameNumbers1 = [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41];
 const frameGalleryImages1 = frameNumbers1.map((n) => {
   const jpegNums = [1, 2, 5, 6, 7, 8, 10, 11, 12, 28, 29, 34, 38];
   const ext = jpegNums.includes(n) ? "jpeg" : "jpg";
-  return `/Frame collection/frame (${n}).${ext}`;
+  return safePath(`/Frame collection/frame (${n}).${ext}`);
 });
 
 const frameNumbers2 = Array.from({ length: 39 }, (_, i) => i + 1);
-const frameGalleryImages2 = frameNumbers2.map((n) => `/Frame collection 2/frame (${n}).jpg`);
+const frameGalleryImages2 = frameNumbers2.map((n) => safePath(`/Frame collection 2/frame (${n}).jpg`));
 
 const frameNumbers3 = Array.from({ length: 27 }, (_, i) => i + 1);
 const frameGalleryImages3 = frameNumbers3.map((n) => {
   const ext = n >= 21 && n <= 27 ? "jpg" : "jpeg";
-  return `/Frame collection 3/framee (${n}).${ext}`;
+  return safePath(`/Frame collection 3/framee (${n}).${ext}`);
 });
 
-/* Frame collection 4: Exact match for 'Frame (1).jpg' .. 'Frame (16).jpg' */
 const frameNumbers4 = Array.from({ length: 16 }, (_, i) => i + 1);
-const frameGalleryImages4 = frameNumbers4.map((n) => `/Frame collection 4/Frame (${n}).jpg`);
+const frameGalleryImages4 = frameNumbers4.map((n) => safePath(`/Frame collection 4/Frame (${n}).jpg`));
 
 const frameGalleryImages = [
   ...frameGalleryImages1,
@@ -38,11 +40,8 @@ const frameGalleryImages = [
 ];
 
 /* ─── T-Shirt collections ─── */
-// Folder 1: 1.jpg .. 22.jpg (excluding 23.jpg used for hero)
-const tshirtGalleryImages1 = Array.from({ length: 22 }, (_, i) => `/T-shirt collection/${i + 1}.jpg`);
-
-// Folder 2: Exact match for 't shirt (1).jpg' .. 't shirt (14).jpg'
-const tshirtGalleryImages2 = Array.from({ length: 14 }, (_, i) => `/T-shirt collection 2/t shirt (${i + 1}).jpg`);
+const tshirtGalleryImages1 = Array.from({ length: 22 }, (_, i) => safePath(`/T-shirt collection/${i + 1}.jpg`));
+const tshirtGalleryImages2 = Array.from({ length: 14 }, (_, i) => safePath(`/T-shirt collection 2/t shirt (${i + 1}).jpg`));
 
 const tshirtGalleryImages = [...tshirtGalleryImages1, ...tshirtGalleryImages2];
 
@@ -51,7 +50,7 @@ const categoryIntros: Record<string, { headline: string; body: string }> = {
     headline: "Premium Roll Up Banners",
     body: "High-impact, ultra-clear roll up banners. Perfect for exhibitions, retail, and events.",
   },
-  frame: {
+  frames: {
     headline: "Custom Framed Posters",
     body: "Beautifully framed posters in multiple sizes and finishes to elevate your space or brand.",
   },
@@ -119,29 +118,19 @@ function SkeletonCard() {
   );
 }
 
-/* ── Standard Gallery Card (Frames & T-Shirts) ── */
-function GalleryCard({
-  src,
-  alt,
-  onClick,
-}: {
-  src: string;
-  alt: string;
-  onClick: () => void;
-}) {
+function GalleryCard({ src, alt, onClick }: { src: string; alt: string; onClick: () => void }) {
   return (
     <div
       onClick={onClick}
       className="group flex flex-col bg-white dark:bg-gray-800 rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer"
     >
       <div className="relative aspect-square w-full bg-gray-50 dark:bg-gray-900 overflow-hidden">
-        <Image
+        {/* Native img tag used here to guarantee browser handling of relative public image assets */}
+        <img
           src={src}
           alt={alt}
-          fill
-          className="object-cover group-hover:scale-105 transition-transform duration-300"
-          sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 20vw"
-          unoptimized={src.startsWith("/")}
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          loading="lazy"
         />
       </div>
 
@@ -158,7 +147,6 @@ function GalleryCard({
   );
 }
 
-/* ── Football Kit Card with Front/Back Toggle Overlay ── */
 function FootballKitCard({
   kit,
   onSelect,
@@ -167,8 +155,8 @@ function FootballKitCard({
   onSelect: (activeSrc: string, altSrc: string) => void;
 }) {
   const [activeView, setActiveView] = useState<"back" | "front">("back");
-  const activeImage = activeView === "back" ? kit.backImage : kit.frontImage;
-  const altImage = activeView === "back" ? kit.frontImage : kit.backImage;
+  const activeImage = safePath(activeView === "back" ? kit.backImage : kit.frontImage);
+  const altImage = safePath(activeView === "back" ? kit.frontImage : kit.backImage);
 
   return (
     <div className="group flex flex-col bg-white dark:bg-gray-800 rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-xl transition-all duration-300">
@@ -176,16 +164,13 @@ function FootballKitCard({
         className="relative aspect-square w-full bg-gray-50 dark:bg-gray-900 overflow-hidden cursor-pointer"
         onClick={() => onSelect(activeImage, altImage)}
       >
-        <Image
+        <img
           src={activeImage}
           alt={`${kit.name} - ${activeView} view`}
-          fill
-          className="object-contain p-2 group-hover:scale-105 transition-transform duration-300"
-          sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 20vw"
-          unoptimized
+          className="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-300"
+          loading="lazy"
         />
 
-        {/* View Switcher Overlay */}
         <div
           className="absolute top-2 right-2 flex bg-black/60 backdrop-blur-md rounded-lg p-0.5 text-[10px] font-bold text-white z-10"
           onClick={(e) => e.stopPropagation()}
@@ -223,7 +208,6 @@ function FootballKitCard({
   );
 }
 
-/* ── Product Card Component ── */
 function ProductCard({
   name,
   description,
@@ -245,8 +229,8 @@ function ProductCard({
 
   return (
     <div className="flex flex-col rounded-3xl overflow-hidden bg-white shadow-xl border border-gray-100 max-w-sm w-full mx-auto">
-      <div className="w-full relative bg-gray-50" style={{ height: "280px" }}>
-        <Image src={image} alt={name} fill className="object-contain p-4" unoptimized={image.startsWith("/")} />
+      <div className="w-full relative bg-gray-50 flex items-center justify-center" style={{ height: "280px" }}>
+        <img src={safePath(image)} alt={name} className="max-h-full max-w-full object-contain p-4" />
       </div>
       <div className="flex flex-col p-6 gap-4 text-center flex-1">
         <div>
@@ -268,7 +252,6 @@ function ProductCard({
   );
 }
 
-/* ── Main Client Component ── */
 export default function CategoryPageClient({ categoryName, slug }: { categoryName: string; slug: string }) {
   const [loaded, setLoaded] = useState(false);
   const router = useRouter();
@@ -292,7 +275,6 @@ export default function CategoryPageClient({ categoryName, slug }: { categoryNam
 
   return (
     <>
-      {/* Category intro banner */}
       {(() => {
         const intro = categoryIntros[slug];
         return intro ? (
@@ -308,7 +290,6 @@ export default function CategoryPageClient({ categoryName, slug }: { categoryNam
         ) : null;
       })()}
 
-      {/* Dynamic Main Product Customization Cards */}
       <div className={`grid gap-6 justify-center ${products.length > 1 ? "grid-cols-1 md:grid-cols-2 max-w-4xl" : "grid-cols-1 max-w-sm"} mx-auto mt-6`}>
         {!loaded ? (
           Array.from({ length: products.length || 1 }).map((_, i) => <SkeletonCard key={i} />)
@@ -325,7 +306,6 @@ export default function CategoryPageClient({ categoryName, slug }: { categoryNam
         )}
       </div>
 
-      {/* ── FRAME GALLERY ── */}
       {isFrame && loaded && (
         <section className="mt-16 w-full">
           <div className="flex items-center justify-center gap-4 mb-8">
@@ -352,7 +332,6 @@ export default function CategoryPageClient({ categoryName, slug }: { categoryNam
         </section>
       )}
 
-      {/* ── FOOTBALL KITS GALLERY (Paired Front & Back) ── */}
       {isFootballKitsPage && loaded && (
         <section className="mt-16 w-full">
           <div className="flex items-center justify-center gap-4 mb-8">
@@ -384,7 +363,6 @@ export default function CategoryPageClient({ categoryName, slug }: { categoryNam
         </section>
       )}
 
-      {/* ── READY-MADE LAB COATS GALLERY ── */}
       {isLabCoats && loaded && readyMadeLabCoats.length > 0 && (
         <section className="mt-16 w-full">
           <div className="flex items-center justify-center gap-4 mb-8">
@@ -402,7 +380,7 @@ export default function CategoryPageClient({ categoryName, slug }: { categoryNam
             {readyMadeLabCoats.map((item) => (
               <GalleryCard
                 key={item.id}
-                src={item.image}
+                src={safePath(item.image)}
                 alt={item.name}
                 onClick={() =>
                   router.push(
@@ -415,7 +393,6 @@ export default function CategoryPageClient({ categoryName, slug }: { categoryNam
         </section>
       )}
 
-      {/* ── T-SHIRT GALLERY ── */}
       {isTshirts && loaded && (
         <section className="mt-16 w-full">
           <div className="flex items-center justify-center gap-4 mb-8">

@@ -5,7 +5,6 @@ export interface CategoryProduct {
   description: string;
   image: string;
   bgColor: string;
-
   basePrice: number;
 }
 
@@ -18,7 +17,6 @@ export const productData: Record<string, CategoryProduct[]> = {
       description: "Ultra-clear banner with vibrant CMYK, premium matte finish, anti-curl polypropylene.",
       image: "/roll-up-banner.png",
       bgColor: "#E8EEF7",
-
       basePrice: 1600,
     },
   ],
@@ -27,7 +25,7 @@ export const productData: Record<string, CategoryProduct[]> = {
       id: "frame-1",
       slug: "custom-framed-poster",
       name: "Custom Framed Poster",
-      description: "Premium framed posters with multiple sizes and frame colour options.",
+      description: "Premium framed posters with multiple sizes (A5: 185 EGP, A4: 230 EGP, A3: 350 EGP).",
       image: "/frame (8).jpeg",
       bgColor: "#F0EBE3",
       basePrice: 185,
@@ -195,10 +193,13 @@ export interface ReadyMadeItem {
   price: number;
 }
 
+// Encodes URI paths so spaces and parentheses load correctly without breaking image URLs
+const safePath = (path: string) => encodeURI(path);
+
 export const FRAME_COLLECTION_4: ReadyMadeItem[] = Array.from({ length: 16 }, (_, i) => ({
   id: `frame-col-4-${i + 1}`,
   name: `Frame Design ${i + 1}`,
-  image: `/Frame collection 4/Frame (${i + 1}).jpg`,
+  image: safePath(`/Frame collection 4/Frame (${i + 1}).jpg`),
   category: "frames",
   price: 185,
 }));
@@ -206,7 +207,7 @@ export const FRAME_COLLECTION_4: ReadyMadeItem[] = Array.from({ length: 16 }, (_
 export const TSHIRT_COLLECTION_2: ReadyMadeItem[] = Array.from({ length: 14 }, (_, i) => ({
   id: `tshirt-col-2-${i + 1}`,
   name: `T-Shirt Design ${i + 1}`,
-  image: `/T-shirt collection 2/t shirt (${i + 1}).jpg`,
+  image: safePath(`/T-shirt collection 2/t shirt (${i + 1}).jpg`),
   category: "t-shirts",
   price: 550,
 }));
@@ -214,18 +215,16 @@ export const TSHIRT_COLLECTION_2: ReadyMadeItem[] = Array.from({ length: 14 }, (
 export const LAB_COAT_COLLECTION: ReadyMadeItem[] = Array.from({ length: 12 }, (_, i) => ({
   id: `lab-coat-${i + 1}`,
   name: `Lab Coat Design ${i + 1}`,
-  image: `/lab coat/coat (${i + 1}).jpg`,
+  image: safePath(`/lab coat/coat (${i + 1}).jpg`),
   category: "lab-coats",
   price: 450,
 }));
 
-// Slugs for variable-priced products that require a quote
 export const QUOTE_BASED_SLUGS = new Set([
   "custom-business-cards",
   "custom-stickers",
 ]);
 
-// Per-meter pricing for banners
 export const BANNER_PRICE_PER_METER = 135;
 
 /** Get products for any category slug */
@@ -245,7 +244,7 @@ export function getReadyMadeByCategory(category: string): ReadyMadeItem[] {
 /** Get a specific product by slug and name */
 export function getProductByName(slug: string, name: string): CategoryProduct | undefined {
   const products = productData[slug] || [];
-  return products.find(p => p.name.toLowerCase() === name.toLowerCase());
+  return products.find((p) => p.name.toLowerCase() === name.toLowerCase());
 }
 
 /** Get a specific product by its unique slug across all categories */
@@ -253,7 +252,7 @@ export function getProductBySlug(productSlug: string): { product: CategoryProduc
   if (!productSlug) return undefined;
   const target = productSlug.toLowerCase().trim();
   for (const [catSlug, products] of Object.entries(productData)) {
-    const p = products.find(prod => prod.slug.toLowerCase().trim() === target);
+    const p = products.find((prod) => prod.slug.toLowerCase().trim() === target);
     if (p) return { product: p, categorySlug: catSlug };
   }
   return undefined;
