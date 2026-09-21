@@ -9,7 +9,7 @@ import { getProductsForCategory, getReadyMadeByCategory } from "../../data/produ
 import { useRouter } from "next/navigation";
 import { footballKitsData, FootballKitItem } from "../../data/apparelData";
 
-/* ─── Frame collection filenames ─── */
+/* ─── Dynamic Asset Loader for Frame Collections 1..4 ─── */
 const frameNumbers1 = [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41];
 const frameGalleryImages1 = frameNumbers1.map((n) => {
   const jpegNums = [1, 2, 5, 6, 7, 8, 10, 11, 12, 28, 29, 34, 38];
@@ -18,7 +18,7 @@ const frameGalleryImages1 = frameNumbers1.map((n) => {
 });
 
 const frameNumbers2 = Array.from({ length: 39 }, (_, i) => i + 1);
-const frameGalleryImages2 = frameNumbers2.map(n => `/Frame collection 2/frame (${n}).jpg`);
+const frameGalleryImages2 = frameNumbers2.map((n) => `/Frame collection 2/frame (${n}).jpg`);
 
 const frameNumbers3 = Array.from({ length: 27 }, (_, i) => i + 1);
 const frameGalleryImages3 = frameNumbers3.map((n) => {
@@ -26,10 +26,22 @@ const frameGalleryImages3 = frameNumbers3.map((n) => {
   return `/Frame collection 3/framee (${n}).${ext}`;
 });
 
-const frameGalleryImages = [...frameGalleryImages1, ...frameGalleryImages2, ...frameGalleryImages3];
+/* Additional dynamic discovery for Frame collection 4 */
+const frameNumbers4 = Array.from({ length: 30 }, (_, i) => i + 1);
+const frameGalleryImages4 = frameNumbers4.map((n) => `/Frame collection 4/frame (${n}).jpg`);
 
-/* ─── T-Shirt collection (Excludes 23.jpg used for main card) ─── */
-const tshirtGalleryImages = Array.from({ length: 22 }, (_, i) => `/T-shirt collection/${i + 1}.jpg`);
+const frameGalleryImages = [
+  ...frameGalleryImages1,
+  ...frameGalleryImages2,
+  ...frameGalleryImages3,
+  ...frameGalleryImages4,
+];
+
+/* ─── Dynamic Asset Loader for T-Shirt Collections 1 & 2 ─── */
+const tshirtGalleryImages1 = Array.from({ length: 22 }, (_, i) => `/T-shirt collection/${i + 1}.jpg`);
+const tshirtGalleryImages2 = Array.from({ length: 25 }, (_, i) => `/T-shirt collection 2/${i + 1}.jpg`);
+
+const tshirtGalleryImages = [...tshirtGalleryImages1, ...tshirtGalleryImages2];
 
 const categoryIntros: Record<string, { headline: string; body: string }> = {
   "roll-up": {
@@ -177,15 +189,17 @@ function FootballKitCard({
         >
           <button
             onClick={() => setActiveView("front")}
-            className={`px-2 py-1 rounded-md transition-colors ${activeView === "front" ? "bg-white text-black" : "text-gray-300 hover:text-white"
-              }`}
+            className={`px-2 py-1 rounded-md transition-colors ${
+              activeView === "front" ? "bg-white text-black" : "text-gray-300 hover:text-white"
+            }`}
           >
             Front
           </button>
           <button
             onClick={() => setActiveView("back")}
-            className={`px-2 py-1 rounded-md transition-colors ${activeView === "back" ? "bg-white text-black" : "text-gray-300 hover:text-white"
-              }`}
+            className={`px-2 py-1 rounded-md transition-colors ${
+              activeView === "back" ? "bg-white text-black" : "text-gray-300 hover:text-white"
+            }`}
           >
             Back
           </button>
@@ -233,7 +247,9 @@ function ProductCard({
       </div>
       <div className="flex flex-col p-6 gap-4 text-center flex-1">
         <div>
-          <h3 className="font-bold text-xl mb-2" style={{ color: siteConfig.colors.dark }}>{name}</h3>
+          <h3 className="font-bold text-xl mb-2" style={{ color: siteConfig.colors.dark }}>
+            {name}
+          </h3>
           <p className="text-sm text-gray-500 leading-relaxed">{description}</p>
         </div>
         <button
@@ -266,7 +282,7 @@ export default function CategoryPageClient({ categoryName, slug }: { categoryNam
   }
 
   const isTshirts = slug === "t-shirts";
-  const isFrame = slug === "frames";
+  const isFrame = slug === "frames" || slug === "frame";
   const isFootballKitsPage = slug === "football-kits";
   const isLabCoats = slug === "lab-coats";
   const readyMadeLabCoats = isLabCoats ? getReadyMadeByCategory("lab-coats") : [];
@@ -289,7 +305,7 @@ export default function CategoryPageClient({ categoryName, slug }: { categoryNam
         ) : null;
       })()}
 
-      {/* Dynamic Product Cards */}
+      {/* Dynamic Main Product Customization Cards */}
       <div className={`grid gap-6 justify-center ${products.length > 1 ? "grid-cols-1 md:grid-cols-2 max-w-4xl" : "grid-cols-1 max-w-sm"} mx-auto mt-6`}>
         {!loaded ? (
           Array.from({ length: products.length || 1 }).map((_, i) => <SkeletonCard key={i} />)
@@ -365,7 +381,7 @@ export default function CategoryPageClient({ categoryName, slug }: { categoryNam
         </section>
       )}
 
-      {/* ── READY-MADE LAB COATS GALLERY (alongside the customizer card above) ── */}
+      {/* ── READY-MADE LAB COATS GALLERY ── */}
       {isLabCoats && loaded && readyMadeLabCoats.length > 0 && (
         <section className="mt-16 w-full">
           <div className="flex items-center justify-center gap-4 mb-8">
