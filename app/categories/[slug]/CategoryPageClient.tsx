@@ -9,7 +9,7 @@ import { getProductsForCategory, getReadyMadeByCategory } from "../../data/produ
 import { useRouter } from "next/navigation";
 import { footballKitsData, FootballKitItem } from "../../data/apparelData";
 
-/* ─── Dynamic Asset Loader for Frame Collections 1..4 ─── */
+/* ─── Frame collection filenames ─── */
 const frameNumbers1 = [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41];
 const frameGalleryImages1 = frameNumbers1.map((n) => {
   const jpegNums = [1, 2, 5, 6, 7, 8, 10, 11, 12, 28, 29, 34, 38];
@@ -26,9 +26,9 @@ const frameGalleryImages3 = frameNumbers3.map((n) => {
   return `/Frame collection 3/framee (${n}).${ext}`;
 });
 
-/* Additional dynamic discovery for Frame collection 4 */
-const frameNumbers4 = Array.from({ length: 30 }, (_, i) => i + 1);
-const frameGalleryImages4 = frameNumbers4.map((n) => `/Frame collection 4/frame (${n}).jpg`);
+/* Frame collection 4: Exact match for 'Frame (1).jpg' .. 'Frame (16).jpg' */
+const frameNumbers4 = Array.from({ length: 16 }, (_, i) => i + 1);
+const frameGalleryImages4 = frameNumbers4.map((n) => `/Frame collection 4/Frame (${n}).jpg`);
 
 const frameGalleryImages = [
   ...frameGalleryImages1,
@@ -37,9 +37,12 @@ const frameGalleryImages = [
   ...frameGalleryImages4,
 ];
 
-/* ─── Dynamic Asset Loader for T-Shirt Collections 1 & 2 ─── */
+/* ─── T-Shirt collections ─── */
+// Folder 1: 1.jpg .. 22.jpg (excluding 23.jpg used for hero)
 const tshirtGalleryImages1 = Array.from({ length: 22 }, (_, i) => `/T-shirt collection/${i + 1}.jpg`);
-const tshirtGalleryImages2 = Array.from({ length: 25 }, (_, i) => `/T-shirt collection 2/${i + 1}.jpg`);
+
+// Folder 2: Exact match for 't shirt (1).jpg' .. 't shirt (14).jpg'
+const tshirtGalleryImages2 = Array.from({ length: 14 }, (_, i) => `/T-shirt collection 2/t shirt (${i + 1}).jpg`);
 
 const tshirtGalleryImages = [...tshirtGalleryImages1, ...tshirtGalleryImages2];
 
