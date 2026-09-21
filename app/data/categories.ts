@@ -40,7 +40,7 @@ export interface Category {
 export const categories: Category[] = [
   { slug: "caps", name: "Caps", icon: HardHat },
   { slug: "roll-up", name: "Roll Up", icon: Layout },
-  { slug: "frame", name: "Frame", icon: Image },
+  { slug: "frames", name: "Frames", icon: Image },
   { slug: "banners", name: "Banners", icon: Flag },
   { slug: "business-cards", name: "Business Cards", icon: CreditCard },
   { slug: "tote-bags", name: "Tote Bags", icon: ShoppingBag },
@@ -57,7 +57,7 @@ export const categories: Category[] = [
 export const quickLinkSlugs = [
   "caps",
   "roll-up",
-  "frame",
+  "frames",
   "banners",
   "business-cards",
   "tote-bags",

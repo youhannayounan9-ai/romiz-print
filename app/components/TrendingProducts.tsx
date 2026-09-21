@@ -24,7 +24,7 @@ const products: Product[] = [
 
     image: "/frame (8).jpeg",
     category: "Frames",
-    categorySlug: "frame",
+    categorySlug: "frames",
     bgColor: "#E8EEF7",
   },
   {

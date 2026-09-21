@@ -103,7 +103,7 @@ export default function ProductPageClient({
       const initialImg = searchParams?.image || product.image;
       setActivePreviewImage(initialImg);
 
-      if (categorySlug === "frame") {
+      if (categorySlug === "frames") {
         setOptions({ Size: "15×21 cm (A5)", Color: "Black", "Custom Design": "No" });
       } else if (isApparel) {
         setOptions({ Size: "M" });
@@ -120,7 +120,7 @@ export default function ProductPageClient({
     if (!product) return;
     let newPrice = product.basePrice;
 
-    if (categorySlug === "frame") {
+    if (categorySlug === "frames") {
       const currentSize = options.Size || "15×21 cm (A5)";
       if (currentSize.includes("20×30") || currentSize.includes("20x30")) newPrice = 300;
       else if (currentSize.includes("30×40") || currentSize.includes("30x40")) newPrice = 450;
@@ -205,11 +205,11 @@ export default function ProductPageClient({
   // Size chart config (Only show for Frames, T-Shirts, and Football Kits)
   const showApparelSizeChart = isTShirts || isFootballKit;
 
-  const sizeChartSrc = categorySlug === "frame" ? "/Frame sizes.png.png"
+  const sizeChartSrc = categorySlug === "frames" ? "/Frame sizes.png.png"
     : showApparelSizeChart ? "/T-shirt sizes.png.png"
       : null;
 
-  const sizeChartLabel = categorySlug === "frame" ? "Frame Size Chart"
+  const sizeChartLabel = categorySlug === "frames" ? "Frame Size Chart"
     : showApparelSizeChart ? "Apparel Size Chart"
       : null;
 
@@ -347,7 +347,7 @@ export default function ProductPageClient({
 
           {/* Dynamic Options Form */}
           <div className="flex flex-col gap-4">
-            {categorySlug === "frame" && (
+            {categorySlug === "frames" && (
               <>
                 {/* Modern Frame Size Selector (Pills UI) */}
                 <div>

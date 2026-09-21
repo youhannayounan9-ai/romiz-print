@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Settings2 } from "lucide-react";
 import { siteConfig } from "../../config/site";
-import { getProductsForCategory } from "../../data/products";
+import { getProductsForCategory, getReadyMadeByCategory } from "../../data/products";
 import { useRouter } from "next/navigation";
 import { footballKitsData, FootballKitItem } from "../../data/apparelData";
 
@@ -266,8 +266,10 @@ export default function CategoryPageClient({ categoryName, slug }: { categoryNam
   }
 
   const isTshirts = slug === "t-shirts";
-  const isFrame = slug === "frame";
+  const isFrame = slug === "frames";
   const isFootballKitsPage = slug === "football-kits";
+  const isLabCoats = slug === "lab-coats";
+  const readyMadeLabCoats = isLabCoats ? getReadyMadeByCategory("lab-coats") : [];
 
   return (
     <>
@@ -355,6 +357,37 @@ export default function CategoryPageClient({ categoryName, slug }: { categoryNam
                     `/products/custom-football-kit?image=${encodeURIComponent(activeSrc)}&altImage=${encodeURIComponent(
                       altSrc
                     )}&readyMade=true`
+                  )
+                }
+              />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* ── READY-MADE LAB COATS GALLERY (alongside the customizer card above) ── */}
+      {isLabCoats && loaded && readyMadeLabCoats.length > 0 && (
+        <section className="mt-16 w-full">
+          <div className="flex items-center justify-center gap-4 mb-8">
+            <span className="flex-1 max-w-24 h-px" style={{ backgroundColor: "#D6E2F0" }} />
+            <h2
+              className="text-2xl sm:text-3xl font-bold text-center whitespace-nowrap"
+              style={{ color: siteConfig.colors.dark, fontFamily: "var(--font-space-grotesk), system-ui, sans-serif" }}
+            >
+              Ready-made Lab Coats
+            </h2>
+            <span className="flex-1 max-w-24 h-px" style={{ backgroundColor: "#D6E2F0" }} />
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-5">
+            {readyMadeLabCoats.map((item) => (
+              <GalleryCard
+                key={item.id}
+                src={item.image}
+                alt={item.name}
+                onClick={() =>
+                  router.push(
+                    `/products/custom-lab-coat?image=${encodeURIComponent(item.image)}&readyMade=true`
                   )
                 }
               />

@@ -19,7 +19,7 @@ export default async function AllCategoriesPage({ searchParams }: { searchParams
   if (filter === "marketing-print") {
     displayedCategories = categories.filter(c => ["business-cards", "flyers", "pens", "stamps"].includes(c.slug));
   } else if (filter === "banners-displays") {
-    displayedCategories = categories.filter(c => ["banners", "roll-up", "frame"].includes(c.slug));
+    displayedCategories = categories.filter(c => ["banners", "roll-up", "frames"].includes(c.slug));
   } else if (filter === "apparel-bags") {
     displayedCategories = categories.filter(c => ["t-shirts", "tote-bags", "football-kits", "caps", "lab-coats"].includes(c.slug));
   } else if (filter === "custom-merch") {

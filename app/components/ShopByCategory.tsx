@@ -52,7 +52,7 @@ const mainCategories = [
 const popularSlugs = [
   "caps",
   "stickers",
-  "frame",
+  "frames",
   "t-shirts",
   "business-cards",
   "football-kits",

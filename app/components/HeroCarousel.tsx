@@ -33,7 +33,7 @@ const slides = [
     subtext:
       "High-grade fabric custom t-shirts and embroidered medical lab coats tailored for professionals, university students, and teams.",
     cta: "Shop Apparel Collection",
-    ctaHref: "/categories/t-shirts",
+    ctaHref: "/categories/apparel",
     badge: null,
     accentSubHeadline: false,
     image: {
@@ -50,7 +50,7 @@ const slides = [
     subtext:
       "Stickers, banners, marketing collaterals, and full-scale printing services with precise color reproduction and fast turnaround across Cairo.",
     cta: "Get a Quote",
-    ctaHref: "/quotes",
+    ctaHref: "/quote",
     badge: null,
     accentSubHeadline: false,
     image: {

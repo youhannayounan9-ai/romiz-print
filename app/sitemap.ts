@@ -16,5 +16,17 @@ export default function sitemap() {
       priority: 1,
     },
     ...categoryUrls,
+    {
+      url: "https://romizprint.com/categories/apparel",
+      lastModified: new Date(),
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+    },
+    {
+      url: "https://romizprint.com/quote",
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.9,
+    },
   ];
 }

@@ -22,7 +22,7 @@ export const productData: Record<string, CategoryProduct[]> = {
       basePrice: 1600,
     },
   ],
-  frame: [
+  frames: [
     {
       id: "frame-1",
       slug: "custom-framed-poster",
@@ -148,6 +148,15 @@ export const productData: Record<string, CategoryProduct[]> = {
       image: "/lab-coat.png",
       bgColor: "#F0EBE3",
       basePrice: 450, // Updated price
+    },
+    {
+      id: "lab-coat-2",
+      slug: "standard-medical-lab-coat",
+      name: "Standard Medical Lab Coat",
+      description: "Classic white medical lab coat with notched lapel and front pockets — ideal for clinics, labs, and students.",
+      image: "/lab coat/coat (1).jpg",
+      bgColor: "#E8EEF7",
+      basePrice: 450,
     }
   ],
   "football-kits": [
@@ -185,17 +194,25 @@ export const productData: Record<string, CategoryProduct[]> = {
   ]
 };
 
-// Ready-Made Collections Data
+/* Ready-Made Collections Data */
 
-export const FRAME_COLLECTION_4 = Array.from({ length: 16 }, (_, i) => ({
+export interface ReadyMadeItem {
+  id: string;
+  name: string;
+  image: string;
+  category: "frames" | "t-shirts" | "lab-coats";
+  price: number;
+}
+
+export const FRAME_COLLECTION_4: ReadyMadeItem[] = Array.from({ length: 16 }, (_, i) => ({
   id: `frame-col-4-${i + 1}`,
   name: `Frame Design ${i + 1}`,
   image: `/Frame collection 4/Frame (${i + 1}).jpg`,
-  category: "frame",
+  category: "frames",
   price: 185, // Starts at A5 price
 }));
 
-export const TSHIRT_COLLECTION_2 = Array.from({ length: 14 }, (_, i) => ({
+export const TSHIRT_COLLECTION_2: ReadyMadeItem[] = Array.from({ length: 14 }, (_, i) => ({
   id: `tshirt-col-2-${i + 1}`,
   name: `T-Shirt Design ${i + 1}`,
   image: `/T-shirt collection 2/t shirt (${i + 1}).jpg`,
@@ -203,7 +220,7 @@ export const TSHIRT_COLLECTION_2 = Array.from({ length: 14 }, (_, i) => ({
   price: 550,
 }));
 
-export const LAB_COAT_COLLECTION = Array.from({ length: 12 }, (_, i) => ({
+export const LAB_COAT_COLLECTION: ReadyMadeItem[] = Array.from({ length: 12 }, (_, i) => ({
   id: `lab-coat-${i + 1}`,
   name: `Lab Coat Design ${i + 1}`,
   image: `/lab coat/coat (${i + 1}).jpg`,
@@ -223,6 +240,15 @@ export const BANNER_PRICE_PER_METER = 135;
 /** Get products for any category slug */
 export function getProductsForCategory(slug: string, categoryName: string): CategoryProduct[] {
   return productData[slug] || [];
+}
+
+/** Get all ready-made collection items, optionally filtered by category */
+export function getReadyMadeByCategory(category: string): ReadyMadeItem[] {
+  return [
+    ...FRAME_COLLECTION_4,
+    ...TSHIRT_COLLECTION_2,
+    ...LAB_COAT_COLLECTION,
+  ].filter((item) => item.category === category);
 }
 
 /** Get a specific product by slug and name */

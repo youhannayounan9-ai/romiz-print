@@ -243,7 +243,7 @@ export default function Header() {
       {/* Mobile menu */}
       {mobileMenuOpen && (
         <div className="md:hidden border-t border-gray-100 bg-white dark:bg-gray-900 px-4 py-4 flex flex-col gap-2 absolute w-full shadow-md z-40">
-          {["Roll Up", "Frame", "Banners", "Business Cards", "Tote Bags", "Flyers", "Mugs", "Pens", "Stickers", "T-Shirts", "Football Kits"].map((item) => (
+          {["Roll Up", "Frames", "Banners", "Business Cards", "Tote Bags", "Flyers", "Mugs", "Pens", "Stickers", "T-Shirts", "Football Kits"].map((item) => (
             <Link
               key={item}
               href={`/categories/${item.toLowerCase().replace(/\s+/g, "-")}`}
