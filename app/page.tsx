@@ -6,7 +6,7 @@ import TrendingProducts from "./components/TrendingProducts";
 export default function HomePage() {
   return (
     <div className="bg-white dark:bg-gray-900 transition-colors duration-200">
-      {/* Trust Bar — homepage only, directly below nav */}
+      {/* Trust Bar - directly below nav */}
       <TrustBar />
 
       {/* Hero Carousel */}
@@ -15,7 +15,7 @@ export default function HomePage() {
       {/* Shop By Category */}
       <ShopByCategory />
 
-      {/* Trending Products */}
+      {/* Trending Products Grid */}
       <TrendingProducts />
     </div>
   );

@@ -30,7 +30,7 @@ export const productData: Record<string, CategoryProduct[]> = {
       description: "Premium framed posters with multiple sizes and frame colour options.",
       image: "/frame (8).jpeg",
       bgColor: "#F0EBE3",
-      basePrice: 200, // Starting from 250 EGP for 15x21 cm
+      basePrice: 185, // Updated base price for A5
     },
   ],
   banners: [
@@ -95,7 +95,6 @@ export const productData: Record<string, CategoryProduct[]> = {
       image: "/black magic mug.png",
       bgColor: "#1E2530",
       basePrice: 270,
-
     }
   ],
   pens: [
@@ -128,7 +127,7 @@ export const productData: Record<string, CategoryProduct[]> = {
       description: "Premium printable cotton t-shirts available in multiple sizes and colours.",
       image: "/T-shirt collection/23.jpg",
       bgColor: "#EBE3F0",
-      basePrice: 600,
+      basePrice: 550, // Updated price
     },
     {
       id: "hoodie-1",
@@ -137,7 +136,7 @@ export const productData: Record<string, CategoryProduct[]> = {
       description: "Warm fleece hoodies with your custom design. Available in multiple sizes and colours.",
       image: "/Hoodies.png",
       bgColor: "#E8EEF7",
-      basePrice: 600, // Assuming base price same as t-shirt for now, can adjust in product page
+      basePrice: 600,
     },
   ],
   "lab-coats": [
@@ -148,7 +147,7 @@ export const productData: Record<string, CategoryProduct[]> = {
       description: "Professional medical and laboratory coats with custom logo embroidery or print.",
       image: "/lab-coat.png",
       bgColor: "#F0EBE3",
-      basePrice: 500,
+      basePrice: 450, // Updated price
     }
   ],
   "football-kits": [
@@ -157,10 +156,9 @@ export const productData: Record<string, CategoryProduct[]> = {
       slug: "custom-football-kit",
       name: "Custom Football Kit",
       description: "Ready-made and custom-printed football kits for teams. High-performance breathable fabric.",
-      image: "/football kits/bc 2.jpg", // Default image
+      image: "/football kits/bc 2.jpg",
       bgColor: "#E8EEF7",
-
-      basePrice: 550, // Placeholder base price
+      basePrice: 550, // Updated price
     }
   ],
   caps: [
@@ -171,7 +169,6 @@ export const productData: Record<string, CategoryProduct[]> = {
       description: "Premium embroidered or printed caps with your logo or design. Available in adjustable sizes.",
       image: "/Caps.png",
       bgColor: "#E8F5E9",
-
       basePrice: 275,
     },
   ],
@@ -181,13 +178,38 @@ export const productData: Record<string, CategoryProduct[]> = {
       slug: "custom-stamp",
       name: "Custom Stamp",
       description: "High-quality self-inking stamps in various sizes and ink colours.",
-      image: "/Stamp.png.jpg", // Assuming image exists
+      image: "/Stamp.png.jpg",
       bgColor: "#E3EBF0",
-
       basePrice: 350,
     }
   ]
 };
+
+// Ready-Made Collections Data
+
+export const FRAME_COLLECTION_4 = Array.from({ length: 16 }, (_, i) => ({
+  id: `frame-col-4-${i + 1}`,
+  name: `Frame Design ${i + 1}`,
+  image: `/Frame collection 4/Frame (${i + 1}).jpg`,
+  category: "frame",
+  price: 185, // Starts at A5 price
+}));
+
+export const TSHIRT_COLLECTION_2 = Array.from({ length: 14 }, (_, i) => ({
+  id: `tshirt-col-2-${i + 1}`,
+  name: `T-Shirt Design ${i + 1}`,
+  image: `/T-shirt collection 2/t shirt (${i + 1}).jpg`,
+  category: "t-shirts",
+  price: 550,
+}));
+
+export const LAB_COAT_COLLECTION = Array.from({ length: 12 }, (_, i) => ({
+  id: `lab-coat-${i + 1}`,
+  name: `Lab Coat Design ${i + 1}`,
+  image: `/lab coat/coat (${i + 1}).jpg`,
+  category: "lab-coats",
+  price: 450,
+}));
 
 // Slugs for variable-priced products that require a quote
 export const QUOTE_BASED_SLUGS = new Set([

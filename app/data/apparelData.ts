@@ -2,8 +2,30 @@ export interface FootballKitItem {
   id: string;
   name: string;
   frontImage: string;
-  backImage: string; // Primary view displayed in the gallery (focusing on custom name/number)
+  backImage: string;
 }
+
+export interface FrameOption {
+  id: string;
+  size: string;
+  price: number;
+}
+
+export interface ApparelPriceConfig {
+  tShirtPrice: number;
+  labCoatPrice: number;
+  frameOptions: FrameOption[];
+}
+
+export const apparelPricingConfig: ApparelPriceConfig = {
+  tShirtPrice: 550,
+  labCoatPrice: 450,
+  frameOptions: [
+    { id: "a5", size: "A5", price: 185 },
+    { id: "a4", size: "A4", price: 230 },
+    { id: "a3", size: "A3", price: 350 },
+  ],
+};
 
 export const footballKitsData: FootballKitItem[] = [
   {

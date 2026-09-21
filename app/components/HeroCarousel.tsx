@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { siteConfig } from "../config/site";
 
 /* ─── Slide data ──────────────────────────────────────────────── */
@@ -11,51 +11,51 @@ const slides = [
   {
     id: 1,
     eyebrow: "Cairo's Custom Printing Co.",
-    headline: "Custom Stickers",
-    subHeadline: "That Stand Out",
+    headline: "Custom Frames",
+    subHeadline: "& Displays",
     subtext:
-      "Premium quality stickers in any shape, size, or quantity. Weather-resistant, vibrant colors, perfect for branding or personal use.",
-    cta: "Get a Quote on Stickers",
-    ctaHref: "/categories/stickers",
+      "Premium quality frames available in A5, A4, and A3 sizes. Perfect for memories, art prints, office branding, and corporate displays.",
+    cta: "Explore Frames",
+    ctaHref: "/categories/frames",
     badge: null,
     accentSubHeadline: true,
     image: {
-      src: "/Custom Stickers.png",
-      alt: "Custom stickers printing Cairo",
+      src: "/hero-frames.jpg.jpeg",
+      alt: "Custom Frames Printing Cairo",
       loading: "eager" as const,
     },
   },
   {
     id: 2,
-    eyebrow: "Professional Display Solutions",
-    headline: "Custom Frames",
-    subHeadline: "& Banners",
+    eyebrow: "Custom Apparel & Lab Coats",
+    headline: "Personalized Shirts",
+    subHeadline: "& Medical Wear",
     subtext:
-      "Pull-up banners, vinyl banners, mesh banners, and custom frames. Perfect for events, exhibitions, and business promotions.",
-    cta: "Explore Banners & Frames",
-    ctaHref: "/categories/banners",
+      "High-grade fabric custom t-shirts and embroidered medical lab coats tailored for professionals, university students, and teams.",
+    cta: "Shop Apparel Collection",
+    ctaHref: "/categories/t-shirts",
     badge: null,
     accentSubHeadline: false,
     image: {
-      src: "/Custom Frames & Banners.png",
-      alt: "Custom banners and frames Egypt",
+      src: "/hero-clothes.jpg.jpeg",
+      alt: "Custom Apparel and Lab Coats Egypt",
       loading: "lazy" as const,
     },
   },
   {
     id: 3,
-    eyebrow: "Premium Personalised Products",
-    headline: "Custom Apparel",
-    subHeadline: "& Drinkware",
+    eyebrow: "High-Volume Commercial Printing",
+    headline: "Commercial Printing",
+    subHeadline: "& Marketing",
     subtext:
-      "Personalised mugs, custom t-shirts, hoodies & more. Premium fabrics, dishwasher-safe mugs, full-colour prints. No minimums.",
-    cta: "Design Your Product",
-    ctaHref: "/categories/t-shirts",
+      "Stickers, banners, marketing collaterals, and full-scale printing services with precise color reproduction and fast turnaround across Cairo.",
+    cta: "Get a Quote",
+    ctaHref: "/quotes",
     badge: null,
     accentSubHeadline: false,
     image: {
-      src: "/apparel-drinkware.jpg",
-      alt: "Custom apparel and drinkware Cairo",
+      src: "/hero-printing.jpg.jpeg",
+      alt: "Commercial Printing Services Cairo",
       loading: "lazy" as const,
     },
   },
@@ -116,7 +116,6 @@ export default function HeroCarousel() {
         >
           {/* ── TEXT SIDE ── */}
           <div className="flex-1 flex flex-col gap-5 text-center md:text-left">
-
             {/* Eyebrow */}
             <div className="flex items-center gap-2 justify-center md:justify-start">
               <span
@@ -163,6 +162,17 @@ export default function HeroCarousel() {
               {slide.subtext}
             </p>
 
+            {/* CTA Button */}
+            <div className="pt-2 flex justify-center md:justify-start">
+              <Link
+                href={slide.ctaHref}
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-lg text-white font-medium transition-transform duration-200 hover:scale-105 shadow-md"
+                style={{ backgroundColor: siteConfig.colors.primary }}
+              >
+                {slide.cta}
+              </Link>
+            </div>
+
             {/* Dot navigation */}
             <div className="flex items-center gap-3 justify-center md:justify-start mt-2">
               <div className="flex items-center gap-1.5">
@@ -196,13 +206,12 @@ export default function HeroCarousel() {
                 alt={slide.image.alt}
                 fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1024px) 320px, 420px"
-                className={slide.id === 3 ? "object-contain" : "object-cover"}
+                className="object-cover"
                 loading={slide.image.loading}
                 style={{
                   transition: "opacity 0.35s ease",
                 }}
               />
-              {/* Subtle overlay gradient for depth */}
               <div
                 className="absolute inset-0 rounded-2xl"
                 style={{
@@ -212,7 +221,6 @@ export default function HeroCarousel() {
               />
             </div>
 
-            {/* Decorative accent ring */}
             <div
               className="absolute -bottom-3 -right-3 w-full h-full rounded-2xl -z-10"
               style={{
