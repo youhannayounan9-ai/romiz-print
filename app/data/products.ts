@@ -199,7 +199,7 @@ const safePath = (path: string) => encodeURI(path);
 export const FRAME_COLLECTION_4: ReadyMadeItem[] = Array.from({ length: 16 }, (_, i) => ({
   id: `frame-col-4-${i + 1}`,
   name: `Frame Design ${i + 1}`,
-  image: safePath(`/Frame collection 4/Frame (${i + 1}).jpg`),
+  image: safePath(`/Frame collection 4/Frame (${i + 1}).jpeg`),
   category: "frames",
   price: 185,
 }));
@@ -207,7 +207,7 @@ export const FRAME_COLLECTION_4: ReadyMadeItem[] = Array.from({ length: 16 }, (_
 export const TSHIRT_COLLECTION_2: ReadyMadeItem[] = Array.from({ length: 14 }, (_, i) => ({
   id: `tshirt-col-2-${i + 1}`,
   name: `T-Shirt Design ${i + 1}`,
-  image: safePath(`/T-shirt collection 2/t shirt (${i + 1}).jpg`),
+  image: safePath(`/T-shirt collection 2/t shirt  (${i + 1}).jpeg`),
   category: "t-shirts",
   price: 550,
 }));

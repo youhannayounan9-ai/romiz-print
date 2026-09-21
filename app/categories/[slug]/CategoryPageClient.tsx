@@ -30,7 +30,7 @@ const frameGalleryImages3 = frameNumbers3.map((n) => {
 });
 
 const frameNumbers4 = Array.from({ length: 16 }, (_, i) => i + 1);
-const frameGalleryImages4 = frameNumbers4.map((n) => safePath(`/Frame collection 4/Frame (${n}).jpg`));
+const frameGalleryImages4 = frameNumbers4.map((n) => safePath(`/Frame collection 4/Frame (${n}).jpeg`));
 
 const frameGalleryImages = [
   ...frameGalleryImages1,
@@ -41,7 +41,7 @@ const frameGalleryImages = [
 
 /* ─── T-Shirt collections ─── */
 const tshirtGalleryImages1 = Array.from({ length: 22 }, (_, i) => safePath(`/T-shirt collection/${i + 1}.jpg`));
-const tshirtGalleryImages2 = Array.from({ length: 14 }, (_, i) => safePath(`/T-shirt collection 2/t shirt (${i + 1}).jpg`));
+const tshirtGalleryImages2 = Array.from({ length: 14 }, (_, i) => safePath(`/T-shirt collection 2/t shirt  (${i + 1}).jpeg`));
 
 const tshirtGalleryImages = [...tshirtGalleryImages1, ...tshirtGalleryImages2];
 
@@ -380,7 +380,7 @@ export default function CategoryPageClient({ categoryName, slug }: { categoryNam
             {readyMadeLabCoats.map((item) => (
               <GalleryCard
                 key={item.id}
-                src={safePath(item.image)}
+                src={item.image}
                 alt={item.name}
                 onClick={() =>
                   router.push(

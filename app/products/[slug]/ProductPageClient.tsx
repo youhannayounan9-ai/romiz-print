@@ -6,14 +6,21 @@ import { useRouter } from "next/navigation";
 import { ShoppingCart, CheckCircle2, Ruler, Calculator } from "lucide-react";
 import { siteConfig } from "../../config/site";
 import { getProductBySlug, productData, QUOTE_BASED_SLUGS, BANNER_PRICE_PER_METER } from "../../data/products";
+import { apparelPricingConfig } from "../../data/apparelData";
 import { useCart } from "../../context/CartContext";
 import DesignFileUploader from "../../components/DesignFileUploader";
 
-/* ── Frame Size Options (Pills UI) ── */
+/* ── Frame Size Options (Pills UI) ──
+   Prices come from the shared apparelPricingConfig so the selector and
+   the price calculation can never drift apart. */
+const A5_PRICE = apparelPricingConfig.frameOptions.find((o) => o.id === "a5")?.price ?? 185;
+const A4_PRICE = apparelPricingConfig.frameOptions.find((o) => o.id === "a4")?.price ?? 230;
+const A3_PRICE = apparelPricingConfig.frameOptions.find((o) => o.id === "a3")?.price ?? 350;
+
 const FRAME_SIZES = [
-  { label: "15×21 cm", format: "(A5)", price: 200, badge: null },
-  { label: "20×30 cm", format: "(A4)", price: 300, badge: "MOST PICKED" },
-  { label: "30×40 cm", format: "(A3)", price: 450, badge: "BEST VALUE" },
+  { label: "15×21 cm", format: "(A5)", price: A5_PRICE, badge: null },
+  { label: "20×30 cm", format: "(A4)", price: A4_PRICE, badge: "MOST PICKED" },
+  { label: "30×40 cm", format: "(A3)", price: A3_PRICE, badge: "BEST VALUE" },
 ];
 
 /* ── Size Chart Modal ── */
@@ -122,9 +129,9 @@ export default function ProductPageClient({
 
     if (categorySlug === "frames") {
       const currentSize = options.Size || "15×21 cm (A5)";
-      if (currentSize.includes("20×30") || currentSize.includes("20x30")) newPrice = 300;
-      else if (currentSize.includes("30×40") || currentSize.includes("30x40")) newPrice = 450;
-      else newPrice = 200; // 15×21 cm (A5)
+      if (currentSize.includes("20×30") || currentSize.includes("20x30")) newPrice = A4_PRICE;
+      else if (currentSize.includes("30×40") || currentSize.includes("30x40")) newPrice = A3_PRICE;
+      else newPrice = A5_PRICE; // 15×21 cm (A5)
 
       if (options["Custom Design"] === "Yes") newPrice += 50;
     } else if (isBanner) {
