@@ -3,12 +3,14 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Trash2, ArrowRight, ShoppingBag, ExternalLink } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import { siteConfig } from "../config/site";
 
 export default function CartPage() {
   const { items, removeItem, updateQuantity, subtotal, totalItems } = useCart();
+  const router = useRouter();
   const [mounted, setMounted] = useState(false);
 
   const [editingItemId, setEditingItemId] = useState<string | null>(null);
@@ -55,33 +57,7 @@ export default function CartPage() {
   };
 
   const handleCheckout = () => {
-    const baseUrl = window.location.origin;
-    let message = "*New Order - Romiz Print*\n\n";
-
-    items.forEach((item, index) => {
-      const fullProductUrl = getItemProductUrl(item, baseUrl);
-
-      message += `*${index + 1}. ${item.name}*\n`;
-      message += `   • Quantity: ${item.quantity}\n`;
-      message += `   • Unit Price: ${item.price} EGP\n`;
-      message += `   • Subtotal: ${item.price * item.quantity} EGP\n`;
-
-      // Print item-specific options
-      if (item.options && Object.keys(item.options).length > 0) {
-        Object.entries(item.options).forEach(([k, v]) => {
-          if (v) message += `   • ${k}: ${v}\n`;
-        });
-      }
-
-      // Direct Link to the Exact Frame/Product Configuration
-      message += `   • Item Link: ${fullProductUrl}\n\n`;
-    });
-
-    message += `*Total Amount: ${subtotal} EGP*\n\n`;
-    message += "Please let me know how to proceed with payment and shipping.";
-
-    const waUrl = `https://wa.me/201041998484?text=${encodeURIComponent(message)}`;
-    window.open(waUrl, "_blank");
+    router.push("/checkout");
   };
 
   return (
@@ -223,7 +199,7 @@ export default function CartPage() {
                   </div>
                   <div className="flex justify-between text-gray-600">
                     <span>Shipping</span>
-                    <span className="text-sm italic">Calculated on WhatsApp</span>
+                    <span className="text-sm italic">Calculated at checkout</span>
                   </div>
                 </div>
 
@@ -242,7 +218,7 @@ export default function CartPage() {
                   Proceed to Checkout <ArrowRight size={18} />
                 </button>
                 <p className="text-xs text-center text-gray-500 mt-4 leading-relaxed">
-                  Clicking checkout will redirect you to WhatsApp to finalize your order details and shipping.
+                  You&apos;ll enter your delivery details and choose a payment method on the next step.
                 </p>
               </div>
             </div>

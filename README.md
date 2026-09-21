@@ -27,7 +27,8 @@ Over the course of development, we implemented several major features:
 2. **"Ready-Made" Galleries:** Specialized galleries for Frames and T-Shirts where clicking a pre-designed item intelligently skips the custom design/upload steps.
 3. **Advanced Cart System:** A fully functional cart that tracks products, quantities, custom options, and uploaded file URLs. Features a unique "double-click-to-edit" quantity input for easy bulk ordering.
 4. **Cloud File Uploads:** Integrated Uploadthing dropzones so users can upload PDFs/Images (up to 16MB) directly on the product page.
-5. **WhatsApp Checkout Integration:** Instead of a traditional payment gateway, checkout dynamically generates a detailed order summary (including prices, options, and design file URLs) and redirects the user to WhatsApp to finalize the order with the admin.
+5. **WhatsApp Checkout Integration:** For quick quote-style orders, a detailed WhatsApp message flow is still available from product pages and the floating button.
+6. **Full Web Checkout System:** `/cart` now routes to a dedicated `/checkout` page with governorate-based shipping (65 EGP for Cairo/Giza, 100 EGP elsewhere), three payment methods (Bank Transfer, InstaPay, Vodafone Cash with an automatic 2% fee), mandatory transfer-screenshot uploads for InstaPay/Vodafone, order persistence in the Supabase `orders` table, automated email alerts to the store owner, and a `/checkout/success` confirmation page.
 
 ---
 
@@ -83,7 +84,7 @@ If a new developer asks *"How does a user buy a custom T-Shirt?"*, here is the e
 3. **Product Page:** They click a specific T-shirt and go to `/products/custom-t-shirt`. The `ProductPageClient.tsx` component loads the specific T-Shirt data.
 4. **Customization:** The user selects options (Print type, quantity) and uploads a logo. `DesignFileUploader.tsx` securely sends the logo to the cloud and returns a URL.
 5. **Add to Cart:** The user clicks "Add to Cart". The item, its price, its selected options, and the logo URL are saved into `CartContext.tsx`.
-6. **Checkout:** The user goes to `/cart`. They review their items. When they click "Checkout", `cart/page.tsx` loops through their items, builds a text message string, and opens WhatsApp with the order details pre-filled.
+6. **Checkout:** The user goes to `/cart` and clicks "Proceed to Checkout", which navigates to `/checkout`. There they enter their name, phone, governorate, and address; the shipping fee is computed automatically (Cairo/Giza = 65 EGP, all other governorates = 100 EGP); they pick a payment method and, for InstaPay/Vodafone Cash, upload a transfer screenshot via Uploadthing. On submit, `app/api/orders/route.ts` saves the order to the Supabase `orders` table, `app/api/order-notification/route.ts` emails the full breakdown to Romiz.Print@gmail.com, the cart is cleared, and the customer lands on `/checkout/success` with their order reference.
 
 ---
 
@@ -91,4 +92,6 @@ If a new developer asks *"How does a user buy a custom T-Shirt?"*, here is the e
 - **To change a phone number:** Update the WhatsApp link in `app/cart/page.tsx` and the hardcoded numbers in `app/components/Footer.tsx` and `Header.tsx`.
 - **To add a new product:** Add it to the array in `app/data/products.ts`. Make sure the `slug` is unique and uses `kebab-case`.
 - **To change Homepage categories:** Edit the `popularSlugs` array inside `app/components/ShopByCategory.tsx`.
-- **Environment Variables:** The `.env.local` file contains the `UPLOADTHING_TOKEN`. This must be added to your hosting provider (like Vercel) for file uploads to work in production.
+- **Environment Variables:** The `.env.local` file contains the `UPLOADTHING_TOKEN`, `NEXT_PUBLIC_SUPABASE_URL`, and `NEXT_PUBLIC_SUPABASE_ANON_KEY`. These must be added to your hosting provider (like Vercel) for uploads and checkout to work in production.
+- **Order emails (optional but recommended):** Add `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, and `MAIL_FROM` (or `RESEND_API_KEY`) to `.env.local` / your host. Without them, orders still save to Supabase and the notification route logs the order server-side instead of emailing.
+- **Orders table setup:** Run `supabase/orders_setup.sql` once in the Supabase SQL Editor (Dashboard → SQL Editor) to create the `orders` table, its RLS policies, the `order-receipts` storage bucket, and realtime updates for the admin dashboard.

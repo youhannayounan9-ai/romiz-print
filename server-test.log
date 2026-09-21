@@ -1,0 +1,26 @@
+npm notice run romiz-print@0.1.0 npx
+npm notice run next start -p 3117
+▲ Next.js 16.3.0
+- Local:         http://localhost:3117
+- Network:       http://192.168.56.1:3117
+✓ Ready in 459ms
+✓ Running next.config.ts took 43ms
+No mail transport configured (SMTP_HOST/SMTP_USER/SMTP_PASS or RESEND_API_KEY). Order notification logged instead:
+New order 5c639b27-19e9-4ffd-accc-a7db4d5984ca received at 2026-09-21T01:38:37.360Z
+Customer: Checkout Smoke Test — 01000000000
+Address: 1 Test Street, Zamalek, Giza
+Payment: Vodafone Cash — receipt: https://utfs.io/f/test-receipt.png
+
+- Custom Mug x2 @ 170 EGP = 340 EGP
+- Custom T-Shirt x1 @ 550 EGP = 550 EGP
+
+Subtotal: 890 EGP | Shipping: 100 EGP | Payment fee: 19.8 EGP | Total: 1009.8 EGP
+No mail transport configured (SMTP_HOST/SMTP_USER/SMTP_PASS or RESEND_API_KEY). Order notification logged instead:
+New order fe624c94-b7a3-441f-995a-88681d97bbc2 received at 2026-09-21T01:42:14.271Z
+Customer: E2E UI Test — 01099988877
+Address: 12 Tahrir Square, Downtown, Cairo, Cairo
+Payment: Bank Transfer
+
+- Custom Mug x1 @ 170 EGP = 170 EGP
+
+Subtotal: 170 EGP | Shipping: 65 EGP | Total: 235 EGP
